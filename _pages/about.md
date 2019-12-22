@@ -8,4 +8,4 @@ redirect_from:
   - /about.html
 ---
 
-Hi, My name is Deniz Akdemir. I am a researcher in statistics. Everyday, I work with issues related to data and data analysis, statistics and therefore I spend a lot time thinking about data. This page will serve as a medium to disseminate some of my thoughts and experiences in statistics, data, and science in general.
+Hi, My name is Deniz Akdemir. I am a researcher in statistics. Everyday, I work with issues related to data and data analysis, statistics and therefore I spend a lot time thinking about data. This page will serve as a medium to disseminate some of my thoughts about and experiences in statistics, data, and science in general.
