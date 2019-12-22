@@ -80,14 +80,14 @@ analytics:
 
 # Site Author
 author:
-  name             : "Your Sidebar Name"
-  avatar           : "profile.png"
-  bio              : "Your biography for the left-hand sidebar"
-  location         : "Location"
+  name             : "Deniz Akdemir"
+  avatar           : "muchado.png"
+  bio              : "Much Ado About Data"
+  location         : "Ithaca, NY USA"
   employer         :
   pubmed           : "https://www.ncbi.nlm.nih.gov/pubmed/?term=deniz+akdemir"
   googlescholar    : "http://www.statgenconsulting.com"
-  email            :
+  email            : "deniz.akdemir.work@gmail.com"
   researchgate     :  # example: "https://www.researchgate.net/profile/yourprofile"
   uri              :
   bitbucket        :
