@@ -26,6 +26,7 @@ University College Dublin, Dublin, Ireland
 - Preparation and presentation of workshops.
 
 
+
 [Statistical Consulting ] November 2017 -- July 2019
 
 Cornell Statistical Consulting Center, Cornell University, Ithaca, NY
