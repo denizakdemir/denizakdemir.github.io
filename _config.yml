@@ -57,7 +57,7 @@ yandex_site_verification :
 
 # Social Sharing
 twitter:
-  username               : &twitter
+  username               : &statgencons
 facebook:
   username               :
   app_id                 :
@@ -89,14 +89,14 @@ author:
   googlescholar    : "http://www.statgenconsulting.com"
   email            : "deniz.akdemir.work@gmail.com"
   researchgate     :  # example: "https://www.researchgate.net/profile/yourprofile"
-  uri              :
+  url              : "http://www.statgenconsulting.com"
   bitbucket        :
   codepen          :
   dribbble         :
   flickr           :
   facebook         :
   foursquare       :
-  github           : "academicpages"
+  github           : "denizakdemir"
   google_plus      :
   keybase          :
   instagram        :
@@ -109,7 +109,7 @@ author:
   stackoverflow    : # http://stackoverflow.com/users/123456/username
   steam            :
   tumblr           :
-  twitter          : "replacethistwitterhandle"
+  twitter          : "@statgencons"
   vine             :
   weibo            :
   xing             :
