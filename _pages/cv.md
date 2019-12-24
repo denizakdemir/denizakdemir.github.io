@@ -18,7 +18,15 @@ Deniz Akdemir, PhD
 
 \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
 
-[Statistical Consulting ] November 2017 -- Present
+[Statistical Research in Plant Breeding ] July 2019 -- Present
+
+University College Dublin, Dublin, Ireland
+
+- Research and data analysis for applications of genomics in plant breeding, genomic selection.
+- Preparation and presentation of workshops.
+
+
+[Statistical Consulting ] November 2017 -- July 2019
 
 Cornell Statistical Consulting Center, Cornell University, Ithaca, NY
 
@@ -82,22 +90,19 @@ input-output and supply-use tables.
 ### RESEARCH INTERESTS
 
 
--   Statistical and quantitative genetics.
 -   Genomic prediction, selection, GWAS, statistical-quantitative
-genetics.
--   Selection of training populations.
--   Models for interactions.
+genetics / genomics.
+-   Selection of training populations / Statistical design.
+-   Models for interactions / epsitasis.
 -   Multivariate statistics, mixed models, data mining: ﬂexible &
 parsimonious models for high dimensional data analysis; model
 selection, computational statistics.
--   Survey sampling; experimental design and analysis.
 
 ### TEACHING INTERESTS
 
 \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
 
-Linear models, Applied statistics, Statistical theory, Statistical
-genetics, Multivariate statistics-Mixed models, Nonparametric
+Linear models, Applied statistics, Statistical theory, Statistical genomics, Multivariate statistics-Mixed models, Nonparametric
 statistics, Data mining, Genomic prediction and association.
 
 ### EDUCATION
