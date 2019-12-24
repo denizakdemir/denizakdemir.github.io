@@ -7,40 +7,34 @@ redirect_from:
   - /resume
 ---
 
-{% include base_path %}
 
-0pt
+Deniz Akdemir, PhD
 
-Deniz Akdemir, PhD\
-\
+00-1-607-262-6875
 
-00-1-607-262-6875\
-deniz.akdemir.work\@gmail.com
+<deniz.akdemir.work@gmail.com>
 
-### []{#x1-1000} {#section .sectionHead}
-
-::: {.centerline}
-PROFESSIONAL EXPERIENCE
-:::
+### PROFESSIONAL EXPERIENCE
 
 \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
 
-[Statistical Consulting ]{.pbklo7t-}November 2017 -- Present\
+[Statistical Consulting ] November 2017 -- Present
+
 Cornell Statistical Consulting Center, Cornell University, Ithaca, NY
 
 -   Statistical consulting for researchers at the university.
 -   Preparation and presentation of statistics workshops.
 -   Administrative work.
 
-[Research Associate ]{.pbklo7t-}January 2017 -- July 2017\
+[Research Associate ] January 2017 -- July 2017
 Department of Epidemiology and Biostatistics, Michigan State University,
 East Lansing, MI
 
 -   Research in statistical genetics, mixed models, machine learning.
 -   Preparation of statistical software, data analysis.
 
-[Postdoctoral Associate - Research Associate ]{.pbklo7t-}June 2011 --
-December 2016\
+[Postdoctoral Associate - Research Associate ] June 2011 --
+December 2016
 Department of Plant Breeding and Genetics, Cornell University, Ithaca,
 NY
 
@@ -49,7 +43,7 @@ learning.
 -   Supervision of master and doctorate students.
 -   Preparation of statistical software, data analysis.
 
-[Visiting Assistant Professor ]{.pbklo7t-}August 2010 -- June 2011\
+[Visiting Assistant Professor ] August 2010 -- June 2011
 Department of Statistics and Actuarial Science, University of Central
 Florida, Orlando, FL
 
@@ -58,7 +52,7 @@ Theoretical Statistics I and II (STA 6326 and STA 6327), Applied
 Time Series Analysis (STA 6857), Nonparametric Statistics (STA
 4502).
 
-[Visiting Assistant Professor ]{.pbklo7t-}August 2009 -- July 2010\
+[Visiting Assistant Professor ] August 2009 -- July 2010
 Ohio Northern University, Ada, OH
 
 -   Teaching Responsibilities: Statistics for Professionals I-II
@@ -68,7 +62,7 @@ Ohio Northern University, Ada, OH
 -   Additional departmental activities like working on syllabi for
 quarter-semester transition, attending faculty meetings.
 
-[Teaching Assistant ]{.pbklo7t-}2003--2009\
+[Teaching Assistant ] 2003--2009
 Department of Mathematics & Statistics, Bowling Green State University,
 Bowling Green, OH
 
@@ -76,7 +70,8 @@ Bowling Green, OH
 Algebra I-II, Pre-Calculus. Worked at the statistical consulting
 center of the university.
 
-[Assistant Statistician ]{.pbklo7t-}2001--2003\
+[Assistant Statistician ] 2001--2003
+
 National Income Division, State Institute of Statistics, Ankara, Turkey
 
 -   Sample design, selection; data collection, processing, estimation
@@ -84,11 +79,8 @@ and analysis, dissemination of results and post survey evaluations.
 -   Government statistics, national income accounts, compilation of
 input-output and supply-use tables.
 
-### []{#x1-2000} {#section-1 .sectionHead}
+### RESEARCH INTERESTS
 
-::: {.centerline}
-RESEARCH INTERESTS
-:::
 
 -   Statistical and quantitative genetics.
 -   Genomic prediction, selection, GWAS, statistical-quantitative
@@ -100,11 +92,7 @@ parsimonious models for high dimensional data analysis; model
 selection, computational statistics.
 -   Survey sampling; experimental design and analysis.
 
-### []{#x1-3000} {#section-2 .sectionHead}
-
-::: {.centerline}
-TEACHING INTERESTS
-:::
+### TEACHING INTERESTS
 
 \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
 
@@ -112,45 +100,49 @@ Linear models, Applied statistics, Statistical theory, Statistical
 genetics, Multivariate statistics-Mixed models, Nonparametric
 statistics, Data mining, Genomic prediction and association.
 
-### []{#x1-4000} {#section-3 .sectionHead}
+### EDUCATION
 
-::: {.centerline}
-EDUCATION
-:::
+[Postdoctoral], Statistical genetics
 
-[Postdoctoral]{.pbklo7t-}, Statistical genetics\
-Cornell University, Ithaca, NY 2011-2016\
+Cornell University, Ithaca, NY 2011-2016
+
 Advisor: Jean Luc Jannink
 
-[Doctorate]{.pbklo7t-}, Statistics\
-Bowling Green State University, Bowling Green, OH May 2009\
+[Doctorate], Statistics
+
+Bowling Green State University, Bowling Green, OH May 2009
+
 Dissertation title: "A Class of Skewed Distributions and Inferential
-Issues".\
+Issues".
+
 Advisor: Prof. Arjun K. Gupta
 
-[Master of Arts]{.pbklo7t-}, Applied Statistics\
-Bowling Green State University, Bowling Green, OH 2004\
+[Master of Arts], Applied Statistics
 
-[Master of Science]{.pbklo7t-}, Statistics\
-Middle East Technical University, Ankara, Turkey 2003\
+Bowling Green State University, Bowling Green, OH 2004
 
-[Bachelor of Arts]{.pbklo7t-}, Business Administration 1999\
-Middle East Technical University, Ankara, Turkey\
 
-[Additional Training]{.pbklo7t-}:\
-STEM teaching workshops,\
-Introduction to using HPCC,\
-Parallel computing on HPCC,\
-Genotyping-by-sequencing (GBS) workshop,\
-Advanced Predictive Modeling Using SAS Enterprise Miner,\
-Text Content Categorization Using SAS,\
+[Master of Science], Statistics
+
+Middle East Technical University, Ankara, Turkey 2003
+
+[Bachelor of Arts], Business Administration 1999
+
+Middle East Technical University, Ankara, Turkey
+
+
+[Additional Training]:
+
+STEM teaching workshops,
+Introduction to using HPCC,
+Parallel computing on HPCC,
+Genotyping-by-sequencing (GBS) workshop,
+Advanced Predictive Modeling Using SAS Enterprise Miner,
+Text Content Categorization Using SAS,
 National Accounts Statistics in Practice.
 
-### []{#x1-5000} {#section-4 .sectionHead}
+### SELECTED PUBLICATIONS
 
-::: {.centerline}
-SELECTED PUBLICATIONS
-:::
 
 -   D Akdemir, J Isidro-Snchez - Design of training populations for
 selective phenotyping in genomic prediction - Scientiﬁc reports,
@@ -209,21 +201,15 @@ Algebraic Statistics, 2011
 -   Deniz Akdemir, Arjun K. Gupta "A Matrix Variate Skew Distribution,"
 European Journal of Pure and Applied Mathematics, April 2010
 
-### []{#x1-6000} {#section-5 .sectionHead}
+### COMPUTER SKILLS
 
-::: {.centerline}
-COMPUTER SKILLS
-:::
 
 \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
 
 Extensive experience with R, C++, MATLAB, SAS, ASREML, JMP.
 
-### []{#x1-7000} {#section-6 .sectionHead}
+### SOFTWARE
 
-::: {.centerline}
-SOFTWARE
-:::
 
 -   EMMREML: Fitting mixed models with known covariance structures, R
 package, version 3.1
@@ -234,11 +220,8 @@ package, version 4.1
 "Eﬃcient Breeding by Genomic Mating," Frontiers in Genetics, 2016,,
 R package, version 1.2
 
-### []{#x1-8000} {#section-7 .sectionHead}
+### SAMPLE PRESENTATIONS
 
-::: {.centerline}
-SAMPLE PRESENTATIONS
-:::
 
 -   "Operations Research in Plant Breeding Workshop", Cornell
 University, Ithaca, NY, USA, May 2019
@@ -270,42 +253,20 @@ Probability and Statistics, Istanbul, Turkey, July 2012
 -   "Patterns in Statistics," Ninth Annual Math Awareness Day, Ohio
 Northern University, Ada, OH, April 2010
 
-### []{#x1-9000} {#section-8 .sectionHead}
-
-::: {.centerline}
-PEER REVIEW WORK
-:::
+### PEER REVIEW WORK
 
 \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
 
 G3, Crop Science, Heredity, Journal of Multivariate Analysis,
 Biostatistics, Genetics, Theoretical and Applied Genetics, etc, \...
 
-### []{#x1-10000} {#section-9 .sectionHead}
+### Other Interests
 
-::: {.centerline}
-Other Interests
-:::
 
 I have a 11 year old daughter, she continually amazes me and is a great
 pleasure. I like to play guitar, listen to music and attend art events.
 I am in love with nature and love long hikes. I also have an habit of
 going to the libraries and checking out books regularly.
 
-### []{#x1-11000} {#section-10 .sectionHead}
 
-::: {.centerline}
-REFERENCES
-:::
-
--   Gupta, Arjun K.; (Professor, Bowling Green State University) phone:
-419-372-2820, e-mail: gupta\@bgsu.edu.
--   Julio Isidro Sanchez; (Professor, University College Dublin,
-Ireland) phone: 00 353 1 7167527, e-mail: j.isidro\@ucd.ie
--   Mark E. Sorrells; Post Doctoral Advisor, Department Chair, Plant
-Breeding and Genetics, Cornell University) phone: 607-255-2180,
-e-mail: mes12\@cornell.edu.
--   Nickerson, David M.; (Department Chair, Professor, University of
-Central Florida) phone: 407-823-5528, e-mail:
-david.nickerson\@ucf.edu.
 
