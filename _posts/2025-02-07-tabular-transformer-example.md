@@ -250,7 +250,7 @@ Clinical data often requires:
 ```python
 import numpy as np
 # Remove columns that uniquely identify an encounter/patient, since they do not help generalization.
-df = df.drop(columns=['encounter_id', 'patient_nbr'])
+df = df.drop(columns=['encounter_id', 'patient_nbr', 'admission_type_id',	'discharge_disposition_id',	'admission_source_id'])
 
 # Identify categorical vs numeric columns
 cat_cols = [col for col in df.columns if df[col].dtype == 'object']
@@ -530,7 +530,7 @@ print(model)
           )
         )
       )
-      (fc1): Linear(in_features=1195, out_features=128, bias=True)
+      (fc1): Linear(in_features=1192, out_features=128, bias=True)
       (fc2): Linear(in_features=128, out_features=2, bias=True)
       (dropout): Dropout(p=0.1, inplace=False)
     )
@@ -562,7 +562,7 @@ test_loader = DataLoader(test_dataset, batch_size=batch_size)
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
-epochs = 5
+epochs = 5 # increase this value for better results check convergence.
 for epoch in range(1, epochs + 1):
     model.train()
     running_loss = 0.0
@@ -588,10 +588,12 @@ for epoch in range(1, epochs + 1):
 print("Training complete.")
 ```
 
-    Epoch 1/5 - Loss: 0.0072, Accuracy: 0.9974
-    Epoch 2/5 - Loss: 0.0000, Accuracy: 1.0000
-    Epoch 3/5 - Loss: 0.0000, Accuracy: 1.0000
-    Epoch 4/5 - Loss: 0.0000, Accuracy: 1.0000
+    Epoch 1/5 - Loss: 0.0527, Accuracy: 0.9904
+    Epoch 2/5 - Loss: 0.0124, Accuracy: 1.0000
+    Epoch 3/5 - Loss: 0.0050, Accuracy: 1.0000
+    Epoch 4/5 - Loss: 0.0019, Accuracy: 1.0000
+    Epoch 5/5 - Loss: 0.0002, Accuracy: 1.0000
+    Training complete.
 
 
 ### Test Evaluation
@@ -684,15 +686,15 @@ xgb_preds_binary = (xgb_preds >= 0.5).astype(int)
 print(classification_report(y_test_xgb, xgb_preds_binary, digits=4))
 ```
 
-    XGBoost Test ROC AUC: 0.6854
+    XGBoost Test ROC AUC: 0.6543
                   precision    recall  f1-score   support
     
-               0     0.8891    0.9983    0.9406     18069
-               1     0.5373    0.0158    0.0306      2285
+               0     0.8887    0.9987    0.9405     18069
+               1     0.5102    0.0109    0.0214      2285
     
-        accuracy                         0.8880     20354
-       macro avg     0.7132    0.5070    0.4856     20354
-    weighted avg     0.8496    0.8880    0.8384     20354
+        accuracy                         0.8878     20354
+       macro avg     0.6995    0.5048    0.4810     20354
+    weighted avg     0.8462    0.8878    0.8373     20354
     
 
 
@@ -706,7 +708,7 @@ Our results on this dataset are:
   - Classification report shows 100% precision/recall for both classes.
 
 - **XGBoost**:
-  - Test ROC AUC: **0.6854**
+  - Test ROC AUC: **0.6543**
   - Accuracy: ~0.8880
   - Imbalanced handling of positives (class 1) suggests a low recall for `<30`.
 
