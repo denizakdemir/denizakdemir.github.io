@@ -1,27 +1,15 @@
-# Site settings
-title: "My Awesome Blog"                             # Title of your blog
-description: "Insights on technology, coding, and life" # A brief description of your blog's purpose
-url: "https://yourusername.github.io"                # Your website's URL
-baseurl: ""                                          # Leave empty unless hosting under a subpath
+title: "Professional & Personal Blog"
+description: "Insights on technology, coding, and life"
+theme: minima
 
-# Author details
-author:
-  name: "Your Name"
-  email: "your.email@example.com"
-
-# Theme and plugins
-theme: minima                                         # Using the minima theme for a clean design
 plugins:
-  - jekyll-feed                                       # Generates an Atom feed for your posts
-  - jekyll-seo-tag                                    # Improves SEO with meta tags
+  - jekyll-feed
+  - jekyll-seo-tag
 
-# Markdown processing
-markdown: kramdown                                  # Preferred Markdown processor
-highlighter: rouge                                  # Syntax highlighting for code blocks
+# Enables local SCSS overrides
+markdown: kramdown
+highlighter: rouge
 
-# Permalink structure for SEO-friendly URLs
-permalink: /:year/:month/:day/:title/
-
-# Additional configuration options
-paginate: 5                                         # Number of posts per page (if pagination is implemented)
-timezone: "UTC"                                     # Set the site's timezone
+# This tells Jekyll where to find your custom Sass partials
+sass:
+  sass_dir: _sass
