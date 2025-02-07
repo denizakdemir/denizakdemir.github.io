@@ -16,3 +16,21 @@ _site/
 # counterproductive to check this file into the repository.
 # Details at https://github.com/github/pages-gem/issues/768
 Gemfile.lock
+
+
+# notebooks folder and its content
+notebooks/
+
+# any python cache files, py files, and ipynb checkpoints
+*.pyc
+*.py
+.ipynb_checkpoints/
+
+# virtual environment or conda environment
+venv/
+.venv/
+env/
+.conda/
+
+# data folder and its content
+data/
