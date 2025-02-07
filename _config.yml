@@ -1,3 +1,42 @@
+# Site Settings
+title: "My Tech Insights"
+description: "A refined blog built with GitHub Pages and Jekyll."
+author: "Your Name"
+email: "your.email@example.com"
+
+# GitHub Pages Theme
 theme: minima
-title: My Blog
-description: Blogging with GitHub Pages
+
+# URL Structure
+# (Leave 'url' blank to let GitHub Pages auto-detect your base URL.)
+# url: "https://yourusername.github.io"
+baseurl: ""
+
+# Markdown Configuration
+markdown: kramdown
+kramdown:
+  input: GFM
+
+# Plugins (GitHub Pages supports these official plugins)
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Permalinks
+permalink: /:categories/:year/:month/:day/:title/
+
+# Pagination (Optional: if you expect many posts)
+paginate: 5
+paginate_path: "/page:num"
+
+# Social (Optional)
+twitter_username: your_twitter_handle
+github_username: yourusername
+linkedin: your-linkedin-profile
+
+# Build Settings
+exclude:
+  - "README.md"
+  - "Gemfile"
+  - "Gemfile.lock"
