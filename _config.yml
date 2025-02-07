@@ -1,42 +1,27 @@
-# Site Settings
-title: "My Tech Insights"
-description: "A refined blog built with GitHub Pages and Jekyll."
-author: "Your Name"
-email: "your.email@example.com"
+# Site settings
+title: "My Awesome Blog"                             # Title of your blog
+description: "Insights on technology, coding, and life" # A brief description of your blog's purpose
+url: "https://yourusername.github.io"                # Your website's URL
+baseurl: ""                                          # Leave empty unless hosting under a subpath
 
-# GitHub Pages Theme
-theme: minima
+# Author details
+author:
+  name: "Your Name"
+  email: "your.email@example.com"
 
-# URL Structure
-# (Leave 'url' blank to let GitHub Pages auto-detect your base URL.)
-# url: "https://yourusername.github.io"
-baseurl: ""
-
-# Markdown Configuration
-markdown: kramdown
-kramdown:
-  input: GFM
-
-# Plugins (GitHub Pages supports these official plugins)
+# Theme and plugins
+theme: minima                                         # Using the minima theme for a clean design
 plugins:
-  - jekyll-feed
-  - jekyll-sitemap
-  - jekyll-seo-tag
+  - jekyll-feed                                       # Generates an Atom feed for your posts
+  - jekyll-seo-tag                                    # Improves SEO with meta tags
 
-# Permalinks
-permalink: /:categories/:year/:month/:day/:title/
+# Markdown processing
+markdown: kramdown                                  # Preferred Markdown processor
+highlighter: rouge                                  # Syntax highlighting for code blocks
 
-# Pagination (Optional: if you expect many posts)
-paginate: 5
-paginate_path: "/page:num"
+# Permalink structure for SEO-friendly URLs
+permalink: /:year/:month/:day/:title/
 
-# Social (Optional)
-twitter_username: your_twitter_handle
-github_username: yourusername
-linkedin: your-linkedin-profile
-
-# Build Settings
-exclude:
-  - "README.md"
-  - "Gemfile"
-  - "Gemfile.lock"
+# Additional configuration options
+paginate: 5                                         # Number of posts per page (if pagination is implemented)
+timezone: "UTC"                                     # Set the site's timezone
