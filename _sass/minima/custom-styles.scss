@@ -1,0 +1,28 @@
+/* Example: reduce page title size, remove repeated text, adjust colors */
+
+/* 1. Adjust the site title font size */
+.site-title {
+  font-size: 1.75rem; /* default is 2.25rem */
+  font-weight: 700;   /* bolder text */
+}
+
+/* 2. Hide the site.description if you prefer a cleaner header */
+.site-description {
+  display: none;
+}
+
+/* 3. Tweak main content width and color scheme */
+.page-content {
+  max-width: 700px;   /* narrower content area */
+  margin: 0 auto;
+  color: #333;
+}
+
+/* 4. Modify link appearance */
+a {
+  color: #007acc;
+}
+a:hover {
+  color: #005ea3;
+  text-decoration: underline;
+}
