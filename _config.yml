@@ -1,6 +1,6 @@
 title: "Professional & Personal Blog"
 description: "Insights on technology, coding, and life"
-theme: minima
+theme: jekyll-theme-cayman
 
 plugins:
   - jekyll-feed
