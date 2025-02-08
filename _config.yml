@@ -2,6 +2,21 @@ title: "Professional & Personal Blog"
 description: "Insights on technology, coding, and life"
 theme: minima
 
+# Author information
+author:
+  name: Deniz Akdemir
+  email: deniz.akdemir.work@gmail.com
+# Show author and date information by default
+defaults:
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: post
+      author: Deniz Akdemir
+      show_date: true
+
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
