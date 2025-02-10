@@ -1,2 +1,2 @@
 # denizakdemir.github.io
-deniz akdemir professional and personal blogs
+Deniz Akdemir professional and personal blogs
