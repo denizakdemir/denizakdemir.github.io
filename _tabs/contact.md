@@ -25,7 +25,7 @@ order: 4
   </div>
 
   <div class="text-center">
-    <button type="submit" class="btn btn-secondary">Send Message</button>
+    <button type="submit" style="background-color: #6c757d; color: white;">Send Message</button>
   </div>
 </form>
 
