@@ -218,6 +218,8 @@ exclude:
   - purgecss.js
   - rollup.config.js
   - "package*.json"
+  - notebooks
+  - _src
 
 jekyll-archives:
   enabled: [categories, tags]
