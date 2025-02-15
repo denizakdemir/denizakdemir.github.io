@@ -25,3 +25,8 @@ package-lock.json
 # Misc
 _sass/vendors
 assets/js/dist
+
+# virtualenv, vscode, and python
+.vscode
+.virtualenv
+.venv
