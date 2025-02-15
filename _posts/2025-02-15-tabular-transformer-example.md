@@ -1,7 +1,7 @@
 ---
 title: Tabular Transformers for Clinical Biostatistics Data
-date: 2025-02-15 12:00:00 +0000
 author: Deniz Akdemir
+date: 2025-02-15 12:00:00 +0000
 categories: [Blogging, Tutorial]
 tags: [Tabular Transformers, Biostatistics, PyTorch, XGBoost, Data Preprocessing, AI, ML]
 render_with_liquid: false
@@ -16,7 +16,7 @@ This notebook demonstrates how to apply **Tabular Transformers** to a clinical b
 2. Implement a **Tabular Transformer** in PyTorch.
 3. Use a **large clinical dataset** (the Diabetes 130-US Hospitals dataset) as a realistic case study.
 4. Showcase preprocessing (handling missing values, encoding categorical data, scaling numeric features).
-5. Compare performance of the Tabular Transformer with **XGBoost**.
+5. Compare the performance of the Tabular Transformer with **XGBoost**.
 6. Explain how to convert this Jupyter Notebook to a static site (e.g., via GitHub Pages).
 
 
