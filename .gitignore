@@ -30,3 +30,11 @@ assets/js/dist
 .vscode
 .virtualenv
 .venv
+
+# data folder
+data/
+data/*
+
+# html and md files in notebook folder
+notebooks/*.html
+notebooks/*.md
