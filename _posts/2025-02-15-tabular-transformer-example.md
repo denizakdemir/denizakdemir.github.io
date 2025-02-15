@@ -1,5 +1,4 @@
 ---
-layout: default
 title: Tabular Transformers for Clinical Biostatistics Data
 date: 2025-02-15 12:00:00 +0000
 author: Deniz Akdemir
