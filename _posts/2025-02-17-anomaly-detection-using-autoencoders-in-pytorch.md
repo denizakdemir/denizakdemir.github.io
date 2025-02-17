@@ -1,7 +1,7 @@
 ---
 title: Anomaly Detection using Autoencoders in PyTorch
 author: Deniz Akdemir
-date: 2025-02-17 12:00:00 +0000
+date: 2025-02-17 12:10:00 +0000
 categories: [Machine Learning, Tutorial]
 tags: [Tabular Transformers, Biostatistics, PyTorch, Anomaly Detection, Data Preprocessing, AI, ML]
 render_with_liquid: false
