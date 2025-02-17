@@ -2,7 +2,7 @@
 title: Tabular Transformers for Clinical Biostatistics Data V2
 author: Deniz Akdemir
 date: 2025-02-17 12:00:00 +0000
-categories: [Blogging, Tutorial]
+categories: [ML, AI, Tutorial]
 tags: [Tabular Transformers, Biostatistics, PyTorch, XGBoost, Data Preprocessing, AI, ML]
 render_with_liquid: false
 ---
