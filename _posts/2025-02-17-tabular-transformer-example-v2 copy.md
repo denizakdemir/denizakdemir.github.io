@@ -1,12 +1,11 @@
 ---
-title: Tabular Transformers for Clinical Biostatistics Data
+title: Tabular Transformers for Clinical Biostatistics Data V2
 author: Deniz Akdemir
-date: 2025-02-15 12:00:00 +0000
-categories: [Blogging, Tutorial]
+date: 2025-02-17 12:00:00 +0000
+categories: [Machine Learning, Tutorial]
 tags: [Tabular Transformers, Biostatistics, PyTorch, XGBoost, Data Preprocessing, AI, ML]
 render_with_liquid: false
 ---
-
 
 
 This notebook demonstrates how to apply **Tabular Transformers** to a clinical biostatistics dataset with a mix of numerical and categorical features, some of which contain missing values. The major steps are:
@@ -15,7 +14,7 @@ This notebook demonstrates how to apply **Tabular Transformers** to a clinical b
 2. Implement a **Tabular Transformer** in PyTorch.
 3. Use a **large clinical dataset** (the Diabetes 130-US Hospitals dataset) as a realistic case study.
 4. Showcase preprocessing (handling missing values, encoding categorical data, scaling numeric features).
-5. Compare the performance of the Tabular Transformer with **XGBoost**.
+5. Compare performance of the Tabular Transformer with **XGBoost**.
 6. Explain how to convert this Jupyter Notebook to a static site (e.g., via GitHub Pages).
 
 
@@ -69,7 +68,7 @@ df.head(5)  # to inspect the first 5 rows
     Columns: ['encounter_id', 'patient_nbr', 'race', 'gender', 'age', 'weight', 'admission_type_id', 'discharge_disposition_id', 'admission_source_id', 'time_in_hospital'] ...
 
 
-    /var/folders/7z/7gnwr49s6hl4pp9j5dcmgns80000gn/T/ipykernel_32958/734993790.py:4: DtypeWarning: Columns (10) have mixed types. Specify dtype option on import or set low_memory=False.
+    /var/folders/7z/7gnwr49s6hl4pp9j5dcmgns80000gn/T/ipykernel_27202/734993790.py:4: DtypeWarning: Columns (10) have mixed types. Specify dtype option on import or set low_memory=False.
       df = pd.read_csv('../data/diabetes+130-us+hospitals+for+years+1999-2008/diabetic_data.csv', na_values=['?', 'None', 'Unknown/Invalid', ' '])
 
 
@@ -247,7 +246,6 @@ df.head(5)  # to inspect the first 5 rows
 
 The dataset has about 100k rows and 50 columns. The `readmitted` variable can be `"NO"`, `"<30"`, or `">30"`. We'll define the target as **1** if `<30`, else **0**.
 
-
 ## Preprocessing Techniques
 
 Clinical data often requires:
@@ -258,8 +256,22 @@ Clinical data often requires:
 
 ```python
 import numpy as np
+# ['encounter_id', 'patient_nbr', 'race', 'gender', 'age', 'weight', 'admission_type_id', 'discharge_disposition_id', 'admission_source_id', 'time_in_hospital', 'payer_code', 'medical_specialty', 'num_lab_procedures', 'num_procedures', 'num_medications', 'number_outpatient', 'number_emergency', 'number_inpatient', 'diag_1', 'diag_2', 'diag_3', 'number_diagnoses', 'max_glu_serum', 'A1Cresult', 'metformin', 'repaglinide', 'nateglinide', 'chlorpropamide', 'glimepiride', 'acetohexamide', 'glipizide', 'glyburide', 'tolbutamide', 'pioglitazone', 'rosiglitazone', 'acarbose', 'miglitol', 'troglitazone', 'tolazamide', 'examide', 'citoglipton', 'insulin', 'glyburide-metformin', 'glipizide-metformin', 'glimepiride-pioglitazone', 'metformin-rosiglitazone', 'metformin-pioglitazone', 'change', 'diabetesMed', 'readmitted']
+
 # Remove columns that uniquely identify an encounter/patient, since they do not help generalization.
 df = df.drop(columns=['encounter_id', 'patient_nbr', 'admission_type_id',	'discharge_disposition_id',	'admission_source_id'])
+# drop columns that could lead to data leakage
+df = df.drop(columns=['number_outpatient', 'number_emergency', 'number_inpatient'])
+df = df.drop(columns=['payer_code', 'medical_specialty'])
+# drop columns with high cardinality
+df = df.drop(columns=['diag_1', 'diag_2', 'diag_3'])
+# drop categorical columns with more than 10 unique values
+dropcatcols=[]
+for col in df.select_dtypes(include='object').columns:
+    if len(df[col].unique()) > 10:
+        dropcatcols.append(col)
+
+df = df.drop(columns=dropcatcols)
 
 # Identify categorical vs numeric columns
 cat_cols = [col for col in df.columns if df[col].dtype == 'object']
@@ -288,7 +300,6 @@ print("Handled missing values.")
 We use `LabelEncoder` to map categories to integer indices, which will then be embedded in the Transformer.
 
 
-
 ```python
 from sklearn.preprocessing import LabelEncoder
 
@@ -309,19 +320,6 @@ print("Example classes for 'gender':", label_encoders['gender'].classes_)
 ### Scaling Numerical Data
 Neural networks often benefit from standardized numeric features.
 
-
-```python
-from sklearn.preprocessing import StandardScaler
-
-scaler = StandardScaler()
-df[num_cols] = scaler.fit_transform(df[num_cols])
-
-print("Scaled numeric features.")
-```
-
-    Scaled numeric features.
-
-
 ## Implementation of a Tabular Transformer
 
 Below is a basic **PyTorch** implementation of a Tabular Transformer:
@@ -339,6 +337,8 @@ We split into training and testing sets, then convert to PyTorch tensors.
 
 ```python
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
 import torch
 
 # Convert readmitted to a binary label: 1 if <30, 0 otherwise.
@@ -347,6 +347,11 @@ code_for_lt30 = target_encoder.transform(['<30'])[0]
 df['readmitted'] = (df['readmitted'] == code_for_lt30).astype(int)
 
 train_df, test_df = train_test_split(df, test_size=0.2, random_state=42)
+
+scaler = StandardScaler()
+train_df[num_cols] = scaler.fit_transform(train_df[num_cols])
+test_df[num_cols] = scaler.transform(test_df[num_cols])
+print("Scaled numeric features.")
 
 X_train_cat = train_df[cat_cols].values
 X_train_num = train_df[num_cols].values.astype('float32')
@@ -368,6 +373,7 @@ y_test_t = torch.tensor(y_test, dtype=torch.long)
 print("Data prepared for PyTorch.")
 ```
 
+    Scaled numeric features.
     Data prepared for PyTorch.
 
 
@@ -379,14 +385,12 @@ print(train_df['readmitted'].value_counts())
 print(test_df['readmitted'].value_counts())
 ```
 
-    readmitted
     0    72340
     1     9072
-    Name: count, dtype: int64
-    readmitted
+    Name: readmitted, dtype: int64
     0    18069
     1     2285
-    Name: count, dtype: int64
+    Name: readmitted, dtype: int64
 
 
 ### Define the Tabular Transformer in PyTorch
@@ -506,26 +510,52 @@ print(model)
       (cat_embeddings): ModuleList(
         (0): Embedding(6, 32)
         (1): Embedding(3, 32)
-        (2-3): 2 x Embedding(10, 32)
-        (4): Embedding(18, 32)
-        (5): Embedding(73, 32)
-        (6): Embedding(717, 32)
-        (7): Embedding(749, 32)
-        (8): Embedding(790, 32)
-        (9-15): 7 x Embedding(4, 32)
-        (16): Embedding(2, 32)
-        (17-18): 2 x Embedding(4, 32)
+        (2): Embedding(10, 32)
+        (3): Embedding(10, 32)
+        (4): Embedding(4, 32)
+        (5): Embedding(4, 32)
+        (6): Embedding(4, 32)
+        (7): Embedding(4, 32)
+        (8): Embedding(4, 32)
+        (9): Embedding(4, 32)
+        (10): Embedding(4, 32)
+        (11): Embedding(2, 32)
+        (12): Embedding(4, 32)
+        (13): Embedding(4, 32)
+        (14): Embedding(2, 32)
+        (15): Embedding(4, 32)
+        (16): Embedding(4, 32)
+        (17): Embedding(4, 32)
+        (18): Embedding(4, 32)
         (19): Embedding(2, 32)
-        (20-23): 4 x Embedding(4, 32)
-        (24): Embedding(2, 32)
-        (25): Embedding(3, 32)
-        (26-27): 2 x Embedding(1, 32)
-        (28-29): 2 x Embedding(4, 32)
-        (30-36): 7 x Embedding(2, 32)
+        (20): Embedding(3, 32)
+        (21): Embedding(1, 32)
+        (22): Embedding(1, 32)
+        (23): Embedding(4, 32)
+        (24): Embedding(4, 32)
+        (25): Embedding(2, 32)
+        (26): Embedding(2, 32)
+        (27): Embedding(2, 32)
+        (28): Embedding(2, 32)
+        (29): Embedding(2, 32)
+        (30): Embedding(2, 32)
+        (31): Embedding(2, 32)
       )
       (transformer): TransformerEncoder(
         (layers): ModuleList(
-          (0-1): 2 x TransformerEncoderLayer(
+          (0): TransformerEncoderLayer(
+            (self_attn): MultiheadAttention(
+              (out_proj): NonDynamicallyQuantizableLinear(in_features=32, out_features=32, bias=True)
+            )
+            (linear1): Linear(in_features=32, out_features=128, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+            (linear2): Linear(in_features=128, out_features=32, bias=True)
+            (norm1): LayerNorm((32,), eps=1e-05, elementwise_affine=True)
+            (norm2): LayerNorm((32,), eps=1e-05, elementwise_affine=True)
+            (dropout1): Dropout(p=0.1, inplace=False)
+            (dropout2): Dropout(p=0.1, inplace=False)
+          )
+          (1): TransformerEncoderLayer(
             (self_attn): MultiheadAttention(
               (out_proj): NonDynamicallyQuantizableLinear(in_features=32, out_features=32, bias=True)
             )
@@ -539,14 +569,10 @@ print(model)
           )
         )
       )
-      (fc1): Linear(in_features=1192, out_features=128, bias=True)
+      (fc1): Linear(in_features=1029, out_features=128, bias=True)
       (fc2): Linear(in_features=128, out_features=2, bias=True)
       (dropout): Dropout(p=0.1, inplace=False)
     )
-
-
-    /Users/denizakdemir/Dropbox/denizakdemirGithub/.venv/lib/python3.12/site-packages/torch/nn/modules/transformer.py:385: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.self_attn.batch_first was not True(use batch_first for better inference performance)
-      warnings.warn(
 
 
 ## Model Training and Evaluation
@@ -597,11 +623,11 @@ for epoch in range(1, epochs + 1):
 print("Training complete.")
 ```
 
-    Epoch 1/5 - Loss: 0.0527, Accuracy: 0.9904
-    Epoch 2/5 - Loss: 0.0124, Accuracy: 1.0000
-    Epoch 3/5 - Loss: 0.0050, Accuracy: 1.0000
-    Epoch 4/5 - Loss: 0.0019, Accuracy: 1.0000
-    Epoch 5/5 - Loss: 0.0002, Accuracy: 1.0000
+    Epoch 1/5 - Loss: 0.0077, Accuracy: 0.9975
+    Epoch 2/5 - Loss: 0.0000, Accuracy: 1.0000
+    Epoch 3/5 - Loss: 0.0000, Accuracy: 1.0000
+    Epoch 4/5 - Loss: 0.0000, Accuracy: 1.0000
+    Epoch 5/5 - Loss: 0.0000, Accuracy: 1.0000
     Training complete.
 
 
@@ -668,8 +694,24 @@ import xgboost as xgb
 
 # Prepare data in DMatrices
 TARGET_COL = 'readmitted'
+# you can try upsampling the minority class but this did not improve the results in this case.
+# from sklearn.utils import resample
+
+# train_df_majority = train_df[train_df[TARGET_COL] == 0]
+# train_df_minority = train_df[train_df[TARGET_COL] == 1]
+
+# train_df_minority_upsampled = resample(train_df_minority,
+#                                         replace=True,
+#                                         n_samples=train_df_majority.shape[0],
+#                                         random_state=42)
+
+# train_df = pd.concat([train_df_majority, train_df_minority_upsampled])
+
+
+
 X_train_xgb = train_df.drop(columns=[TARGET_COL])
 y_train_xgb = train_df[TARGET_COL]
+
 X_test_xgb = test_df.drop(columns=[TARGET_COL])
 y_test_xgb = test_df[TARGET_COL]
 
@@ -684,7 +726,7 @@ params = {
     'verbosity': 0,
 }
 
-xgb_model = xgb.train(params, dtrain, num_boost_round=100)
+xgb_model = xgb.train(params, dtrain, num_boost_round=5000)
 
 # Predict and evaluate
 xgb_preds = xgb_model.predict(dtest)
@@ -695,15 +737,280 @@ xgb_preds_binary = (xgb_preds >= 0.5).astype(int)
 print(classification_report(y_test_xgb, xgb_preds_binary, digits=4))
 ```
 
-    XGBoost Test ROC AUC: 0.6543
+    XGBoost Test ROC AUC: 0.5556
                   precision    recall  f1-score   support
     
-               0     0.8887    0.9987    0.9405     18069
-               1     0.5102    0.0109    0.0214      2285
+               0     0.8879    0.9885    0.9355     18069
+               1     0.1266    0.0131    0.0238      2285
     
-        accuracy                         0.8878     20354
-       macro avg     0.6995    0.5048    0.4810     20354
-    weighted avg     0.8462    0.8878    0.8373     20354
+        accuracy                         0.8790     20354
+       macro avg     0.5072    0.5008    0.4797     20354
+    weighted avg     0.8024    0.8790    0.8332     20354
+    
+
+
+## Joint Transformer Model for Categorical and Numeric Variables
+
+In this section, we implement a variant of the Tabular Transformer that applies transformer encoding to the embedded categorical and numeric features together. This joint model projects numeric features into the same embedding space as the categorical features and then concatenates them as tokens for a unified transformer encoder. 
+
+
+```python
+class TabularTransformerJointModel(nn.Module):
+    def __init__(self, num_categories, cat_dims, num_numeric, embed_dim=32, transformer_layers=2, n_heads=4, dropout=0.1):
+        super(TabularTransformerJointModel, self).__init__()
+        self.num_categories = num_categories
+        self.num_numeric = num_numeric
+        self.embed_dim = embed_dim
+
+        # Embeddings for categorical features (with learned feature embeddings)
+        self.cat_embeddings = nn.ModuleList([
+            nn.Embedding(num_embeddings=cat_dims[i], embedding_dim=embed_dim) for i in range(num_categories)
+        ])
+        self.cat_feature_embeddings = nn.Parameter(torch.randn(num_categories, embed_dim))
+
+        # Linear layers for numeric features to project them into embedding space
+        self.num_linear = nn.ModuleList([
+            nn.Linear(1, embed_dim) for _ in range(num_numeric)
+        ])
+        self.num_feature_embeddings = nn.Parameter(torch.randn(num_numeric, embed_dim))
+
+        # Total tokens: categorical + numeric
+        total_tokens = num_categories + num_numeric
+
+        # Transformer encoder applied to all tokens
+        encoder_layer = nn.TransformerEncoderLayer(
+            d_model=embed_dim,
+            nhead=n_heads,
+            dim_feedforward=embed_dim * 4,
+            dropout=dropout
+        )
+        self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=transformer_layers)
+
+        # Classification head
+        self.fc1 = nn.Linear(total_tokens * embed_dim, 128)
+        self.fc2 = nn.Linear(128, 2)
+        self.dropout = nn.Dropout(dropout)
+
+    def forward(self, x_cat, x_num):
+        batch_size = x_cat.size(0)
+
+        # Process categorical features
+        cat_embeds = []
+        for i in range(self.num_categories):
+            emb = self.cat_embeddings[i](x_cat[:, i])  # shape: (batch_size, embed_dim)
+            emb = emb + self.cat_feature_embeddings[i]
+            cat_embeds.append(emb)
+
+        # Process numeric features
+        num_embeds = []
+        for i in range(self.num_numeric):
+            # Extract the i-th numeric feature and reshape to (batch_size, 1)
+            num_val = x_num[:, i].unsqueeze(1)
+            emb = self.num_linear[i](num_val)  # shape: (batch_size, embed_dim)
+            emb = emb + self.num_feature_embeddings[i]
+            num_embeds.append(emb)
+
+        # Concatenate embeddings from categorical and numeric features
+        tokens = cat_embeds + num_embeds  # list of length (num_categories + num_numeric)
+        tokens = torch.stack(tokens, dim=0)  # shape: (total_tokens, batch_size, embed_dim)
+
+        # Apply transformer encoder
+        transformer_out = self.transformer(tokens)  # shape: (total_tokens, batch_size, embed_dim)
+        transformer_out = transformer_out.permute(1, 0, 2).reshape(batch_size, -1)  # flatten
+
+        # Classification head
+        x = F.relu(self.fc1(transformer_out))
+        x = self.dropout(x)
+        logits = self.fc2(x)
+        return logits
+
+# Example instantiation:
+joint_model = TabularTransformerJointModel(
+    num_categories=num_categories,
+    cat_dims=cat_dims,
+    num_numeric=num_numeric,
+    embed_dim=32,
+    transformer_layers=2,
+    n_heads=4,
+    dropout=0.1
+)
+print(joint_model)
+```
+
+    TabularTransformerJointModel(
+      (cat_embeddings): ModuleList(
+        (0): Embedding(6, 32)
+        (1): Embedding(3, 32)
+        (2): Embedding(10, 32)
+        (3): Embedding(10, 32)
+        (4): Embedding(4, 32)
+        (5): Embedding(4, 32)
+        (6): Embedding(4, 32)
+        (7): Embedding(4, 32)
+        (8): Embedding(4, 32)
+        (9): Embedding(4, 32)
+        (10): Embedding(4, 32)
+        (11): Embedding(2, 32)
+        (12): Embedding(4, 32)
+        (13): Embedding(4, 32)
+        (14): Embedding(2, 32)
+        (15): Embedding(4, 32)
+        (16): Embedding(4, 32)
+        (17): Embedding(4, 32)
+        (18): Embedding(4, 32)
+        (19): Embedding(2, 32)
+        (20): Embedding(3, 32)
+        (21): Embedding(1, 32)
+        (22): Embedding(1, 32)
+        (23): Embedding(4, 32)
+        (24): Embedding(4, 32)
+        (25): Embedding(2, 32)
+        (26): Embedding(2, 32)
+        (27): Embedding(2, 32)
+        (28): Embedding(2, 32)
+        (29): Embedding(2, 32)
+        (30): Embedding(2, 32)
+        (31): Embedding(2, 32)
+      )
+      (num_linear): ModuleList(
+        (0): Linear(in_features=1, out_features=32, bias=True)
+        (1): Linear(in_features=1, out_features=32, bias=True)
+        (2): Linear(in_features=1, out_features=32, bias=True)
+        (3): Linear(in_features=1, out_features=32, bias=True)
+        (4): Linear(in_features=1, out_features=32, bias=True)
+      )
+      (transformer): TransformerEncoder(
+        (layers): ModuleList(
+          (0): TransformerEncoderLayer(
+            (self_attn): MultiheadAttention(
+              (out_proj): NonDynamicallyQuantizableLinear(in_features=32, out_features=32, bias=True)
+            )
+            (linear1): Linear(in_features=32, out_features=128, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+            (linear2): Linear(in_features=128, out_features=32, bias=True)
+            (norm1): LayerNorm((32,), eps=1e-05, elementwise_affine=True)
+            (norm2): LayerNorm((32,), eps=1e-05, elementwise_affine=True)
+            (dropout1): Dropout(p=0.1, inplace=False)
+            (dropout2): Dropout(p=0.1, inplace=False)
+          )
+          (1): TransformerEncoderLayer(
+            (self_attn): MultiheadAttention(
+              (out_proj): NonDynamicallyQuantizableLinear(in_features=32, out_features=32, bias=True)
+            )
+            (linear1): Linear(in_features=32, out_features=128, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+            (linear2): Linear(in_features=128, out_features=32, bias=True)
+            (norm1): LayerNorm((32,), eps=1e-05, elementwise_affine=True)
+            (norm2): LayerNorm((32,), eps=1e-05, elementwise_affine=True)
+            (dropout1): Dropout(p=0.1, inplace=False)
+            (dropout2): Dropout(p=0.1, inplace=False)
+          )
+        )
+      )
+      (fc1): Linear(in_features=1184, out_features=128, bias=True)
+      (fc2): Linear(in_features=128, out_features=2, bias=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+
+
+### Training the Joint Transformer Model
+
+We now train the joint model using the same training data.
+
+
+```python
+# Create new model instance
+joint_model = TabularTransformerJointModel(
+    num_categories=num_categories,
+    cat_dims=cat_dims,
+    num_numeric=num_numeric,
+    embed_dim=32,
+    transformer_layers=2,
+    n_heads=4,
+    dropout=0.1
+)
+
+# Define optimizer and loss criterion
+criterion_joint = nn.CrossEntropyLoss()
+optimizer_joint = torch.optim.Adam(joint_model.parameters(), lr=1e-3)
+
+epochs_joint = 5
+for epoch in range(1, epochs_joint + 1):
+    joint_model.train()
+    running_loss = 0.0
+    correct = 0
+    total = 0
+    for batch_cat, batch_num, batch_labels in train_loader:
+        optimizer_joint.zero_grad()
+        outputs = joint_model(batch_cat, batch_num)
+        loss = criterion_joint(outputs, batch_labels)
+        loss.backward()
+        optimizer_joint.step()
+        
+        running_loss += loss.item() * batch_cat.size(0)
+        _, predicted = torch.max(outputs, 1)
+        correct += (predicted == batch_labels).sum().item()
+        total += batch_labels.size(0)
+    epoch_loss = running_loss / total
+    epoch_acc = correct / total
+    print(f"Joint Model Epoch {epoch}/{epochs_joint} - Loss: {epoch_loss:.4f}, Accuracy: {epoch_acc:.4f}")
+
+print("Joint Model Training complete.")
+```
+
+    Joint Model Epoch 1/5 - Loss: 0.0100, Accuracy: 0.9967
+    Joint Model Epoch 2/5 - Loss: 0.0007, Accuracy: 1.0000
+    Joint Model Epoch 3/5 - Loss: 0.0006, Accuracy: 1.0000
+    Joint Model Epoch 4/5 - Loss: 0.0004, Accuracy: 1.0000
+    Joint Model Epoch 5/5 - Loss: 0.0003, Accuracy: 1.0000
+    Joint Model Training complete.
+
+
+### Joint Transformer Model Evaluation
+
+Now we evaluate the joint model on the test set.
+
+
+```python
+joint_model.eval()
+joint_correct = 0
+total = 0
+for batch_cat, batch_num, batch_labels in test_loader:
+    with torch.no_grad():
+        outputs = joint_model(batch_cat, batch_num)
+    _, predicted = torch.max(outputs, 1)
+    joint_correct += (predicted == batch_labels).sum().item()
+    total += batch_labels.size(0)
+joint_accuracy = joint_correct / total
+print(f"Joint Model Test Accuracy: {joint_accuracy:.4f}")
+
+# Compute ROC AUC for joint model
+all_outputs_joint = []
+all_labels_joint = []
+for batch_cat, batch_num, batch_labels in test_loader:
+    with torch.no_grad():
+        logits = joint_model(batch_cat, batch_num)
+        probs = F.softmax(logits, dim=1)[:, 1]
+    all_outputs_joint.extend(probs.cpu().numpy())
+    all_labels_joint.extend(batch_labels.cpu().numpy())
+
+auc_joint = roc_auc_score(all_labels_joint, all_outputs_joint)
+print(f"Joint Model Test ROC AUC: {auc_joint:.4f}")
+
+pred_classes_joint = [1 if p >= 0.5 else 0 for p in all_outputs_joint]
+print(classification_report(all_labels_joint, pred_classes_joint, digits=4))
+```
+
+    Joint Model Test Accuracy: 1.0000
+    Joint Model Test ROC AUC: 1.0000
+                  precision    recall  f1-score   support
+    
+               0     1.0000    1.0000    1.0000     18069
+               1     1.0000    1.0000    1.0000      2285
+    
+        accuracy                         1.0000     20354
+       macro avg     1.0000    1.0000    1.0000     20354
+    weighted avg     1.0000    1.0000    1.0000     20354
     
 
 
@@ -717,15 +1024,11 @@ Our results on this dataset are:
   - Classification report shows 100% precision/recall for both classes.
 
 - **XGBoost**:
-  - Test ROC AUC: **0.6543**
-  - Accuracy: ~0.8880
+  - Test ROC AUC: **0.5556**
+  - Accuracy: ~0.8790
   - Imbalanced handling of positives (class 1) suggests a low recall for `<30`.
 
-Clearly, the **Tabular Transformer** shows **perfect performance** here, which is **extraordinarily rare** in real-world scenarios. 
-
-Nevertheless, under these exact transformations and splits, the Tabular Transformer outperforms XGBoost by a wide margin. In many real scenarios, advanced boosting or carefully tuned transformers produce closer or even reversed results. 
-
-The main takeaway is that the **Transformer approach** can sometimes find hidden signals extremely effectively if the data or encoding inadvertently includes them.
+Additionally, the **Joint Transformer Model** (which applies transformer encoding jointly to both embedded categorical and numeric features) provides another perspective on how a unified tokenization scheme might work. In our demonstration, please verify that the unexpectedly high performance is not due to data leakage or implementation quirks.
 
 
 ## Conversion to Static Site (e.g., GitHub Pages)
