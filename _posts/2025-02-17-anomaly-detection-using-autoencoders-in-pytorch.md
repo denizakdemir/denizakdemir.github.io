@@ -263,13 +263,13 @@ plt.show()
 
 
     
-![png](AnomalyDetection_files/AnomalyDetection_6_0.png)
+![png](_posts/AnomalyDetection_files/AnomalyDetection_6_0.png)
     
 
 
 
     
-![png](AnomalyDetection_files/AnomalyDetection_6_1.png)
+![png](_postsAnomalyDetection_files/AnomalyDetection_6_1.png)
     
 
 
