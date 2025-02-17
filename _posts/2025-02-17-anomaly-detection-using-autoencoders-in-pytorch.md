@@ -7,7 +7,6 @@ tags: [Tabular Transformers, Biostatistics, PyTorch, Anomaly Detection, Data Pre
 render_with_liquid: false
 ---
 
-
 This notebook presents a framework for anomaly detection using autoencoders implemented in PyTorch. The approach leverages a neural network autoencoder for both dimensionality reduction and reconstruction error estimation, which in turn is used to classify data points as normal or anomalous.
 
 ## Background and Literature
@@ -200,19 +199,19 @@ print(classification_report(y_true, predictions, target_names=['Normal', 'Anomal
 
 ```
 
-
-    ---------------------------------------------------------------------------
-
-    NameError                                 Traceback (most recent call last)
-
-    Cell In[1], line 2
-          1 # Generate synthetic normal training data
-    ----> 2 np.random.seed(42)
-          3 normal_data = np.random.normal(loc=0, scale=1, size=(10000, 10))
-          5 # Create and train the AnomalyDetector
-
-
-    NameError: name 'np' is not defined
+    Detected 28 anomalies
+    Mean reconstruction error: 0.1342
+    
+    Classification Report:
+                  precision    recall  f1-score   support
+    
+          Normal       1.00      0.99      1.00      1000
+         Anomaly       0.71      1.00      0.83        20
+    
+        accuracy                           0.99      1020
+       macro avg       0.86      1.00      0.91      1020
+    weighted avg       0.99      0.99      0.99      1020
+    
 
 
 This indicates the model performs well in identifying normal instances (high recall and precision) but has slightly lower precision for anomalies while still achieving a recall of 1.00 for anomalies.
