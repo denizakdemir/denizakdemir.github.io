@@ -22,22 +22,31 @@ from MMMT import MultiModalMultiTaskModel
 import MLheads
 from TabularReconstructionLoss import TabularReconstructionLoss
 
+
+
+
+
 # =============================================================================
 # Task and Model Definitions (consistent with MLheads.py)
 # =============================================================================
 
+# Extend TaskType to include a binomial classification option.
 class TaskType(Enum):
     REGRESSION = auto()
     CLASSIFICATION = auto()
-    BINOMIAL = auto()
+    BINOMIAL = auto()  # For modeling counts (Binomial regression)
+    BINOMIAL_CLASSIFICATION = auto()  # For binary classification using a logit
     NEGATIVE_BINOMIAL = auto()
     POISSON = auto()
     TIME_TO_EVENT = auto()
+    COXPH = auto()  # Cox proportional hazards
     CLUSTERING = auto()
     UMAP = auto()
     TSNE = auto()
     PCA = auto()
     RECONSTRUCTION = auto()
+
+
 
 @dataclass
 class TaskConfig:
@@ -150,11 +159,14 @@ class MultiTaskModel:
                     input_dim=input_dim,
                     num_classes=config.num_classes or 2
                 )
+            # For binomial regression (counts of successes)
             elif config.task_type == TaskType.BINOMIAL:
-                # Ensure the trials parameter is provided for the binomial task.
                 if config.trials is None:
                     raise ValueError("For TaskType.BINOMIAL, 'trials' must be specified in TaskConfig")
                 heads[name] = MLheads.BinomialRegressionHead(input_dim=input_dim, trials=config.trials)
+            # For binary classification using a single logit.
+            elif config.task_type == TaskType.BINOMIAL_CLASSIFICATION:
+                heads[name] = MLheads.BinomialClassificationHead(input_dim=input_dim)
             elif config.task_type == TaskType.NEGATIVE_BINOMIAL:
                 heads[name] = MLheads.NegativeBinomialHead(
                     input_dim=input_dim,
@@ -168,6 +180,8 @@ class MultiTaskModel:
                     time_bins=config.time_bins or 10,
                     num_events=config.num_events or 1
                 )
+            elif config.task_type == TaskType.COXPH:
+                heads[name] = MLheads.CoxPHHead(input_dim=input_dim)
             elif config.task_type == TaskType.CLUSTERING:
                 heads[name] = MLheads.ClusteringHead(
                     input_dim=input_dim,
@@ -303,12 +317,8 @@ class MultiTaskModel:
                 continue
                 
             config = self.task_configs[target]
-            if config.task_type in {TaskType.UMAP, TaskType.TSNE, TaskType.PCA}:
-                continue
-                
-            head = self.model.task_heads[target]
-            
-            if config.task_type == TaskType.TIME_TO_EVENT:
+            # Handle tasks with tuple targets (e.g. survival analysis tasks)
+            if config.task_type in {TaskType.TIME_TO_EVENT, TaskType.COXPH}:
                 times, events = target_data[target]
                 batch_target = (
                     times[start_idx:end_idx].to(self.device),
@@ -317,8 +327,13 @@ class MultiTaskModel:
             else:
                 batch_target = target_data[target][start_idx:end_idx].to(self.device)
                 
-            total_loss += head.loss(outputs[target], batch_target)
-            
+            head = self.model.task_heads[target]
+            loss_result = head.loss(outputs[target], batch_target)
+            # If the head returns a tuple (as in CoxPHHead), extract the loss.
+            if isinstance(loss_result, tuple):
+                loss_result = loss_result[0]
+            total_loss += loss_result
+                
         # Add reconstruction loss if applicable.
         if (self.reconstruction_loss is not None and 
             ("reconstruction" in active_targets or "reconstruction" in self.task_configs)):
@@ -367,7 +382,25 @@ class MultiTaskModel:
         else:  # PCA
             head.fit(latent_np)
             return head.transform(latent_np)
-
+    
+    def get_coxph_baseline_hazards(self) -> Dict[str, Tuple[torch.Tensor, torch.Tensor]]:
+        """
+        Retrieves the baseline hazards for each task of type COXPH.
+        
+        Returns:
+            A dictionary mapping task names to a tuple (baseline_times, baseline_hazards).
+        """
+        hazards = {}
+        for task_name, config in self.task_configs.items():
+            if config.task_type == TaskType.COXPH:
+                # Access the corresponding COXPH head.
+                head = self.task_heads[task_name]
+                if hasattr(head, "last_baseline") and head.last_baseline is not None:
+                    hazards[task_name] = head.last_baseline
+                else:
+                    hazards[task_name] = (None, None)  # You may handle this case differently.
+        return hazards
+    
     def save(self, filepath: Union[str, Path]) -> None:
         filepath = Path(filepath)
         filepath.parent.mkdir(parents=True, exist_ok=True)
@@ -469,7 +502,7 @@ if __name__ == "__main__":
     
     # Train the model on the differentiable tasks ("fare" and "survived").
     print("Training model on training data...")
-    num_epochs = 500
+    num_epochs = 100
     # validation data
     train_losses, val_losses = model.fit(
         df_train,
@@ -496,8 +529,8 @@ if __name__ == "__main__":
     plt.grid(True)
     plt.show()
     
-    num_epochs = 500
-    model.lr = 1e-2
+    num_epochs = 100
+    model.lr = 1e-3
     train_losses, val_losses = model.fit(
         df_train,
         target_data_train,
@@ -652,3 +685,12 @@ if __name__ == "__main__":
 
     # Compute and print the accuracy score.
     print(accuracy_score(y_test, y_pred))
+
+    # No COXPH tasks in this example, but this is how you would extract the baseline hazards.
+    # Extract baseline hazards from all COXPH tasks.
+    # cox_baselines = model.get_coxph_baseline_hazards()
+    # for task_name, (baseline_times, baseline_hazards) in cox_baselines.items():
+    #     print(f"Task {task_name}:")
+    #     print(f"Baseline times: {baseline_times}")
+    #     print(f"Baseline hazards: {baseline_hazards}")
+

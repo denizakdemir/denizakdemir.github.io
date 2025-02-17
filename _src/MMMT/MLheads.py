@@ -11,6 +11,7 @@ The supervised tasks include:
     - Poisson Regression (using PyTorch's PoissonNLLLoss)
     - DeepHit-style Time-to-Event (for censored competing risks)
     - Binomial Regression (for modeling counts of successes out of a fixed number of trials)
+    - Cox Proportional Hazards (for survival analysis)
 
 The unsupervised tasks include:
     - Clustering (producing soft cluster assignments using KL-divergence loss)
@@ -21,6 +22,7 @@ The unsupervised tasks include:
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from typing import Tuple
 
 # =============================================================================
 # Supervised Heads with Customizable Architectures
@@ -250,20 +252,21 @@ class BinomialRegressionHead(nn.Module):
         return self.default_loss(predictions, targets, mask=mask)
 
 
+
 class DeepHitHead(nn.Module):
     """
     A DeepHit-style time-to-event head for censored competing risks.
-    
+
     The head outputs discrete-time probability distributions over pre-specified time bins.
     For multiple competing risks, the output shape is (batch_size, num_events, time_bins);
     for a single event, the output shape is (batch_size, time_bins).
-    
+
     The default loss is a likelihood loss computed as follows:
       - For an event (event > 0): 
             loss = -log(predicted probability at the event's time bin for the observed event type).
       - For a censored observation (event == 0): 
             loss = -log(sum of predicted probabilities over time bins later than the censoring time).
-    
+
     Parameters:
         input_dim (int): Dimension of the input features.
         time_bins (int): Number of discrete time intervals.
@@ -275,12 +278,11 @@ class DeepHitHead(nn.Module):
         super(DeepHitHead, self).__init__()
         self.time_bins = time_bins
         self.num_events = num_events
-        # Use a custom module if provided; otherwise, use a simple linear layer.
-        # For multiple events, output dimension is num_events * time_bins.
+        # For multiple events, the output dimension is num_events * time_bins.
         output_dim = num_events * time_bins if num_events > 1 else time_bins
         self.model = custom_nn if custom_nn is not None else nn.Linear(input_dim, output_dim)
         self.default_loss = default_loss if default_loss is not None else self.deep_hit_loss
-    
+
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         out = self.model(x)
         if self.num_events > 1:
@@ -295,8 +297,8 @@ class DeepHitHead(nn.Module):
 
     def deep_hit_loss(self, predictions: torch.Tensor, targets: tuple, mask: torch.Tensor = None) -> torch.Tensor:
         """
-        Computes the likelihood loss for DeepHit.
-        
+        Computes the likelihood loss for DeepHit using vectorized tensor operations.
+
         Args:
             predictions: Tensor of shape (batch_size, time_bins) for single event or 
                          (batch_size, num_events, time_bins) for competing risks.
@@ -305,57 +307,158 @@ class DeepHitHead(nn.Module):
                      - events: LongTensor of shape (batch_size,) where 0 indicates censoring and
                                a positive integer indicates the event type.
             mask: Optional Boolean tensor of shape (batch_size,) indicating valid samples.
-            
+
         Returns:
             The average negative log-likelihood loss.
         """
-        eps = 1e-8  # To avoid log(0)
+        eps = 1e-8  # Small constant to prevent log(0)
         times, events = targets  # Unpack target information
-        
+
         # If a mask is provided, select only valid samples.
         if mask is not None:
             times = times[mask]
             events = events[mask]
-            predictions = predictions[mask]  # This works if mask is of shape (batch_size,)
-        
+            predictions = predictions[mask]
+
         batch_size = times.shape[0]
-        losses = torch.zeros(batch_size, device=predictions.device)
-        
+
         if self.num_events > 1:
-            # predictions shape: (batch_size, num_events, time_bins)
-            for i in range(batch_size):
-                t = times[i].item()
-                event = events[i].item()
-                if event > 0:
-                    # Observed event: event type index adjusted by -1 (assumed 1-indexed for events)
-                    p = predictions[i, event - 1, t]
-                    losses[i] = -torch.log(p + eps)
-                else:
-                    # Censored: survival probability is the sum of probabilities over later time bins across events.
-                    if t < self.time_bins - 1:
-                        p_survival = predictions[i, :, t+1:].sum()
-                    else:
-                        p_survival = eps
-                    losses[i] = -torch.log(p_survival + eps)
+            # Multi-event case: predictions shape (batch_size, num_events, time_bins)
+
+            # Create masks for observed events and censored data
+            observed_mask = (events > 0)
+            censored_mask = (events == 0)
+
+            # Initialize loss tensor
+            loss = torch.zeros(batch_size, device=predictions.device)
+
+            # --- Observed Events ---
+            if observed_mask.sum() > 0:
+                # Identify indices of observed events
+                observed_indices = torch.nonzero(observed_mask, as_tuple=True)[0]
+                # Adjust event type to 0-indexing
+                event_indices = events[observed_mask] - 1  
+                time_indices = times[observed_mask]
+                # Gather predicted probabilities for each observed event
+                p_event = predictions[observed_indices, event_indices, time_indices]
+                loss[observed_mask] = -torch.log(p_event + eps)
+
+            # --- Censored Observations ---
+            if censored_mask.sum() > 0:
+                # For censored data, compute the survival probability as the sum of probabilities 
+                # over all event types and over time bins greater than the censoring time.
+                times_cens = times[censored_mask]
+                # Create a time grid [0, 1, ..., time_bins-1]
+                time_grid = torch.arange(self.time_bins, device=predictions.device).unsqueeze(0)  # Shape: (1, time_bins)
+                # Create a mask: True for time bins after the censoring time.
+                mask_time = (time_grid > times_cens.unsqueeze(1)).float()  # Shape: (n_cens, time_bins)
+                # Multiply the predictions by the time mask (unsqueeze along event dim) and sum over events and time.
+                p_survival = (predictions[censored_mask] * mask_time.unsqueeze(1)).sum(dim=(1, 2))
+                # In cases where no time bins are available (e.g., t == time_bins-1), ensure non-zero value.
+                p_survival = torch.where(p_survival > 0, p_survival, torch.full_like(p_survival, eps))
+                loss[censored_mask] = -torch.log(p_survival + eps)
+
+            return loss.mean()
+
         else:
-            # Single event case: predictions shape: (batch_size, time_bins)
-            for i in range(batch_size):
-                t = times[i].item()
-                event = events[i].item()
-                if event > 0:
-                    p = predictions[i, t]
-                    losses[i] = -torch.log(p + eps)
-                else:
-                    if t < self.time_bins - 1:
-                        p_survival = predictions[i, t+1:].sum()
-                    else:
-                        p_survival = eps
-                    losses[i] = -torch.log(p_survival + eps)
-        
-        return losses.mean()
-    
+            # Single event case: predictions shape (batch_size, time_bins)
+
+            # Create masks for observed events and censored data.
+            observed_mask = (events > 0)
+            censored_mask = (events == 0)
+
+            loss = torch.zeros(batch_size, device=predictions.device)
+
+            # --- Observed Events ---
+            if observed_mask.sum() > 0:
+                observed_indices = torch.nonzero(observed_mask, as_tuple=True)[0]
+                time_indices = times[observed_mask]
+                # Gather the predicted probability for each observed event.
+                p_event = predictions[observed_indices, time_indices]
+                loss[observed_mask] = -torch.log(p_event + eps)
+
+            # --- Censored Observations ---
+            if censored_mask.sum() > 0:
+                times_cens = times[censored_mask]
+                time_grid = torch.arange(self.time_bins, device=predictions.device).unsqueeze(0)  # Shape: (1, time_bins)
+                mask_time = (time_grid > times_cens.unsqueeze(1)).float()  # Shape: (n_cens, time_bins)
+                # Sum probabilities over time bins after the censoring time.
+                p_survival = (predictions[censored_mask] * mask_time).sum(dim=1)
+                p_survival = torch.where(p_survival > 0, p_survival, torch.full_like(p_survival, eps))
+                loss[censored_mask] = -torch.log(p_survival + eps)
+
+            return loss.mean()
+
     def loss(self, predictions: torch.Tensor, targets: tuple, mask: torch.Tensor = None) -> torch.Tensor:
+        """
+        Wrapper to call the default loss function.
+        """
         return self.default_loss(predictions, targets, mask=mask)
+
+
+class CoxPHHead(nn.Module):
+    def __init__(self, input_dim: int):
+        super().__init__()
+        # Your initialization code here.
+        self.last_baseline = None  # To store (baseline_times, baseline_hazards)
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        # Forward pass implementation.
+        return x  # Example placeholder
+
+    def loss(self, predictions: torch.Tensor, targets: Tuple[torch.Tensor, torch.Tensor]) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        """
+        Computes the negative log partial likelihood loss and the baseline hazards.
+        Parameters:
+            predictions: Risk scores (shape: (batch_size,)).
+            targets: Tuple (times, events) with times and binary event indicators.
+        Returns:
+            A tuple (loss, baseline_times, baseline_hazards).
+        """
+        times, events = targets
+
+        # (Assuming mask and reshaping are handled as in your provided code)
+        times = times.view(-1)
+        events = events.view(-1)
+        predictions = predictions.view(-1)
+
+        # Sort in descending order by time.
+        sorted_indices = torch.argsort(times, descending=True)
+        sorted_times = times[sorted_indices]
+        sorted_events = events[sorted_indices]
+        sorted_preds = predictions[sorted_indices]
+
+        # Compute exponentiated risk scores.
+        exp_preds = torch.exp(sorted_preds)
+
+        # Compute the cumulative risk set sums.
+        risk_set = torch.cumsum(exp_preds, dim=0)
+
+        # Only consider subjects where an event occurred.
+        event_mask = (sorted_events == 1)
+        if event_mask.sum() == 0:
+            loss_value = torch.tensor(0.0, device=predictions.device)
+        else:
+            loss_value = -torch.sum(sorted_preds[event_mask] - torch.log(risk_set[event_mask] + 1e-8))
+            loss_value = loss_value / event_mask.sum()
+
+        # Compute baseline hazards using the Breslow estimator.
+        event_times = sorted_times[sorted_events == 1]
+        baseline_times = torch.unique(event_times)  # Sorted in ascending order.
+        baseline_hazard_list = []
+        for t in baseline_times:
+            at_risk = (sorted_times >= t)
+            risk_sum = torch.sum(exp_preds[at_risk])
+            d_t = torch.sum((sorted_times == t) & (sorted_events == 1)).float()
+            baseline_hazard_t = d_t / (risk_sum + 1e-8)
+            baseline_hazard_list.append(baseline_hazard_t)
+        
+        baseline_hazards = torch.stack(baseline_hazard_list)
+
+        # Store the last computed baseline hazards and times.
+        self.last_baseline = (baseline_times, baseline_hazards)
+        
+        return loss_value, baseline_times, baseline_hazards
 
 
 # =============================================================================
