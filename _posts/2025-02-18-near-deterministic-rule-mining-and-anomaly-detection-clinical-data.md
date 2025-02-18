@@ -7,6 +7,7 @@ tags: [Association Rules, Data Preprocessing, ML]
 render_with_liquid: false
 ---
 
+
 This notebook contains the complete implementation and usage example of the **HierarchicalRulesExplorer** class for near-deterministic association rule discovery and anomaly detection in structured data (e.g., clinical data). 
 
 The approach combines data discretization, frequent itemset mining (using the Apriori algorithm), and rule filtering to extract highly reliable association rules. These rules can then be used to assess new data for compliance or potential anomalies.
