@@ -2,7 +2,7 @@
 title: Near-Deterministic Rule Mining and Anomaly Detection in Clinical Data
 author: Deniz Akdemir
 date: 2025-02-18 12:00:00 +0000
-categories: [Anomaly detection, Tutorial]
+categories: [Anomaly Detection, Tutorial]
 tags: [Association Rules, Data Preprocessing, ML]
 render_with_liquid: false
 ---
