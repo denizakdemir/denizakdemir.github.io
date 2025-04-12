@@ -1,69 +1,80 @@
 <!-- GitHub Repositories Section -->
 <div class="repositories-section my-5">
   <h2 class="text-center mb-4">My GitHub Repositories</h2>
-  <div id="repositories" class="repositories-container">
-    <div class="text-center">
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-      <p>Loading repositories...</p>
-    </div>
+  <div id="github-repos" class="repositories-container">
+    <p class="text-center mb-3">Loading repositories...</p>
   </div>
-  <div id="repo-error" class="text-danger text-center mt-3" style="display: none;"></div>
 </div>
 
 <script>
-async function fetchRepositories() {
-  try {
-    console.log("Fetching GitHub repositories...");
-    const username = 'denizakdemir';
-    const apiUrl = `https://api.github.com/users/${username}/repos`;
-    
-    document.getElementById('repo-error').style.display = 'none';
-    
-    const response = await fetch(apiUrl);
-    if (!response.ok) {
-      throw new Error(`GitHub API returned ${response.status}: ${response.statusText}`);
+// GitHub Repositories Loader
+document.addEventListener('DOMContentLoaded', function() {
+  const username = 'denizakdemir';
+  const reposContainer = document.getElementById('github-repos');
+  
+  // Function to format the repository HTML
+  function formatRepo(repo) {
+    return `
+      <div class="card mb-3 p-3">
+        <h3 class="h5"><a href="${repo.html_url}" target="_blank" rel="noopener">${repo.name}</a></h3>
+        <p class="mb-2">${repo.description || 'No description available'}</p>
+        <div class="small text-muted">
+          ${repo.language ? `<span class="me-3">${repo.language}</span>` : ''}
+          <span class="me-3">⭐ ${repo.stargazers_count}</span>
+          <span>🔱 ${repo.forks_count}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  // Fallback to JSONP approach (works around CORS issues)
+  function loadReposWithJSONP() {
+    const script = document.createElement('script');
+    script.src = `https://api.github.com/users/${username}/repos?callback=displayGitHubRepos&sort=updated`;
+    document.body.appendChild(script);
+  }
+  
+  // Callback for JSONP
+  window.displayGitHubRepos = function(response) {
+    if (response.data && Array.isArray(response.data)) {
+      displayRepos(response.data);
+    } else {
+      reposContainer.innerHTML = '<p class="text-center text-danger">Error loading repositories. Please try again later.</p>';
+      console.error('GitHub API error:', response);
     }
-    
-    const repositories = await response.json();
-    console.log(`Fetched ${repositories.length} repositories`);
-    
-    if (!repositories || repositories.length === 0) {
-      document.getElementById('repositories').innerHTML = '<p class="text-center">No repositories found.</p>';
+  };
+  
+  // Function to display repositories
+  function displayRepos(repos) {
+    if (!repos || repos.length === 0) {
+      reposContainer.innerHTML = '<p class="text-center">No repositories found.</p>';
       return;
     }
     
-    // Sort repositories by the number of stars (most stars first)
-    repositories.sort((a, b) => b.stargazers_count - a.stargazers_count);
+    // Sort by stars (most stars first)
+    repos.sort((a, b) => b.stargazers_count - a.stargazers_count);
     
-    const repoList = repositories
-      .map(repo => `
-        <div class="repository card mb-3 p-3">
-          <h3><a href="${repo.html_url}" target="_blank">${repo.name}</a></h3>
-          <p class="repo-description">${repo.description || 'No description available'}</p>
-          <div class="repo-stats">
-            <span class="repo-language me-3">${repo.language || 'Not specified'}</span>
-            <span class="repo-stars me-3">⭐ ${repo.stargazers_count}</span>
-            <span class="repo-forks">🔱 ${repo.forks_count}</span>
-          </div>
-        </div>
-      `)
-      .join('');
+    // Take top 6 repos
+    const topRepos = repos.slice(0, 6);
     
-    document.getElementById('repositories').innerHTML = repoList;
-  } catch (error) {
-    console.error('Error fetching repositories:', error);
-    document.getElementById('repositories').innerHTML = '<p class="text-center">Failed to load repositories.</p>';
-    const errorElem = document.getElementById('repo-error');
-    errorElem.textContent = `Error: ${error.message}`;
-    errorElem.style.display = 'block';
+    const reposHTML = topRepos.map(formatRepo).join('');
+    reposContainer.innerHTML = reposHTML + 
+      `<div class="text-center mt-3">
+        <a href="https://github.com/${username}?tab=repositories" class="btn btn-outline-primary" 
+           target="_blank" rel="noopener">View All Repositories</a>
+      </div>`;
   }
-}
-
-// Call the function when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-  console.log("DOM loaded, fetching repositories...");
-  fetchRepositories();
+  
+  // First try fetch API
+  fetch(`https://api.github.com/users/${username}/repos?sort=updated`)
+    .then(response => {
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.json();
+    })
+    .then(repos => displayRepos(repos))
+    .catch(error => {
+      console.warn('Fetch failed, trying JSONP fallback:', error);
+      loadReposWithJSONP();
+    });
 });
 </script>
