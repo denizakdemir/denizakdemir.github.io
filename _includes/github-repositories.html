@@ -1,0 +1,51 @@
+<!-- GitHub Repositories Section -->
+<div class="repositories-section my-5">
+  <h2 class="text-center mb-4">My GitHub Repositories</h2>
+  <div id="repositories" class="repositories-container">
+    <div class="text-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p>Loading repositories...</p>
+    </div>
+  </div>
+</div>
+
+<script>
+async function fetchRepositories() {
+  try {
+    const response = await fetch('https://api.github.com/users/denizakdemir/repos');
+    const repositories = await response.json();
+    
+    if (!repositories || repositories.length === 0) {
+      document.getElementById('repositories').innerHTML = 'No repositories found.';
+      return;
+    }
+    
+    // Sort repositories by the number of stars (most stars first)
+    repositories.sort((a, b) => b.stargazers_count - a.stargazers_count);
+    
+    const repoList = repositories
+      .map(repo => `
+        <div class="repository">
+          <h3><a href="${repo.html_url}" target="_blank">${repo.name}</a></h3>
+          <p class="repo-description">${repo.description || 'No description available'}</p>
+          <div class="repo-stats">
+            <span class="repo-language">${repo.language || 'Not specified'}</span>
+            <span class="repo-stars"><i class="far fa-star"></i> ${repo.stargazers_count}</span>
+            <span class="repo-forks"><i class="fas fa-code-branch"></i> ${repo.forks_count}</span>
+          </div>
+        </div>
+      `)
+      .join('');
+    
+    document.getElementById('repositories').innerHTML = repoList;
+  } catch (error) {
+    console.error('Error fetching repositories:', error);
+    document.getElementById('repositories').innerHTML = 'Error loading repositories.';
+  }
+}
+
+// Call the function when the page loads
+document.addEventListener('DOMContentLoaded', fetchRepositories);
+</script>
