@@ -3,6 +3,18 @@
 # Import the theme
 theme: jekyll-theme-chirpy
 
+# Plugins
+plugins:
+  - jekyll-paginate
+  - jekyll-sitemap
+  - jekyll-gist
+  - jekyll-feed
+  - jemoji
+  - jekyll-include-cache
+  - jekyll-seo-tag
+  - jekyll-archives
+  - jekyll-remote-theme
+
 # The language of the webpage › http://www.lingoes.net/en/translator/langcode.htm
 # If it has the same name as one of the files in folder _data/locales, the layout language will also be changed,
 # otherwise, the layout language will use the default value of 'en'.
@@ -26,7 +38,7 @@ description: >- # used by seo meta and the atom feed
 url: "https://denizakdemir.github.io"
 
 # The base URL of your site
-baseurl: "/denizakdemir.github.io"
+baseurl: ""
 
 github:
   username: denizakdemir # change to your GitHub username
@@ -103,7 +115,7 @@ theme_mode: # [light | dark]
 cdn:
 
 # the avatar on sidebar, support local or CORS resources
-avatar: /assets/avatar.jpg
+avatar: /assets/img/avatar.jpg
 
 # The URL of the site-wide social preview image used in SEO og:image meta tag.
 # It can be overridden by a customized page.image in front matter.
@@ -197,6 +209,7 @@ defaults:
 
 sass:
   style: compressed
+  sass_dir: _sass
 
 compress_html:
   clippings: all
@@ -219,6 +232,10 @@ exclude:
   - "package*.json"
   - notebooks
   - _src
+  - node_modules
+  - .idea
+  - .gitignore
+  - vendor
 
 jekyll-archives:
   enabled: [categories, tags]
@@ -228,3 +245,8 @@ jekyll-archives:
   permalinks:
     tag: /tags/:name/
     category: /categories/:name/
+
+# The CDN endpoint for images.
+# Notice that once it is assigned, the CDN url
+# will be added to all image (site avatar & posts' images) paths starting with '/'
+img_cdn:
