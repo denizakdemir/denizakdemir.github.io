@@ -8,9 +8,10 @@ on:
       - .gitignore
       - README.md
       - LICENSE
+  pull_request:
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+# Allows you to run this workflow manually from the Actions tab
+workflow_dispatch:
 
 permissions:
   contents: read
@@ -51,10 +52,7 @@ jobs:
           JEKYLL_ENV: "production"
 
       - name: Test site
-        run: |
-          bundle exec htmlproofer _site \
-            \-\-disable-external \
-            \-\-ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/"
+        run: bundle exec htmlproofer _site --check-html --check-img-http --check-opengraph --check-sri --check-external-hash --url-ignore "/localhost/,/github.com/,/twitter.com/,/linkedin.com/,/scholar.google.com/,/orcid.org/,/researchgate.net/,/publons.com/,/scopus.com/,/webofscience.com/,/google.com/,/youtube.com/,/vimeo.com/,/facebook.com/,/instagram.com/,/pinterest.com/,/tumblr.com/,/reddit.com/,/quora.com/,/stackoverflow.com/,/stackexchange.com/,/medium.com/,/dev.to/,/hashnode.com/,/gitlab.com/,/bitbucket.org/,/git-scm.com/,/npmjs.com/,/pypi.org/,/cran.r-project.org/,/ctan.org/,/arxiv.org/,/doi.org/,/zenodo.org/,/figshare.com/,/osf.io/,/mendeley.com/,/zotero.org/,/endnote.com/,/researchgate.net/,/academia.edu/,/ssrn.com/,/ideas.repec.org/,/econpapers.repec.org/,/nber.org/,/repec.org/,/jstor.org/,/springer.com/,/wiley.com/,/tandfonline.com/,/sagepub.com/,/oxfordjournals.org/,/cambridge.org/,/mitpress.mit.edu/,/harvard.edu/,/princeton.edu/,/stanford.edu/,/berkeley.edu/,/columbia.edu/,/yale.edu/,/uchicago.edu/,/cornell.edu/,/upenn.edu/,/brown.edu/,/dartmouth.edu/,/duke.edu/,/northwestern.edu/,/jhu.edu/,/emory.edu/,/vanderbilt.edu/,/rice.edu/,/wustl.edu/,/notredame.edu/,/georgetown.edu/,/carnegie-mellon.edu/,/virginia.edu/,/tufts.edu/,/nyu.edu/,/bu.edu/,/bc.edu/,/brandeis.edu/,/case.edu/,/cmu.edu/,/gatech.edu/,/illinois.edu/,/iastate.edu/,/iowa.edu/,/kansas.edu/,/kentucky.edu/,/lsu.edu/,/maryland.edu/,/miami.edu/,/michigan.edu/,/minnesota.edu/,/missouri.edu/,/nebraska.edu/,/unc.edu/,/ohio-state.edu/,/oregon.edu/,/penn-state.edu/,/pitt.edu/,/purdue.edu/,/rutgers.edu/,/south-carolina.edu/,/tennessee.edu/,/texas.edu/,/texas-am.edu/,/utah.edu/,/virginia.edu/,/washington.edu/,/wisconsin.edu/,/yale.edu/"
 
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
@@ -70,4 +68,7 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
