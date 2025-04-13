@@ -27,17 +27,17 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
   }
 
-  // Fallback to JSONP approach (works around CORS issues)
+  // Always use JSONP for GitHub Pages compatibility
   function loadReposWithJSONP() {
     const script = document.createElement('script');
-    script.src = `https://api.github.com/users/${username}/repos?callback=displayGitHubRepos&sort=updated`;
+    script.src = `https://api.github.com/users/${username}/repos?callback=displayGitHubRepos&sort=updated&per_page=100`;
     document.body.appendChild(script);
   }
   
   // Callback for JSONP
   window.displayGitHubRepos = function(response) {
-    // Fixed handling of JSONP response format
     if (response && response.data) {
+      console.log('GitHub API responded with', response.meta ? response.meta.status : 'unknown status');
       displayRepos(response.data);
     } else {
       reposContainer.innerHTML = '<p class="text-center text-danger">Error loading repositories. Please try again later.</p>';
@@ -52,11 +52,14 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
     
+    // Filter out forks if you want to show only original repos
+    const ownRepos = repos.filter(repo => !repo.fork);
+    
     // Sort by stars (most stars first)
-    repos.sort((a, b) => b.stargazers_count - a.stargazers_count);
+    ownRepos.sort((a, b) => b.stargazers_count - a.stargazers_count);
     
     // Take top 6 repos
-    const topRepos = repos.slice(0, 6);
+    const topRepos = ownRepos.slice(0, 6);
     
     const reposHTML = topRepos.map(formatRepo).join('');
     reposContainer.innerHTML = reposHTML + 
@@ -66,20 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>`;
   }
   
-  // First try fetch API with a proper user agent
-  fetch(`https://api.github.com/users/${username}/repos?sort=updated`, {
-    headers: {
-      'Accept': 'application/vnd.github.v3+json'
-    }
-  })
-    .then(response => {
-      if (!response.ok) throw new Error('Network response was not ok');
-      return response.json();
-    })
-    .then(repos => displayRepos(repos))
-    .catch(error => {
-      console.warn('Fetch failed, trying JSONP fallback:', error);
-      loadReposWithJSONP();
-    });
+  // On GitHub Pages, just go straight to JSONP to avoid CORS issues
+  loadReposWithJSONP();
 });
 </script>
