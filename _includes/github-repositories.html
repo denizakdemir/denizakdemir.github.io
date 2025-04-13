@@ -12,6 +12,16 @@ document.addEventListener('DOMContentLoaded', function() {
   const username = 'denizakdemir';
   const reposContainer = document.getElementById('github-repos');
   
+  // Add a status indicator for debugging
+  function updateStatus(message, isError = false) {
+    console.log(message);
+    const statusClass = isError ? 'text-danger' : 'text-muted';
+    reposContainer.innerHTML = `<p class="text-center mb-3">${message}</p>` +
+      `<p class="text-center small ${statusClass}">Last updated: ${new Date().toLocaleTimeString()}</p>`;
+  }
+  
+  updateStatus('Initializing GitHub repositories component...');
+  
   // Function to format the repository HTML
   function formatRepo(repo) {
     return `
@@ -26,94 +36,151 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
     `;
   }
-
-  // Register the callback function first to ensure it's available
-  window.displayGitHubRepos = function(response) {
-    console.log('GitHub API callback triggered');
-    if (response && response.data) {
-      console.log('GitHub API responded with', response.meta ? response.meta.status : 'unknown status');
-      
-      if (response.meta && response.meta.status >= 400) {
-        reposContainer.innerHTML = `<p class="text-center text-danger">Error loading repositories. Status: ${response.meta.status}</p>`;
-        console.error('GitHub API error:', response.meta);
-        return;
-      }
-      
-      displayRepos(response.data);
-    } else {
-      reposContainer.innerHTML = '<p class="text-center text-danger">Error loading repositories. Please try again later.</p>';
-      console.error('GitHub API error:', response);
-    }
-  };
   
   // Function to display repositories
   function displayRepos(repos) {
     if (!repos || repos.length === 0) {
-      reposContainer.innerHTML = '<p class="text-center">No repositories found.</p>';
+      updateStatus('No repositories found.', true);
       return;
     }
     
-    // Filter out forks if you want to show only original repos
-    const ownRepos = repos.filter(repo => !repo.fork);
-    
-    // Sort by stars (most stars first)
-    ownRepos.sort((a, b) => b.stargazers_count - a.stargazers_count);
-    
-    // Take top 6 repos
-    const topRepos = ownRepos.slice(0, 6);
-    
-    const reposHTML = topRepos.map(formatRepo).join('');
-    reposContainer.innerHTML = reposHTML + 
-      `<div class="text-center mt-3">
-        <a href="https://github.com/${username}?tab=repositories" class="btn btn-outline-primary" 
-           target="_blank" rel="noopener">View All Repositories</a>
-      </div>`;
+    try {
+      // Filter out forks if you want to show only original repos
+      const ownRepos = repos.filter(repo => !repo.fork);
+      
+      // Sort by stars (most stars first)
+      ownRepos.sort((a, b) => b.stargazers_count - a.stargazers_count);
+      
+      // Take top 6 repos
+      const topRepos = ownRepos.slice(0, 6);
+      
+      const reposHTML = topRepos.map(formatRepo).join('');
+      reposContainer.innerHTML = reposHTML + 
+        `<div class="text-center mt-3">
+          <a href="https://github.com/${username}?tab=repositories" class="btn btn-outline-primary" 
+             target="_blank" rel="noopener">View All Repositories</a>
+        </div>`;
+      
+      console.log('Repositories displayed successfully:', topRepos.length);
+    } catch (error) {
+      console.error('Error in displayRepos:', error);
+      updateStatus('Error processing repository data: ' + error.message, true);
+    }
   }
   
-  // Alternative fetch method using XHR as a fallback
+  // Register a global callback for JSONP
+  window.displayGitHubRepos = function(response) {
+    console.log('GitHub API JSONP callback triggered');
+    try {
+      if (response && response.data) {
+        if (response.meta && response.meta.status >= 400) {
+          updateStatus(`Error from GitHub API: ${response.meta.status} ${response.meta.message || ''}`, true);
+          console.error('GitHub API error:', response.meta);
+          return;
+        }
+        
+        updateStatus('Processing repository data from JSONP...');
+        displayRepos(response.data);
+      } else {
+        updateStatus('Invalid response from GitHub API', true);
+        console.error('Invalid GitHub API response:', response);
+      }
+    } catch (error) {
+      console.error('Error in JSONP callback:', error);
+      updateStatus('Error in JSONP callback: ' + error.message, true);
+    }
+  };
+  
+  // Use fetch API - most modern approach
+  function loadReposWithFetch() {
+    updateStatus('Fetching repositories with Fetch API...');
+    
+    fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`GitHub API returned ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        updateStatus('Processing repository data from Fetch...');
+        displayRepos(data);
+      })
+      .catch(error => {
+        console.error('Fetch error:', error);
+        updateStatus('Fetch failed, trying XHR...', true);
+        loadReposWithXHR();
+      });
+  }
+  
+  // XMLHttpRequest as second option
   function loadReposWithXHR() {
-    console.log('Attempting to load repos with XHR');
+    updateStatus('Fetching repositories with XHR...');
+    
     const xhr = new XMLHttpRequest();
     xhr.open('GET', `https://api.github.com/users/${username}/repos?sort=updated&per_page=100`);
     xhr.onload = function() {
       if (xhr.status === 200) {
         try {
           const repos = JSON.parse(xhr.responseText);
+          updateStatus('Processing repository data from XHR...');
           displayRepos(repos);
         } catch (e) {
           console.error('Error parsing GitHub API response:', e);
-          reposContainer.innerHTML = '<p class="text-center text-danger">Error processing repository data.</p>';
+          updateStatus('XHR parsing failed, trying JSONP...', true);
+          loadReposWithJSONP();
         }
       } else {
         console.error('GitHub API XHR error:', xhr.status, xhr.statusText);
-        reposContainer.innerHTML = `<p class="text-center text-danger">Error loading repositories. Status: ${xhr.status}</p>`;
-        // If rate limited, try JSONP as last resort
-        if (xhr.status === 403) {
-          loadReposWithJSONP();
-        }
+        updateStatus(`XHR failed (${xhr.status}), trying JSONP...`, true);
+        loadReposWithJSONP();
       }
     };
     xhr.onerror = function() {
       console.error('GitHub API XHR request failed');
-      loadReposWithJSONP(); // Try JSONP as fallback
+      updateStatus('XHR request failed, trying JSONP...', true);
+      loadReposWithJSONP();
     };
     xhr.send();
   }
   
-  // JSONP approach for GitHub Pages compatibility
+  // JSONP as fallback (works around CORS issues)
   function loadReposWithJSONP() {
-    console.log('Loading repos with JSONP');
+    updateStatus('Fetching repositories with JSONP...');
+    
     const script = document.createElement('script');
     script.src = `https://api.github.com/users/${username}/repos?callback=displayGitHubRepos&sort=updated&per_page=100`;
+    
+    // Add timeout in case the script never loads
+    const timeoutId = setTimeout(function() {
+      updateStatus('JSONP request timed out. GitHub API may be unavailable.', true);
+      document.body.removeChild(script);
+    }, 10000); // 10 second timeout
+    
+    script.onload = function() {
+      clearTimeout(timeoutId);
+      // The callback will handle the response
+    };
+    
+    script.onerror = function() {
+      clearTimeout(timeoutId);
+      updateStatus('All GitHub API request methods failed. Please try again later.', true);
+      console.error('JSONP request failed - GitHub API may be unreachable');
+    };
+    
     document.body.appendChild(script);
   }
   
-  // Try XHR first, with JSONP as fallback
+  // Simple check to see if we're on GitHub Pages
+  const isGitHubPages = window.location.hostname.endsWith('github.io');
+  console.log('Running on GitHub Pages?', isGitHubPages);
+  
+  // Try fetch first (modern browsers), then fall back to other methods
   try {
-    loadReposWithXHR();
+    loadReposWithFetch();
   } catch (e) {
-    console.error('XHR attempt failed:', e);
-    loadReposWithJSONP();
+    console.error('Initial fetch attempt failed:', e);
+    loadReposWithXHR();
   }
 });
 </script>
