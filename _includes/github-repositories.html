@@ -36,7 +36,8 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Callback for JSONP
   window.displayGitHubRepos = function(response) {
-    if (response.data && Array.isArray(response.data)) {
+    // Fixed handling of JSONP response format
+    if (response && response.data) {
       displayRepos(response.data);
     } else {
       reposContainer.innerHTML = '<p class="text-center text-danger">Error loading repositories. Please try again later.</p>';
@@ -65,8 +66,12 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>`;
   }
   
-  // First try fetch API
-  fetch(`https://api.github.com/users/${username}/repos?sort=updated`)
+  // First try fetch API with a proper user agent
+  fetch(`https://api.github.com/users/${username}/repos?sort=updated`, {
+    headers: {
+      'Accept': 'application/vnd.github.v3+json'
+    }
+  })
     .then(response => {
       if (!response.ok) throw new Error('Network response was not ok');
       return response.json();
