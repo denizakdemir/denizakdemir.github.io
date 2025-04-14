@@ -12,15 +12,13 @@ document.addEventListener('DOMContentLoaded', function() {
   const username = 'denizakdemir';
   const reposContainer = document.getElementById('github-repos');
   
-  // Add a status indicator for debugging
+  // Function to update status messages for debugging
   function updateStatus(message, isError = false) {
     console.log(message);
     const statusClass = isError ? 'text-danger' : 'text-muted';
     reposContainer.innerHTML = `<p class="text-center mb-3">${message}</p>` +
       `<p class="text-center small ${statusClass}">Last updated: ${new Date().toLocaleTimeString()}</p>`;
   }
-  
-  updateStatus('Initializing GitHub repositories component...');
   
   // Function to format the repository HTML
   function formatRepo(repo) {
@@ -67,31 +65,33 @@ document.addEventListener('DOMContentLoaded', function() {
       updateStatus('Error processing repository data: ' + error.message, true);
     }
   }
-  
-  // Register a global callback for JSONP
-  window.displayGitHubRepos = function(response) {
-    console.log('GitHub API JSONP callback triggered');
-    try {
-      if (response && response.data) {
-        if (response.meta && response.meta.status >= 400) {
-          updateStatus(`Error from GitHub API: ${response.meta.status} ${response.meta.message || ''}`, true);
-          console.error('GitHub API error:', response.meta);
-          return;
+
+  // Primary method: Load repositories from static JSON file
+  function loadReposFromStaticFile() {
+    updateStatus('Loading repositories from static file...');
+    
+    fetch('/assets/js/data/github-repos.json')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Failed to load static repositories data: ${response.status}`);
         }
-        
-        updateStatus('Processing repository data from JSONP...');
-        displayRepos(response.data);
-      } else {
-        updateStatus('Invalid response from GitHub API', true);
-        console.error('Invalid GitHub API response:', response);
-      }
-    } catch (error) {
-      console.error('Error in JSONP callback:', error);
-      updateStatus('Error in JSONP callback: ' + error.message, true);
-    }
-  };
+        return response.json();
+      })
+      .then(data => {
+        updateStatus('Processing repository data from static file...');
+        displayRepos(data);
+      })
+      .catch(error => {
+        console.error('Static file error:', error);
+        updateStatus('Static file load failed, trying live API...', true);
+        // Fall back to the dynamic API methods if static file fails
+        loadReposWithFetch();
+      });
+  }
   
-  // Use fetch API - most modern approach
+  // Fallback methods below - only used if static file fails
+  
+  // Use fetch API - first fallback
   function loadReposWithFetch() {
     updateStatus('Fetching repositories with Fetch API...');
     
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   }
   
-  // XMLHttpRequest as second option
+  // XMLHttpRequest as second fallback
   function loadReposWithXHR() {
     updateStatus('Fetching repositories with XHR...');
     
@@ -144,9 +144,25 @@ document.addEventListener('DOMContentLoaded', function() {
     xhr.send();
   }
   
-  // JSONP as fallback (works around CORS issues)
+  // JSONP as final fallback
   function loadReposWithJSONP() {
     updateStatus('Fetching repositories with JSONP...');
+    
+    window.displayGitHubRepos = function(response) {
+      console.log('GitHub API JSONP callback triggered');
+      try {
+        if (response && response.data) {
+          updateStatus('Processing repository data from JSONP...');
+          displayRepos(response.data);
+        } else {
+          updateStatus('Invalid response from GitHub API', true);
+          console.error('Invalid GitHub API response:', response);
+        }
+      } catch (error) {
+        console.error('Error in JSONP callback:', error);
+        updateStatus('Error in JSONP callback: ' + error.message, true);
+      }
+    };
     
     const script = document.createElement('script');
     script.src = `https://api.github.com/users/${username}/repos?callback=displayGitHubRepos&sort=updated&per_page=100`;
@@ -171,16 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.appendChild(script);
   }
   
-  // Simple check to see if we're on GitHub Pages
-  const isGitHubPages = window.location.hostname.endsWith('github.io');
-  console.log('Running on GitHub Pages?', isGitHubPages);
-  
-  // Try fetch first (modern browsers), then fall back to other methods
-  try {
-    loadReposWithFetch();
-  } catch (e) {
-    console.error('Initial fetch attempt failed:', e);
-    loadReposWithXHR();
-  }
+  // Start with the static file approach first
+  loadReposFromStaticFile();
 });
 </script>
