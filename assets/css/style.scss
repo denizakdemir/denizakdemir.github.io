@@ -1,1 +1,43 @@
-@import 'jekyll-theme-chirpy'; 
+@import 'jekyll-theme-chirpy';
+
+/* Google Scholar Stats Styling */
+.scholar-stats {
+  margin: 1.5rem 0;
+  
+  .scholar-link {
+    font-size: 1.1rem;
+    font-weight: 500;
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 0.5rem;
+    display: inline-block;
+    
+    i {
+      margin-right: 0.5rem;
+    }
+  }
+  
+  .stats-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1rem;
+    
+    li {
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      
+      strong {
+        font-size: 1.2rem;
+        margin-right: 0.5rem;
+      }
+    }
+  }
+}
+
+/* Dark mode adjustments */
+html[data-mode="dark"] {
+  .scholar-stats {
+    .scholar-link {
+      border-bottom-color: #444;
+    }
+  }
+}

@@ -8,6 +8,22 @@ order: 4
 
 Hello! I'm **Deniz Akdemir**, a data scientist and researcher specializing in machine learning and biostatistical analysis. My work focuses on developing innovative approaches to extract meaningful insights from complex datasets, particularly in clinical and healthcare domains.
 
+## Research Metrics
+
+<div class="scholar-stats">
+  <p>
+    <a href="https://scholar.google.com/citations?user=O_xha20AAAAJ&hl=en" target="_blank" rel="noopener noreferrer" class="scholar-link">
+      <i class="fas fa-graduation-cap" style="color: #4285F4;"></i> Google Scholar Profile
+    </a>
+  </p>
+  
+  <ul class="stats-list">
+    <li><strong>160+</strong> Citations</li>
+    <li><strong>6</strong> h-index</li>
+    <li><strong>6</strong> i10-index</li>
+  </ul>
+</div>
+
 ## Research Interests
 
 - **Machine Learning Applications**: Implementing advanced models for real-world problems, with a focus on tabular data analysis
