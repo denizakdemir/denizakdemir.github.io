@@ -18,9 +18,9 @@ Hello! I'm **Deniz Akdemir**, a data scientist and researcher specializing in ma
   </p>
   
   <ul class="stats-list">
-    <li><strong>160+</strong> Citations</li>
-    <li><strong>6</strong> h-index</li>
-    <li><strong>6</strong> i10-index</li>
+    <li><strong>3548</strong> Citations</li>
+    <li><strong>24</strong> h-index</li>
+    <li><strong>31</strong> i10-index</li>
   </ul>
 </div>
 
