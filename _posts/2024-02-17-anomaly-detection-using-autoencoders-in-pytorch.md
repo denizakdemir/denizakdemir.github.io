@@ -262,13 +262,13 @@ plt.show()
 
 
     
-![png](AnomalyDetection_files/AnomalyDetection_6_0.png)
+![png](/assets/img/posts/anomaly-detection-using-autoencoders-in-pytorch/AnomalyDetection_6_0.png)
     
 
 
 
     
-![png](AnomalyDetection_files/AnomalyDetection_6_1.png)
+![png](/assets/img/posts/anomaly-detection-using-autoencoders-in-pytorch/AnomalyDetection_6_1.png)
     
 
 

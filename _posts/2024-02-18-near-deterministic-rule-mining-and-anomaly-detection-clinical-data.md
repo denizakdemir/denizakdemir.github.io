@@ -866,13 +866,13 @@ if __name__ == "__main__":
 
 
     
-![png](HierarchyRules_files/HierarchyRules_4_3.png)
+![png](/assets/img/posts/near-deterministic-rule-mining-and-anomaly-detection-clinical-data/HierarchyRules_4_3.png)
     
 
 
 
     
-![png](HierarchyRules_files/HierarchyRules_4_4.png)
+![png](/assets/img/posts/near-deterministic-rule-mining-and-anomaly-detection-clinical-data/HierarchyRules_4_4.png)
     
 
 
@@ -936,7 +936,7 @@ if __name__ == "__main__":
 
 
     
-![png](HierarchyRules_files/HierarchyRules_4_10.png)
+![png](/assets/img/posts/near-deterministic-rule-mining-and-anomaly-detection-clinical-data/HierarchyRules_4_10.png)
     
 
 
@@ -949,7 +949,7 @@ if __name__ == "__main__":
 
 
     
-![png](HierarchyRules_files/HierarchyRules_4_12.png)
+![png](/assets/img/posts/near-deterministic-rule-mining-and-anomaly-detection-clinical-data/HierarchyRules_4_12.png)
     
 
 
@@ -1084,7 +1084,7 @@ explorer.plot_rules_network(top_n=10, support_threshold=0.2, certainty_threshold
 
 
     
-![png](HierarchyRules_files/HierarchyRules_6_0.png)
+![png](/assets/img/posts/near-deterministic-rule-mining-and-anomaly-detection-clinical-data/HierarchyRules_6_0.png)
     
 
 
