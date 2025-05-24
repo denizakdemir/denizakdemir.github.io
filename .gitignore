@@ -41,3 +41,4 @@ notebooks/*.md
 
 # .DS_Store files
 .DS_Store
+**/.claude/settings.local.json
