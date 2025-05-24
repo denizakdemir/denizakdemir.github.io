@@ -100,7 +100,7 @@ show_status() {
                 if ls _posts/*"rule-mining"* &>/dev/null || ls _posts/*"hierarchy"* &>/dev/null; then has_post=true; fi
                 ;;
             "AnomalyDetectionGAN")
-                if ls _posts/*"gan"* &>/dev/null; then has_post=true; fi
+                if ls _posts/*"gan"* &>/dev/null || ls _posts/*"anomaly-detection-using-gans"* &>/dev/null; then has_post=true; fi
                 ;;
             *)
                 if ls _posts/*"$basename_lower"* &>/dev/null; then has_post=true; fi
@@ -158,7 +158,7 @@ convert_notebooks() {
                 if ls _posts/*"rule-mining"* &>/dev/null || ls _posts/*"hierarchy"* &>/dev/null; then has_post=true; fi
                 ;;
             "AnomalyDetectionGAN")
-                if ls _posts/*"gan"* &>/dev/null; then has_post=true; fi
+                if ls _posts/*"gan"* &>/dev/null || ls _posts/*"anomaly-detection-using-gans"* &>/dev/null; then has_post=true; fi
                 ;;
             *)
                 basename_lower=$(echo "$basename_nb" | tr '[:upper:]' '[:lower:]')
