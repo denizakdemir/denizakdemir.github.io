@@ -1,0 +1,1013 @@
+# Portfolio Optimization Using Mixed Models: A Genomic Prediction Approach
+
+## Executive Summary
+
+This tutorial explores how mixed linear models from genomic prediction can enhance portfolio optimization. The key insight is that just as genomic models separate signal from noise in breeding values, we can use similar techniques to extract stable, predictable relationships between assets while filtering out transient market noise. This leads to more robust portfolio allocations that perform better out-of-sample.
+
+## Table of Contents
+1. [Motivation: Why Genomic Methods for Portfolios?](#motivation)
+2. [Theoretical Framework](#theoretical-framework)
+3. [Data and Setup](#data-and-setup)
+4. [Building the Mixed Model](#building-the-mixed-model)
+5. [Extracting Covariance Structures](#covariance-structures)
+6. [Portfolio Construction](#portfolio-construction)
+7. [Validation and Comparison](#validation)
+8. [Practical Implementation Guide](#implementation-guide)
+9. [Conclusions](#conclusions)
+
+## 1. Motivation: Why Genomic Methods for Portfolios? {#motivation}
+
+Traditional portfolio optimization faces a fundamental challenge: sample covariance matrices are notoriously noisy, especially when the number of assets is large relative to the observation period. This leads to unstable portfolio weights that perform poorly out-of-sample.
+
+In genomic prediction, researchers face a similar challenge: estimating breeding values for thousands of genetic markers with limited phenotypic observations. The solution? Mixed linear models that:
+
+1. **Borrow information** across related observations
+2. **Impose structure** through variance components
+3. **Shrink estimates** toward more stable values
+4. **Separate signal from noise** through random effects
+
+Let's explore how these same principles can revolutionize portfolio construction.
+
+### The Core Analogy
+
+In genomics:
+- **Breeding value** = Genetic potential (signal)
+- **Environmental variance** = Non-heritable variation (noise)
+- **Selection decisions** use breeding values
+- **Performance prediction** uses total variance
+
+In portfolios:
+- **Systematic returns** = Factor-driven, persistent relationships (signal)
+- **Idiosyncratic returns** = Asset-specific, transient shocks (noise)
+- **Allocation decisions** should focus on systematic relationships
+- **Risk assessment** must consider total variance
+
+## 2. Theoretical Framework {#theoretical-framework}
+
+### Traditional Mean-Variance Optimization
+
+The classical Markowitz approach minimizes portfolio variance for a target return:
+
+$$\min_{w} \quad w^T \Sigma w \quad \text{subject to} \quad w^T \mu \geq r_{target}, \quad w^T \mathbf{1} = 1$$
+
+Where $\mu$ and $\Sigma$ are typically estimated as sample means and covariances. The problem? These estimates are extremely noisy, leading to error maximization rather than risk minimization.
+
+### Mixed Model Formulation
+
+Instead of using raw historical data, we model returns using a mixed linear model:
+
+$$r_{it} = \mu + \beta_i^T X_t + u_{it} + \epsilon_{it}$$
+
+Where:
+- $r_{it}$ = return of asset $i$ at time $t$
+- $\mu$ = overall intercept
+- $\beta_i$ = asset $i$'s factor loadings
+- $X_t$ = observed market factors at time $t$
+- $u_{it}$ = random effect capturing persistent deviations
+- $\epsilon_{it}$ = residual (idiosyncratic) error
+
+The key insight: by modeling $u_{it}$ as random effects with structure (e.g., grouped by market regime or time period), we can:
+
+1. **Regularize estimates** through shrinkage
+2. **Capture time-varying relationships** without overfitting
+3. **Separate persistent from transient correlations**
+
+### Variance Decomposition
+
+The total variance decomposes into:
+
+$$\text{Var}(r_{it}) = \text{Var}(\beta_i^T X_t) + \text{Var}(u_{it}) + \text{Var}(\epsilon_{it})$$
+
+- **Systematic variance**: $\text{Var}(\beta_i^T X_t) + \text{Var}(u_{it})$ - predictable, persistent
+- **Idiosyncratic variance**: $\text{Var}(\epsilon_{it})$ - unpredictable, transient
+
+For portfolio construction, we primarily care about systematic relationships, as these persist out-of-sample.
+
+## 3. Data and Setup {#data-and-setup}
+
+Let's implement this approach step by step. We'll use a diversified set of ETFs to demonstrate the concepts.
+
+```{r setup, message=FALSE, warning=FALSE}
+# Load required libraries
+library(tidyverse)    # Data manipulation
+library(tidyquant)    # Financial data
+library(lme4)         # Mixed models
+library(Matrix)       # Matrix operations
+library(quadprog)     # Portfolio optimization
+library(corrplot)     # Visualizations
+library(plotly)       # Interactive plots
+
+# Set seed for reproducibility
+set.seed(123)
+
+# Define our investment universe
+tickers <- c(
+  "SPY",  # S&P 500 (US Large Cap)
+  "IWM",  # Russell 2000 (US Small Cap)
+  "EFA",  # International Developed
+  "EEM",  # Emerging Markets
+  "AGG",  # US Bonds
+  "TLT",  # Long-term Treasuries
+  "GLD",  # Gold
+  "DBC",  # Commodities
+  "VNQ",  # Real Estate
+  "HYG"   # High Yield Bonds
+)
+
+# Download 5 years of daily data
+end_date <- Sys.Date()
+start_date <- end_date - 365*5
+
+# Fetch price data
+prices <- tq_get(tickers, from = start_date, to = end_date, get = "stock.prices")
+
+# Calculate returns
+returns <- prices %>%
+  group_by(symbol) %>%
+  tq_transmute(select = adjusted,
+               mutate_fun = periodReturn,
+               period = "daily",
+               col_rename = "return") %>%
+  ungroup()
+
+# Also get market factors (we'll use VIX and term spread as examples)
+vix <- tq_get("^VIX", from = start_date, to = end_date, get = "stock.prices") %>%
+  select(date, vix = adjusted)
+
+# Create market factor dataset
+market_factors <- returns %>%
+  filter(symbol == "SPY") %>%
+  select(date, market_return = return) %>%
+  left_join(vix, by = "date") %>%
+  mutate(
+    vix_level = vix,
+    vix_change = (vix - lag(vix)) / lag(vix),
+    # Define market regimes based on VIX
+    regime = case_when(
+      vix < quantile(vix, 0.33, na.rm = TRUE) ~ "Low_Vol",
+      vix < quantile(vix, 0.67, na.rm = TRUE) ~ "Normal",
+      TRUE ~ "High_Vol"
+    )
+  ) %>%
+  filter(!is.na(vix_change))
+
+# Merge with returns
+data <- returns %>%
+  left_join(market_factors, by = "date") %>%
+  filter(!is.na(market_return), symbol != "SPY") %>%
+  # Add time-based grouping for random effects
+  mutate(
+    year_month = format(date, "%Y-%m"),
+    # Standardize continuous predictors
+    market_return_std = scale(market_return)[,1],
+    vix_change_std = scale(vix_change)[,1]
+  )
+
+print(paste("Dataset contains", nrow(data), "observations across", 
+            n_distinct(data$symbol), "assets"))
+```
+
+## 4. Building the Mixed Model with Flexible Covariance Components {#building-the-mixed-model}
+
+Now we'll build our mixed model using the `sommer` package, which allows us to specify custom variance-covariance structures. This is exactly how genomic prediction models work - they use genomic relationship matrices to structure the covariance of random effects.
+
+### Understanding Why We Need Flexible Covariance
+
+In traditional mixed models (like those from `lme4`), random effects are assumed to be independent or have simple grouping structures. But in reality, assets aren't independent - they share common characteristics that create complex correlation patterns. Just as individuals sharing DNA have correlated genetic effects, assets sharing fundamental characteristics have correlated return patterns.
+
+The `sommer` package lets us specify these relationships explicitly through custom covariance matrices, enabling us to:
+- Use the full asset similarity matrix as a covariance structure
+- Estimate multiple variance components with different relationship matrices
+- Properly decompose variance into meaningful components
+
+### Creating Asset Similarity Matrices
+
+First, let's create multiple similarity matrices based on different asset characteristics. This is analogous to using different genomic relationship matrices in multi-trait genomic prediction.
+
+```{r asset-similarity-matrices}
+# Install sommer if needed
+if (!require(sommer)) install.packages("sommer")
+library(sommer)
+
+# Define comprehensive asset characteristics
+asset_characteristics <- data.frame(
+  symbol = c("IWM", "EFA", "EEM", "AGG", "TLT", "GLD", "DBC", "VNQ", "HYG"),
+  # Basic classification
+  asset_class = c("Equity", "Equity", "Equity", "Bond", "Bond", 
+                  "Commodity", "Commodity", "Real_Estate", "Bond"),
+  geography = c("US", "Developed", "Emerging", "US", "US", 
+                "Global", "Global", "US", "US"),
+  # Risk characteristics
+  volatility_regime = c("High", "Medium", "High", "Low", "Medium", 
+                       "Medium", "High", "High", "Medium"),
+  duration = c(0, 0, 0, 5, 20, 0, 0, 0, 4),
+  credit_quality = c(NA, NA, NA, "AAA", "AAA", NA, NA, NA, "BB"),
+  # Factor exposures (these would come from regression analysis in practice)
+  equity_beta = c(1.2, 0.9, 1.1, 0.1, -0.2, 0.2, 0.4, 0.8, 0.5),
+  inflation_beta = c(0.1, 0.1, 0.2, -0.3, -0.8, 0.7, 0.9, 0.5, 0.2),
+  liquidity = c("High", "High", "Medium", "High", "High", 
+                "Medium", "Low", "Medium", "Medium")
+)
+
+# Function to create a relationship matrix from characteristics
+create_relationship_matrix <- function(characteristics, features, method = "cosine") {
+  # Extract relevant features and create matrix
+  feature_matrix <- characteristics[, features, drop = FALSE]
+  
+  # Handle different data types
+  numeric_features <- sapply(feature_matrix, is.numeric)
+  
+  # For categorical variables, create dummy variables
+  if (any(!numeric_features)) {
+    cat_data <- feature_matrix[, !numeric_features, drop = FALSE]
+    dummy_matrices <- lapply(cat_data, function(x) {
+      model.matrix(~ x - 1)
+    })
+    cat_matrix <- do.call(cbind, dummy_matrices)
+    
+    # Combine with numeric features
+    if (any(numeric_features)) {
+      num_matrix <- as.matrix(feature_matrix[, numeric_features, drop = FALSE])
+      # Standardize numeric features
+      num_matrix <- scale(num_matrix)
+      feature_matrix <- cbind(num_matrix, cat_matrix)
+    } else {
+      feature_matrix <- cat_matrix
+    }
+  } else {
+    feature_matrix <- scale(as.matrix(feature_matrix))
+  }
+  
+  n_assets <- nrow(feature_matrix)
+  
+  if (method == "cosine") {
+    # Cosine similarity (good for high-dimensional features)
+    norms <- sqrt(rowSums(feature_matrix^2))
+    relationship_matrix <- feature_matrix %*% t(feature_matrix) / (norms %o% norms)
+  } else if (method == "gaussian") {
+    # Gaussian kernel (captures non-linear relationships)
+    relationship_matrix <- matrix(0, n_assets, n_assets)
+    sigma <- median(dist(feature_matrix))  # Bandwidth parameter
+    for (i in 1:n_assets) {
+      for (j in 1:n_assets) {
+        distance <- sum((feature_matrix[i,] - feature_matrix[j,])^2)
+        relationship_matrix[i,j] <- exp(-distance / (2 * sigma^2))
+      }
+    }
+  }
+  
+  # Ensure positive definiteness and proper scaling
+  diag(relationship_matrix) <- 1
+  rownames(relationship_matrix) <- characteristics$symbol
+  colnames(relationship_matrix) <- characteristics$symbol
+  
+  # Make sure it's positive definite
+  eigen_decomp <- eigen(relationship_matrix)
+  if (any(eigen_decomp$values < 1e-6)) {
+    # Fix negative eigenvalues
+    eigen_decomp$values[eigen_decomp$values < 1e-6] <- 1e-6
+    relationship_matrix <- eigen_decomp$vectors %*% 
+                          diag(eigen_decomp$values) %*% 
+                          t(eigen_decomp$vectors)
+    # IMPORTANT: Restore dimension names after matrix multiplication
+    rownames(relationship_matrix) <- characteristics$symbol
+    colnames(relationship_matrix) <- characteristics$symbol
+  }
+  
+  return(as.matrix(relationship_matrix))  # Ensure it's a proper matrix
+}
+
+# Create different relationship matrices capturing different aspects
+# 1. Asset class similarity (captures broad category effects)
+K_class <- create_relationship_matrix(asset_characteristics, 
+                                     c("asset_class", "geography"),
+                                     method = "cosine")
+
+# 2. Risk characteristic similarity (captures risk profile relationships)
+K_risk <- create_relationship_matrix(asset_characteristics,
+                                    c("volatility_regime", "duration", "liquidity"),
+                                    method = "gaussian")
+
+# 3. Factor exposure similarity (captures systematic factor relationships)
+K_factor <- create_relationship_matrix(asset_characteristics,
+                                      c("equity_beta", "inflation_beta"),
+                                      method = "cosine")
+
+# 4. Combined similarity (weighted average)
+K_combined <- 0.4 * K_class + 0.3 * K_risk + 0.3 * K_factor
+
+# Ensure dimension names are preserved after matrix operations
+rownames(K_combined) <- rownames(K_class)
+colnames(K_combined) <- colnames(K_class)
+
+# Convert to proper matrix format
+K_combined <- as.matrix(K_combined)
+
+# Visualize the different relationship matrices
+# Note: These are relationship matrices (like genomic relationship matrices), 
+# not correlation matrices, so values may be outside [-1, 1]
+# We'll use heatmaps instead of corrplot for proper visualization
+
+library(reshape2)
+library(ggplot2)
+
+# Function to create heatmap for relationship matrices
+plot_relationship_matrix <- function(K, title) {
+  # Convert to long format for ggplot
+  K_melt <- melt(K)
+  colnames(K_melt) <- c("Asset1", "Asset2", "Similarity")
+  
+  ggplot(K_melt, aes(x = Asset1, y = Asset2, fill = Similarity)) +
+    geom_tile() +
+    scale_fill_gradient2(low = "darkblue", mid = "white", high = "darkred",
+                         midpoint = mean(K)) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    labs(title = title,
+         x = "", y = "") +
+    coord_fixed()
+}
+
+# Create individual plots
+p1 <- plot_relationship_matrix(K_class, "Asset Class Similarity")
+p2 <- plot_relationship_matrix(K_risk, "Risk Profile Similarity")
+p3 <- plot_relationship_matrix(K_factor, "Factor Exposure Similarity")
+p4 <- plot_relationship_matrix(K_combined, "Combined Similarity")
+
+# Arrange plots
+library(gridExtra)
+grid.arrange(p1, p2, p3, p4, ncol = 2)
+
+# Print similarity between select asset pairs to build intuition
+cat("\nExample Similarities (Combined Matrix):\n")
+cat("IWM-EFA (both equities):", round(K_combined["IWM", "EFA"], 3), "\n")
+cat("AGG-TLT (both bonds):", round(K_combined["AGG", "TLT"], 3), "\n")
+cat("IWM-GLD (equity vs gold):", round(K_combined["IWM", "GLD"], 3), "\n")
+cat("GLD-DBC (both commodities):", round(K_combined["GLD", "DBC"], 3), "\n")
+```
+
+### Preparing Data for Sommer
+
+The `sommer` package requires data in a specific format. We need to ensure our relationship matrices align with the data structure.
+
+```{r prepare-sommer-data}
+# Prepare data for sommer
+# Ensure assets are in the same order as relationship matrices
+assets_ordered <- rownames(K_combined)
+data_sommer <- data %>%
+  filter(symbol %in% assets_ordered) %>%
+  mutate(
+    # Create unique observation ID
+    obs_id = row_number(),
+    # Ensure symbol is a factor with correct levels
+    symbol = factor(symbol, levels = assets_ordered),
+    # Create numeric version for variance components
+    symbol_num = as.numeric(symbol),
+    # Time effects
+    time_factor = as.factor(year_month),
+    # Regime effects
+    regime_factor = as.factor(regime)
+  )
+
+# Create additional design matrices for complex variance structures
+n_obs <- nrow(data_sommer)
+n_assets <- length(assets_ordered)
+n_time <- length(unique(data_sommer$time_factor))
+
+# Incidence matrix for assets (maps observations to assets)
+Z_asset <- model.matrix(~ symbol - 1, data = data_sommer)
+
+# Create regime-specific relationship matrices
+# This allows relationships to vary by market regime
+regimes <- unique(data_sommer$regime_factor)
+K_regime_list <- list()
+
+for (reg in regimes) {
+  if (reg == "High_Vol") {
+    # In high volatility, correlations typically increase
+    K_regime_list[[reg]] <- K_combined^0.5  # Increase correlations
+  } else if (reg == "Low_Vol") {
+    # In low volatility, assets behave more independently
+    K_regime_list[[reg]] <- K_combined^2  # Decrease correlations
+  } else {
+    K_regime_list[[reg]] <- K_combined
+  }
+  
+  # Ensure dimension names are preserved
+  rownames(K_regime_list[[reg]]) <- rownames(K_combined)
+  colnames(K_regime_list[[reg]]) <- colnames(K_combined)
+}
+
+cat("\nData prepared for sommer:\n")
+cat("Observations:", n_obs, "\n")
+cat("Assets:", n_assets, "\n")
+cat("Time periods:", n_time, "\n")
+cat("Regimes:", length(regimes), "\n")
+```
+
+### Fitting the Mixed Model with Custom Variance Components
+
+Now we'll fit a series of models with increasing complexity to show how variance decomposition improves with better covariance structures.
+
+```{r fit-sommer-models1}
+# Model 1: Basic model without relationship matrices (for comparison)
+# This is like ignoring genetic relationships in breeding
+cat("Fitting Model 1: Basic model (no similarity structure)...\n")
+model1 <- mmer(
+  fixed = return ~ market_return_std + vix_change_std,
+  random = ~ symbol + time_factor,
+  data = data_sommer[sample(1:nrow(data_sommer), 1000), ],  # Sample for speed,
+  verbose = FALSE
+)
+
+
+```
+
+
+```{r fit-sommer-models2}
+
+# Model 2: Include asset similarity
+# This is like using a genomic relationship matrix
+cat("Fitting Model 2: With asset similarity...\n")
+model2 <- mmer(
+  fixed = return ~ market_return_std + vix_change_std,
+  random = ~ vsr(symbol, Gu = K_combined) + time_factor,
+  data = data_sommer[sample(1:nrow(data_sommer), 1000), ],
+  verbose = FALSE
+)
+
+```
+
+```{r fit-sommer-models3}
+
+# Model 3: Multiple relationship matrices
+# This is like using different kernels for different trait components
+cat("Fitting Model 3: Multiple variance components...\n")
+model3 <- mmer(
+  fixed = return ~ market_return_std + vix_change_std,
+  random = ~ vsr(symbol, Gu = K_class) + 
+             vsr(symbol, Gu = K_risk) + 
+             vsr(symbol, Gu = K_factor) + 
+             time_factor,
+  data = data_sommer[sample(1:nrow(data_sommer), 1000), ],
+  verbose = FALSE
+)
+
+
+```
+
+```{r fit-sommer-models}
+# Model 4: Include regime-specific effects with factor interactions
+# Most sophisticated - allows for regime-dependent relationships
+cat("Fitting Model 4: Full model with interactions...\n")
+
+# Create interaction variables
+data_sommer <- data_sommer %>%
+  mutate(
+    symbol_regime = interaction(symbol, regime_factor),
+    market_x_regime = market_return_std * as.numeric(regime_factor)
+  )
+
+model4 <- mmer(
+  fixed = return ~ market_return_std + vix_change_std + 
+                   regime_factor + market_x_regime,
+  random = ~ vsr(symbol, Gu = K_combined) + 
+             vsr(symbol_regime, Gu = K_combined) +
+             time_factor,
+  data = data_sommer[sample(1:nrow(data_sommer), 1000), ],
+  verbose = FALSE
+)
+```
+
+
+```{r fit-sommer-models5}
+
+# Extract variance components from each model
+extract_variance_proportions <- function(model, model_name) {
+  var_comp <- summary(model)$varcomp
+  total_var <- sum(var_comp[,1])
+  
+  data.frame(
+    Model = model_name,
+    Component = rownames(var_comp),
+    Variance = var_comp[,1],
+    Proportion = var_comp[,1] / total_var,
+    Systematic = !grepl("units", rownames(var_comp))
+  )
+}
+
+var_comp_all <- rbind(
+  extract_variance_proportions(model1, "Basic"),
+  extract_variance_proportions(model2, "Asset Similarity"),
+  extract_variance_proportions(model3, "Multiple Components"),
+  extract_variance_proportions(model4, "Full Model")
+)
+
+# Calculate systematic variance proportion for each model
+systematic_proportions <- var_comp_all %>%
+  group_by(Model) %>%
+  summarise(
+    Systematic_Proportion = sum(Proportion[Systematic]),
+    Residual_Proportion = sum(Proportion[!Systematic])
+  )
+
+print(systematic_proportions)
+
+# Visualize variance decomposition across models
+library(ggplot2)
+ggplot(var_comp_all, aes(x = Model, y = Proportion, fill = Component)) +
+  geom_bar(stat = "identity") +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  labs(title = "Variance Decomposition: Evolution Across Models",
+       subtitle = "Systematic variance increases with better covariance structures",
+       y = "Proportion of Total Variance") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Use the best model for portfolio construction
+model_best <- model4
+```
+
+### Understanding the Variance Components
+
+Let's interpret what each variance component represents in our best model:
+
+```{r interpret-components}
+# Detailed analysis of the best model
+var_comp_best <- summary(model_best)$varcomp
+
+cat("\nDetailed Variance Component Analysis:\n")
+cat("=====================================\n")
+
+# Calculate information from each component
+total_var <- sum(var_comp_best[,1])
+
+for (i in 1:nrow(var_comp_best)) {
+  comp_name <- rownames(var_comp_best)[i]
+  comp_var <- var_comp_best[i, 1]
+  comp_prop <- comp_var / total_var
+  
+  cat("\n", comp_name, ":\n", sep = "")
+  cat("  Variance:", round(comp_var, 6), "\n")
+  cat("  Proportion:", round(comp_prop * 100, 1), "%\n")
+  
+  if (grepl("symbol.K_combined", comp_name)) {
+    cat("  Interpretation: Persistent asset-specific deviations structured by fundamental similarity\n")
+    cat("  This captures how similar assets tend to move together beyond factor exposures\n")
+  } else if (grepl("symbol_regime", comp_name)) {
+    cat("  Interpretation: Regime-dependent asset behavior\n")
+    cat("  This captures how asset relationships change in different market conditions\n")
+  } else if (grepl("time_factor", comp_name)) {
+    cat("  Interpretation: Time-period specific market shocks\n")
+    cat("  This captures common movements affecting all assets in specific periods\n")
+  } else if (grepl("units", comp_name)) {
+    cat("  Interpretation: Idiosyncratic (residual) variance\n")
+    cat("  This is unpredictable noise that we filter out for portfolio construction\n")
+  }
+}
+
+# Calculate effective heritability (proportion of systematic variance)
+systematic_var <- total_var - var_comp_best["units:units", 1]
+heritability <- systematic_var / total_var
+
+cat("\n\nKey Metrics:\n")
+cat("=============\n")
+cat("Total Systematic Variance Proportion:", round(heritability * 100, 1), "%\n")
+cat("This is analogous to heritability in genomic prediction\n")
+cat("\nCompare to basic model:", round(systematic_proportions$Systematic_Proportion[1] * 100, 1), "%\n")
+cat("Improvement:", round((heritability - systematic_proportions$Systematic_Proportion[1]) * 100, 1), "percentage points\n")
+```
+
+### Extracting BLUPs for Portfolio Construction
+
+Now we extract the Best Linear Unbiased Predictors (BLUPs) - these are the predicted random effects that we'll use to construct our systematic covariance matrix.
+
+```{r extract-blups}
+# Extract BLUPs (Best Linear Unbiased Predictors)
+# These are analogous to breeding values in genomic prediction
+blups <- model_best$U
+
+# Get fitted values and residuals
+data_sommer$fitted <- fitted(model_best)
+data_sommer$residual <- residuals(model_best)
+
+# Calculate the contribution of each variance component to fitted values
+# This helps us understand the systematic return structure
+
+# Asset effects (main genetic effects)
+asset_effects <- blups[grep("symbol.K_combined", names(blups))][[1]]
+names(asset_effects) <- assets_ordered
+
+# Time effects
+time_effects <- blups[["time_factor"]][[1]]
+
+# Regime-specific asset effects
+regime_effects <- blups[grep("symbol_regime", names(blups))][[1]]
+
+cat("\nAsset-Specific Effects (BLUPs):\n")
+cat("================================\n")
+print(round(sort(asset_effects, decreasing = TRUE), 5))
+cat("\nThese represent persistent deviations from the mean,")
+cat("\nstructured by asset similarity (like breeding values)\n")
+
+# Decompose fitted values to understand systematic patterns
+data_sommer <- data_sommer %>%
+  mutate(
+    # Fixed effect contribution
+    fixed_contribution = predict(model_best, classify = "fixed"),
+    # Random effect contributions can be calculated from BLUPs
+    systematic_return = fitted - residual
+  )
+
+# Visualize the decomposition for a few assets
+sample_assets <- c("IWM", "AGG", "GLD")
+sample_data <- data_sommer %>%
+  filter(symbol %in% sample_assets) %>%
+  slice_head(n = 100)
+
+ggplot(sample_data, aes(x = date)) +
+  geom_line(aes(y = return, color = "Observed"), size = 0.8) +
+  geom_line(aes(y = systematic_return, color = "Systematic"), size = 0.8) +
+  geom_line(aes(y = residual, color = "Residual"), size = 0.8, alpha = 0.5) +
+  facet_wrap(~ symbol, scales = "free_y") +
+  scale_color_manual(values = c("Observed" = "black", 
+                               "Systematic" = "blue", 
+                               "Residual" = "gray")) +
+  theme_minimal() +
+  labs(title = "Return Decomposition: Systematic vs Residual",
+       subtitle = "Mixed model separates predictable patterns from noise",
+       y = "Daily Return",
+       color = "Component")
+```
+
+This enhanced mixed model approach using `sommer` gives us several advantages:
+
+1. **Flexible Variance Components**: We can specify exactly how assets are related through custom covariance matrices
+2. **Multiple Relationship Matrices**: Different aspects of similarity (asset class, risk profile, factor exposure) can be modeled separately
+3. **Regime-Dependent Effects**: Relationships can change based on market conditions
+4. **Higher Systematic Variance**: By properly modeling asset relationships, we capture much more of the systematic variation
+
+The key insight is that by using relationship matrices, we're telling the model about the fundamental structure of our assets - just as genomic relationship matrices tell breeding models about the genetic structure of a population. This leads to better variance decomposition and more robust portfolio construction.
+
+## 5. Extracting Covariance Structures {#covariance-structures}
+
+Now comes the critical step: extracting different covariance matrices for different purposes.
+
+```{r covariance-extraction}
+# Extract model components
+data$fitted <- fitted(model)
+data$residual <- residuals(model)
+
+# Get the random effects
+ranef_model <- ranef(model)
+
+# Calculate expected returns (annualized) from the model
+expected_returns <- data %>%
+  group_by(symbol) %>%
+  summarise(
+    expected_return = mean(fitted) * 252,
+    total_volatility = sd(return) * sqrt(252),
+    systematic_volatility = sd(fitted) * sqrt(252),
+    idiosyncratic_volatility = sd(residual) * sqrt(252)
+  ) %>%
+  arrange(desc(expected_return))
+
+print("Model-Based Expected Returns and Risk Decomposition:")
+print(expected_returns)
+
+# Now extract covariance matrices
+# 1. SYSTEMATIC COVARIANCE (from fitted values)
+# This captures only the predictable, factor-driven relationships
+fitted_wide <- data %>%
+  select(date, symbol, fitted) %>%
+  pivot_wider(names_from = symbol, values_from = fitted)
+
+cov_systematic <- cov(fitted_wide[,-1], use = "complete.obs") * 252  # Annualized
+
+# 2. IDIOSYNCRATIC COVARIANCE (from residuals)
+# This captures asset-specific risks
+residual_wide <- data %>%
+  select(date, symbol, residual) %>%
+  pivot_wider(names_from = symbol, values_from = residual)
+
+cov_idiosyncratic <- cov(residual_wide[,-1], use = "complete.obs") * 252
+
+# 3. TOTAL COVARIANCE (for comparison with traditional approach)
+returns_wide <- data %>%
+  select(date, symbol, return) %>%
+  pivot_wider(names_from = symbol, values_from = return)
+
+cov_total <- cov(returns_wide[,-1], use = "complete.obs") * 252
+
+# Analyze the covariance structures
+cat("\nCovariance Structure Analysis:\n")
+cat("Average correlation - Systematic:", 
+    round(mean(cov2cor(cov_systematic)[upper.tri(cov2cor(cov_systematic))]), 3), "\n")
+cat("Average correlation - Total:", 
+    round(mean(cov2cor(cov_total)[upper.tri(cov2cor(cov_total))]), 3), "\n")
+
+# Visualize correlation structures
+par(mfrow = c(1, 2))
+corrplot(cov2cor(cov_systematic), method = "color", type = "upper",
+         title = "Systematic Correlations", mar = c(0,0,2,0))
+corrplot(cov2cor(cov_total), method = "color", type = "upper", 
+         title = "Total Correlations", mar = c(0,0,2,0))
+```
+
+### Key Insight: Why Systematic Covariance Matters
+
+The systematic covariance matrix:
+1. **Filters out noise** from idiosyncratic shocks
+2. **Reveals persistent relationships** driven by common factors
+3. **Is more stable** across different time periods
+4. **Leads to better out-of-sample performance**
+
+Think of it like this: if two stocks both respond to market risk in predictable ways, that relationship will persist. But if they happened to move together due to company-specific news, that's unlikely to repeat.
+
+## 6. Portfolio Construction {#portfolio-construction}
+
+Now let's construct portfolios using different covariance estimates and compare their properties.
+
+```{r portfolio-optimization}
+# Setup for optimization
+n_assets <- length(expected_returns$symbol)
+mu <- expected_returns$expected_return
+
+# Ensure matrices are positive definite
+cov_systematic <- as.matrix(nearPD(cov_systematic)$mat)
+cov_total <- as.matrix(nearPD(cov_total)$mat)
+
+# Function to find minimum variance portfolio
+find_min_var_portfolio <- function(Sigma) {
+  Dmat <- 2 * Sigma
+  dvec <- rep(0, n_assets)
+  Amat <- cbind(rep(1, n_assets), diag(n_assets))
+  bvec <- c(1, rep(0, n_assets))
+  
+  sol <- solve.QP(Dmat, dvec, Amat, bvec, meq = 1)
+  return(sol$solution)
+}
+
+# Find minimum variance portfolios
+w_systematic <- find_min_var_portfolio(cov_systematic)
+w_total <- find_min_var_portfolio(cov_total)
+
+# Calculate portfolio properties
+calc_portfolio_stats <- function(weights, mu, Sigma_calc, Sigma_true) {
+  ret <- sum(weights * mu)
+  vol_calc <- sqrt(t(weights) %*% Sigma_calc %*% weights)
+  vol_true <- sqrt(t(weights) %*% Sigma_true %*% weights)
+  sharpe <- ret / vol_true
+  
+  return(c(
+    Return = ret,
+    Vol_Estimated = vol_calc,
+    Vol_True = vol_true,
+    Sharpe = sharpe,
+    Max_Weight = max(weights),
+    Effective_N = 1/sum(weights^2)
+  ))
+}
+
+# Compare portfolios
+portfolio_comparison <- data.frame(
+  Systematic = calc_portfolio_stats(w_systematic, mu, cov_systematic, cov_total),
+  Total = calc_portfolio_stats(w_total, mu, cov_total, cov_total)
+)
+
+print("Portfolio Comparison:")
+print(round(portfolio_comparison, 3))
+
+# Visualize portfolio weights
+weights_df <- data.frame(
+  Asset = expected_returns$symbol,
+  Systematic = w_systematic * 100,
+  Total = w_total * 100
+) %>%
+  pivot_longer(-Asset, names_to = "Method", values_to = "Weight")
+
+ggplot(weights_df, aes(x = Asset, y = Weight, fill = Method)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_minimal() +
+  labs(title = "Portfolio Weights Comparison",
+       subtitle = "Systematic vs Total Covariance Optimization",
+       y = "Weight (%)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+### Understanding the Results
+
+Notice how the systematic covariance approach:
+1. **Produces more concentrated portfolios** (lower effective N)
+2. **May underestimate risk** when evaluated against total covariance
+3. **Focuses on assets with stable factor exposures**
+
+This is exactly analogous to genomic selection focusing on individuals with favorable breeding values, even if their phenotypic performance includes environmental noise.
+
+## 7. Validation and Comparison {#validation}
+
+Let's validate our approach using out-of-sample testing.
+
+```{r validation}
+# Split data into train/test
+test_start <- max(data$date) - 252  # Last year for testing
+train_data <- data %>% filter(date < test_start)
+test_data <- data %>% filter(date >= test_start)
+
+# Refit model on training data only
+model_train <- update(model, data = train_data)
+
+# Extract covariances from training period
+train_fitted <- fitted(model_train)
+train_data_with_fitted <- train_data
+train_data_with_fitted$fitted <- train_fitted
+
+# Recalculate covariances using only training data
+fitted_wide_train <- train_data_with_fitted %>%
+  select(date, symbol, fitted) %>%
+  pivot_wider(names_from = symbol, values_from = fitted)
+
+cov_systematic_train <- cov(fitted_wide_train[,-1], use = "complete.obs") * 252
+
+returns_wide_train <- train_data %>%
+  select(date, symbol, return) %>%
+  pivot_wider(names_from = symbol, values_from = return)
+
+cov_total_train <- cov(returns_wide_train[,-1], use = "complete.obs") * 252
+
+# Get expected returns from training period
+mu_train <- train_data %>%
+  group_by(symbol) %>%
+  summarise(expected_return = mean(fitted(model_train)) * 252) %>%
+  arrange(match(symbol, colnames(cov_systematic_train))) %>%
+  pull(expected_return)
+
+# Optimize portfolios using training data
+cov_systematic_train <- as.matrix(nearPD(cov_systematic_train)$mat)
+cov_total_train <- as.matrix(nearPD(cov_total_train)$mat)
+
+w_systematic_train <- find_min_var_portfolio(cov_systematic_train)
+w_total_train <- find_min_var_portfolio(cov_total_train)
+
+# Traditional approach for comparison
+mu_traditional <- colMeans(returns_wide_train[,-1], na.rm = TRUE) * 252
+w_traditional <- find_min_var_portfolio(cov_total_train)
+
+# Evaluate on test set
+test_returns_wide <- test_data %>%
+  select(date, symbol, return) %>%
+  pivot_wider(names_from = symbol, values_from = return)
+
+# Calculate daily portfolio returns
+portfolio_returns <- test_returns_wide %>%
+  mutate(
+    Systematic = rowSums(sweep(as.matrix(.[,-1]), 2, w_systematic_train, "*"), na.rm = TRUE),
+    Total = rowSums(sweep(as.matrix(.[,-1]), 2, w_total_train, "*"), na.rm = TRUE),
+    Traditional = rowSums(sweep(as.matrix(.[,-1]), 2, w_traditional, "*"), na.rm = TRUE)
+  ) %>%
+  select(date, Systematic, Total, Traditional)
+
+# Calculate performance metrics
+performance <- portfolio_returns %>%
+  select(-date) %>%
+  summarise_all(list(
+    Return = ~mean(., na.rm = TRUE) * 252,
+    Volatility = ~sd(., na.rm = TRUE) * sqrt(252),
+    Sharpe = ~mean(., na.rm = TRUE) / sd(., na.rm = TRUE) * sqrt(252),
+    MaxDD = ~min(cumsum(.), na.rm = TRUE)
+  ))
+
+print("Out-of-Sample Performance (Test Period):")
+print(round(t(performance), 3))
+
+# Visualize cumulative returns
+cumulative_returns <- portfolio_returns %>%
+  mutate(across(-date, ~cumprod(1 + .) - 1)) %>%
+  pivot_longer(-date, names_to = "Method", values_to = "Cumulative_Return")
+
+ggplot(cumulative_returns, aes(x = date, y = Cumulative_Return, color = Method)) +
+  geom_line(size = 1) +
+  theme_minimal() +
+  labs(title = "Out-of-Sample Cumulative Returns",
+       subtitle = "Comparing portfolio construction methods",
+       y = "Cumulative Return",
+       x = "") +
+  scale_y_continuous(labels = scales::percent)
+```
+
+## 8. Practical Implementation Guide {#implementation-guide}
+
+### When to Use This Approach
+
+The mixed model approach works best when:
+
+1. **You have a clear factor structure**: Market factors that drive returns
+2. **Regime changes matter**: Different market environments affect relationships
+3. **You want robust portfolios**: Less sensitive to estimation error
+4. **Long-term investing**: Focus on persistent relationships
+
+### Implementation Checklist
+
+1. **Data Requirements**
+   - At least 3-5 years of daily returns
+   - Relevant market factors (market return, VIX, term spread, etc.)
+   - Clear regime definitions (volatility-based, economic, or time-based)
+
+2. **Model Specification**
+   - Start simple: basic factor loadings + one random effect
+   - Test different random effect structures
+   - Validate using out-of-sample data
+
+3. **Portfolio Construction**
+   - Use systematic covariance for asset allocation
+   - Report risk using total covariance (conservative)
+   - Consider blending approaches based on market conditions
+
+4. **Monitoring and Rebalancing**
+   - Refit models quarterly or when regimes change
+   - Monitor the variance decomposition over time
+   - Track out-of-sample performance versus benchmarks
+
+### Code Template for Production Use
+
+```{r production-template, eval=FALSE}
+# Production-ready function
+optimize_portfolio_mixed_model <- function(returns_data, 
+                                         factors_data,
+                                         lookback_days = 756,  # 3 years
+                                         rebalance_frequency = "quarterly") {
+  
+  # 1. Prepare data
+  model_data <- prepare_model_data(returns_data, factors_data)
+  
+  # 2. Fit mixed model
+  model <- lmer(
+    return ~ symbol + symbol:market_return + symbol:vix_change +
+      (1 | year_month) + (1 | symbol:regime),
+    data = model_data,
+    REML = TRUE
+  )
+  
+  # 3. Extract systematic covariance
+  fitted_vals <- fitted(model)
+  cov_systematic <- calculate_systematic_covariance(fitted_vals, model_data)
+  
+  # 4. Optimize portfolio
+  weights <- optimize_minimum_variance(cov_systematic)
+  
+  # 5. Calculate risk metrics using total covariance
+  cov_total <- calculate_total_covariance(returns_data)
+  risk_metrics <- calculate_risk_metrics(weights, cov_total)
+  
+  return(list(
+    weights = weights,
+    model = model,
+    risk_metrics = risk_metrics,
+    covariances = list(systematic = cov_systematic, total = cov_total)
+  ))
+}
+```
+
+## 9. Conclusions {#conclusions}
+
+### Key Takeaways
+
+1. **Mixed models provide a principled approach** to separating signal from noise in return covariances
+
+2. **The systematic covariance captures persistent relationships** that are more likely to hold out-of-sample
+
+3. **This approach naturally incorporates regime changes** and time-varying relationships
+
+4. **The genomic prediction analogy is powerful**: just as breeders select on genetic potential rather than observed phenotypes, investors should allocate based on systematic relationships rather than total historical covariance
+
+### The Bigger Picture
+
+This methodology represents a paradigm shift in portfolio construction:
+
+- **From**: Using all historical data equally
+- **To**: Focusing on the components that matter for prediction
+
+- **From**: Assuming stationary relationships
+- **To**: Modeling regime-dependent behavior
+
+- **From**: Point estimates of parameters
+- **To**: Hierarchical models with natural shrinkage
+
+### Future Directions
+
+1. **Bayesian Implementation**: Use MCMC to get full posterior distributions of portfolio weights
+
+2. **Dynamic Factor Models**: Allow factor loadings to evolve smoothly over time
+
+3. **Machine Learning Integration**: Use ML to select factors and define regimes
+
+4. **Multi-Asset Extensions**: Apply to global asset allocation across currencies, commodities, and alternatives
+
+The intersection of quantitative genetics and finance is rich with possibilities. Just as genomic prediction revolutionized agriculture, these methods can transform how we think about portfolio construction.
+
+### References
+
+- Henderson, C.R. (1975). "Best Linear Unbiased Estimation and Prediction under a Selection Model"
+- Ledoit, O. & Wolf, M. (2003). "Improved Estimation of the Covariance Matrix of Stock Returns"
+- VanRaden, P.M. (2008). "Efficient Methods to Compute Genomic Predictions"
+- DeMiguel, V., Garlappi, L., & Uppal, R. (2009). "Optimal Versus Naive Diversification"
