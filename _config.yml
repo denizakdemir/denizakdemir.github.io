@@ -40,6 +40,8 @@ url: "https://denizakdemir.github.io"
 # The base URL of your site
 baseurl: ""
 
+permalink: /:year/:month/:day/:title.html
+
 github:
   username: denizakdemir # change to your GitHub username
 
