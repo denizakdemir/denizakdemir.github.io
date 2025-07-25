@@ -1,6 +1,6 @@
 ---
 title: "Causal Inference for Treatment Effects in Clinical Data: A Double Machine Learning Approach"
-author: deniz
+author: Deniz Akdemir
 date: 2025-01-25 10:00:00 -0800
 categories: [Machine Learning, Causal Inference]
 tags: [Double Machine Learning, Clinical Data, Treatment Effects, NHEFS, Smoking Cessation]
