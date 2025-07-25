@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Causal Inference for Treatment Effects in Clinical Data</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        .intro {
+            background-color: #ecf0f1;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #3498db;
+        }
+        .output {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            line-height: 1.4;
+        }
+        .section {
+            margin-bottom: 50px;
+        }
+        .math {
+            background-color: #f0f0f0;
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 5px 0;
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+        }
+        .concept-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .conclusion {
+            background-color: #e8f5e9;
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 40px;
+            border-left: 4px solid #4caf50;
+        }
+        ul {
+            line-height: 1.8;
+        }
+        .highlight {
+            background-color: #ffeb3b;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .method-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .method-box {
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .method-box h3 {
+            margin-top: 0;
+            color: #555;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Causal Inference for Treatment Effects in Clinical Data: A Double Machine Learning Approach</h1>
+        
+        <div class="intro">
+            <p><strong>Research Question:</strong> Does quitting smoking cause weight gain?</p>
+            <p>This analysis demonstrates how to use <strong>Double Machine Learning (DML)</strong> to estimate causal effects from observational data. We analyze data from the National Health and Nutrition Examination Follow-up Study (NHEFS) to determine the causal effect of smoking cessation on weight change.</p>
+        </div>
+
+        <div class="section">
+            <h2>Background: The Challenge of Causal Inference</h2>
+            <p>In clinical research, we often want to know: <em>What is the causal effect of a treatment?</em> While randomized controlled trials (RCTs) are the gold standard, they're not always feasible. This leaves us with observational data, where treatment assignment is not random.</p>
+            
+            <div class="concept-box">
+                <h3>The Fundamental Problem of Causal Inference</h3>
+                <p>For each patient, we can only observe one outcome:</p>
+                <ul>
+                    <li>What happened when they <strong>did</strong> receive the treatment, OR</li>
+                    <li>What happened when they <strong>didn't</strong> receive the treatment</li>
+                </ul>
+                <p>We can never observe both outcomes for the same person!</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>The Potential Outcomes Framework</h2>
+            <p>We formalize causality using potential outcomes:</p>
+            <ul>
+                <li><code>Y(1)</code>: The outcome if the person quits smoking</li>
+                <li><code>Y(0)</code>: The outcome if the person continues smoking</li>
+            </ul>
+            <p>The <strong>causal effect</strong> for an individual is: <span class="math">Y(1) - Y(0)</span></p>
+            <p>The <strong>Average Treatment Effect (ATE)</strong> is: <span class="math">E[Y(1) - Y(0)]</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Why Simple Comparisons Fail: Confounding</h2>
+            <img src="confounding_diagram.png" alt="Confounding Diagram" style="max-width: 500px;">
+            <p>In observational data, <strong>confounders</strong> affect both treatment assignment and outcomes. For example:</p>
+            <ul>
+                <li>Older patients might be more motivated to quit smoking (affects treatment)</li>
+                <li>Age also affects weight change patterns (affects outcome)</li>
+            </ul>
+            <p>This creates bias in naive comparisons!</p>
+        </div>
+
+        <div class="section">
+            <h2>Double Machine Learning: A Modern Solution</h2>
+            
+            <div class="method-comparison">
+                <div class="method-box">
+                    <h3>❌ Naive Approach</h3>
+                    <p>Simple linear regression:</p>
+                    <code>Y ~ Treatment + Confounders</code>
+                    <p>Assumes linear relationships and may miss complex confounding patterns.</p>
+                </div>
+                <div class="method-box">
+                    <h3>✅ Double ML</h3>
+                    <p>Uses TWO machine learning models:</p>
+                    <ol>
+                        <li>Predict outcome from confounders</li>
+                        <li>Predict treatment from confounders</li>
+                    </ol>
+                    <p>Then analyzes residuals to isolate causal effect.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Analysis Results</h2>
+            <div class="output">================================================================================
+CAUSAL INFERENCE FOR TREATMENT EFFECTS IN CLINICAL DATA
+A Double Machine Learning Approach
+================================================================================
+
+
+## Section 1: Load Libraries and Dataset
+------------------------------------------------------------
+Dataset: National Health and Nutrition Examination Follow-up Study (NHEFS)
+Research Question: What is the causal effect of smoking cessation on weight change?
+
+Shape of Y (Weight Change): (1566,)
+Shape of T (Quit Smoking): (1566,)
+Shape of X (Confounders): (1566, 17)
+
+Treatment distribution: {0.0: 1163, 1.0: 403}
+Mean weight change: 2.64 kg (std: 7.88 kg)
+
+First 5 rows of confounders:
+   sex   age  race  education  ...  polio  tumor  asthma  bronch
+0    0  42.0     1          0  ...    0.0    0.0     0.0     0.0
+1    0  36.0     0          1  ...    0.0    0.0     0.0     0.0
+2    1  56.0     1          1  ...    0.0    1.0     0.0     0.0
+3    0  68.0     1          0  ...    0.0    0.0     0.0     0.0
+4    0  40.0     0          1  ...    0.0    0.0     0.0     0.0
+
+[5 rows x 17 columns]
+
+
+## Section 2: Naive Approach - Simple Regression
+------------------------------------------------------------
+Naive ATE Estimate (from Linear Regression): 3.3424 kg
+
+
+## Section 3: Causal Estimation with Double Machine Learning
+------------------------------------------------------------
+Fitting DML model (this may take a moment)...
+DML ATE Estimate: 3.5646 kg
+(Confidence intervals not available with current configuration)
+
+
+## Section 4: Comparing Naive and DML Estimates
+------------------------------------------------------------
+Comparison of Treatment Effect Estimates
+(Effect of quitting smoking on weight change in kg)
+
+Naive ATE Estimate: 3.342 kg
+DML ATE Estimate:   3.565 kg
+
+Difference: 0.222 kg
+
+Interpretation: Quitting smoking causes an average weight gain of 3.565 kg.
+
+
+## Section 5: Sensitivity Analysis
+------------------------------------------------------------
+Running bootstrap analysis (10 iterations for demonstration)...
+
+Bootstrap results (n=10 successful iterations):
+Bootstrap mean estimate: 3.386 kg
+Bootstrap std error: 0.374 kg
+Bootstrap 95% CI: [2.904, 4.028]
+
+
+Heterogeneous Treatment Effects by Sex:
+  Female: 3.595 kg
+  Male: 3.529 kg
+
+================================================================================
+Analysis Complete!
+
+Summary: The analysis suggests that quitting smoking has a causal effect on weight change.
+The DML estimate accounts for complex confounding patterns that simple regression might miss.
+</div>
+        </div>
+
+        <div class="conclusion">
+            <h2>Key Findings</h2>
+            <p><strong>Main Result:</strong> Our analysis shows that quitting smoking causes weight gain, with the Double ML approach providing a more reliable estimate than naive regression.</p>
+            
+            <h3>Why This Matters</h3>
+            <ul>
+                <li><strong>For Patients:</strong> Understanding expected weight gain helps set realistic expectations when quitting smoking</li>
+                <li><strong>For Clinicians:</strong> Can better counsel patients and develop support strategies</li>
+                <li><strong>For Public Health:</strong> The health benefits of quitting smoking far outweigh modest weight gain</li>
+            </ul>
+            
+            <h3>Methodological Insights</h3>
+            <p>Double Machine Learning demonstrates how modern machine learning can enhance causal inference by:</p>
+            <ul>
+                <li>Flexibly modeling complex confounding relationships</li>
+                <li>Avoiding overfitting through cross-fitting</li>
+                <li>Providing theoretically grounded causal estimates</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
