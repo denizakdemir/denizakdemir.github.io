@@ -16,13 +16,6 @@ render_with_liquid: false
     margin-left: auto;
     margin-right: auto;
 }
-.fluid-row {
-    display: flex;
-    flex-wrap: wrap;
-}
-.col-md-12 {
-    width: 100%;
-}
 pre {
     background-color: #f8f9fa;
     border: 1px solid #dee2e6;
@@ -42,366 +35,26 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: 2rem;
     margin-bottom: 1rem;
 }
+table {
+    border-collapse: collapse;
+    margin: 1rem 0;
+    width: 100%;
+}
+table, th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+th {
+    background-color: #f2f2f2;
+}
 .plotly {
     margin: 1rem 0;
 }
-/* Hide any remaining JavaScript artifacts */
-.js-removed {
-    display: none;
+.section {
+    margin-bottom: 2rem;
 }
 </style>
 
-
-<style>"+b+"</style>
-<style media="'+a+'"> #mq-test-1 { width: 42px; }</style>
-<style>h1 {font-size: 34px;}
-h1.title {font-size: 38px;}
-h2 {font-size: 30px;}
-h3 {font-size: 24px;}
-h4 {font-size: 18px;}
-h5 {font-size: 16px;}
-h6 {font-size: 12px;}
-code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
-pre:not([class]) { background-color: white }</style>
-<style>*{ cursor: "+o.cursor+" !important; }</style>
-<style type="text/css">
-
-.tocify {
-width: 20%;
-max-height: 90%;
-overflow: auto;
-margin-left: 2%;
-position: fixed;
-border: 1px solid #ccc;
-border-radius: 6px;
-}
-
-.tocify ul, .tocify li {
-list-style: none;
-margin: 0;
-padding: 0;
-border: none;
-line-height: 30px;
-}
-
-.tocify-header {
-text-indent: 10px;
-}
-
-.tocify-subheader {
-text-indent: 20px;
-display: none;
-}
-
-.tocify-subheader li {
-font-size: 12px;
-}
-
-.tocify-subheader .tocify-subheader {
-text-indent: 30px;
-}
-.tocify-subheader .tocify-subheader .tocify-subheader {
-text-indent: 40px;
-}
-.tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader {
-text-indent: 50px;
-}
-.tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader {
-text-indent: 60px;
-}
-
-.tocify .tocify-item > a, .tocify .nav-list .nav-header {
-margin: 0px;
-}
-
-.tocify .tocify-item a, .tocify .list-group-item {
-padding: 5px;
-}
-.tocify .nav-pills > li {
-float: none;
-}
-
-
-</style>
-<style type="text/css">@layer htmltools {
-.html-fill-container {
-display: flex;
-flex-direction: column;
-
-min-height: 0;
-min-width: 0;
-}
-.html-fill-container > .html-fill-item {
-
-flex: 1 1 auto;
-min-height: 0;
-min-width: 0;
-}
-.html-fill-container > :not(.html-fill-item) {
-
-flex: 0 0 auto;
-}
-}
-</style>
-<style type="text/css">.container-fluid.crosstalk-bscols{margin-left:-30px;margin-right:-30px;white-space:normal}body>.container-fluid.crosstalk-bscols{margin-left:auto;margin-right:auto}.crosstalk-input-checkboxgroup .crosstalk-options-group .crosstalk-options-column{display:inline-block;padding-right:12px;vertical-align:top}@media only screen and (max-width: 480px){.crosstalk-input-checkboxgroup .crosstalk-options-group .crosstalk-options-column{display:block;padding-right:inherit}}.crosstalk-input{margin-bottom:15px}.crosstalk-input .control-label{margin-bottom:0;vertical-align:middle}.crosstalk-input input[type="checkbox"]{margin:4px 0 0;margin-top:1px;line-height:normal}.crosstalk-input .checkbox{position:relative;display:block;margin-top:10px;margin-bottom:10px}.crosstalk-input .checkbox>label{padding-left:20px;margin-bottom:0;font-weight:400;cursor:pointer}.crosstalk-input .checkbox input[type="checkbox"],.crosstalk-input .checkbox-inline input[type="checkbox"]{position:absolute;margin-top:2px;margin-left:-20px}.crosstalk-input .checkbox+.checkbox{margin-top:-5px}.crosstalk-input .checkbox-inline{position:relative;display:inline-block;padding-left:20px;margin-bottom:0;font-weight:400;vertical-align:middle;cursor:pointer}.crosstalk-input .checkbox-inline+.checkbox-inline{margin-top:0;margin-left:10px}
-</style>
-<style type="text/css">
-slide:not(.current) .plotly.html-widget{
-display: none;
-}
-</style>
-<style>.cls-1 {fill: #3f4f75;} .cls-2 {fill: #80cfbe;} .cls-3 {fill: #fff;}</style>
-<style type="text/css">
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-</style>
-<style type="text/css">
-code {
-white-space: pre;
-}
-.sourceCode {
-overflow: visible;
-}
-</style>
-<style type="text/css" data-origin="pandoc">
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-{ counter-reset: source-line 0; }
-pre.numberSource code > span
-{ position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-{ content: counter(source-line);
-position: relative; left: -1em; text-align: right; vertical-align: baseline;
-border: none; display: inline-block;
--webkit-touch-callout: none; -webkit-user-select: none;
--khtml-user-select: none; -moz-user-select: none;
--ms-user-select: none; user-select: none;
-padding: 0 4px; width: 4em;
-color: #aaaaaa;
-}
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
-div.sourceCode
-{ background-color: #f8f8f8; }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ef2929; } 
-code span.an { color: #8f5902; font-weight: bold; font-style: italic; } 
-code span.at { color: #204a87; } 
-code span.bn { color: #0000cf; } 
-code span.cf { color: #204a87; font-weight: bold; } 
-code span.ch { color: #4e9a06; } 
-code span.cn { color: #8f5902; } 
-code span.co { color: #8f5902; font-style: italic; } 
-code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } 
-code span.do { color: #8f5902; font-weight: bold; font-style: italic; } 
-code span.dt { color: #204a87; } 
-code span.dv { color: #0000cf; } 
-code span.er { color: #a40000; font-weight: bold; } 
-code span.ex { } 
-code span.fl { color: #0000cf; } 
-code span.fu { color: #204a87; font-weight: bold; } 
-code span.im { } 
-code span.in { color: #8f5902; font-weight: bold; font-style: italic; } 
-code span.kw { color: #204a87; font-weight: bold; } 
-code span.op { color: #ce5c00; font-weight: bold; } 
-code span.ot { color: #8f5902; } 
-code span.pp { color: #8f5902; font-style: italic; } 
-code span.sc { color: #ce5c00; font-weight: bold; } 
-code span.ss { color: #4e9a06; } 
-code span.st { color: #4e9a06; } 
-code span.va { color: #000000; } 
-code span.vs { color: #4e9a06; } 
-code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } 
-.sourceCode .row {
-width: 100%;
-}
-.sourceCode {
-overflow-x: auto;
-}
-.code-folding-btn {
-margin-right: -30px;
-}
-</style>
-<style type="text/css">
-.main-container {
-max-width: 940px;
-margin-left: auto;
-margin-right: auto;
-}
-img {
-max-width:100%;
-}
-.tabbed-pane {
-padding-top: 12px;
-}
-.html-widget {
-margin-bottom: 20px;
-}
-button.code-folding-btn:focus {
-outline: none;
-}
-summary {
-display: list-item;
-}
-details > summary > p:only-child {
-display: inline;
-}
-pre code {
-padding: 0;
-}
-</style>
-<style type="text/css">
-.tabset-dropdown > .nav-tabs {
-display: inline-table;
-max-height: 500px;
-min-height: 44px;
-overflow-y: auto;
-border: 1px solid #ddd;
-border-radius: 4px;
-}
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "\e259";
-font-family: 'Glyphicons Halflings';
-display: inline-block;
-padding: 10px;
-border-right: 1px solid #ddd;
-}
-.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "\e258";
-font-family: 'Glyphicons Halflings';
-border: none;
-}
-.tabset-dropdown > .nav-tabs > li.active {
-display: block;
-}
-.tabset-dropdown > .nav-tabs > li > a,
-.tabset-dropdown > .nav-tabs > li > a:focus,
-.tabset-dropdown > .nav-tabs > li > a:hover {
-border: none;
-display: inline-block;
-border-radius: 4px;
-background-color: transparent;
-}
-.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
-display: block;
-float: none;
-}
-.tabset-dropdown > .nav-tabs > li {
-display: none;
-}
-</style>
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
-<style type="text/css">
-#TOC {
-margin: 25px 0px 20px 0px;
-}
-@media (max-width: 768px) {
-#TOC {
-position: relative;
-width: 100%;
-}
-}
-@media print {
-.toc-content {
-
-float: right;
-}
-}
-.toc-content {
-padding-left: 30px;
-padding-right: 40px;
-}
-div.main-container {
-max-width: 1200px;
-}
-div.tocify {
-width: 20%;
-max-width: 260px;
-max-height: 85%;
-}
-@media (min-width: 768px) and (max-width: 991px) {
-div.tocify {
-width: 25%;
-}
-}
-@media (max-width: 767px) {
-div.tocify {
-width: 100%;
-max-width: none;
-}
-}
-.tocify ul, .tocify li {
-line-height: 20px;
-}
-.tocify-subheader .tocify-item {
-font-size: 0.90em;
-}
-.tocify .list-group-item {
-border-radius: 0px;
-}
-</style>
-
-<div class="portfolio-content">
-
-
-
-<div class="container-fluid main-container">
-
-
-<!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row">
-<div class="col-xs-12 col-sm-4 col-md-3">
-<div id="TOC" class="tocify">
-</div>
-</div>
-
-<div class="toc-content col-xs-12 col-sm-8 col-md-9">
-
-
-
-
-<div id="header">
-
-<div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
-
-
-
-<h1 class="title toc-ignore">How to Use Mixed Models to Improve
-Portfolio Performance</h1>
-<h4 class="author">Deniz Akdemir</h4>
-<h4 class="date">2025-07-05</h4>
-
-</div>
-
-
-<div id="portfolio-optimization-using-mixed-models" class="section level1">
 <h1>Portfolio Optimization Using Mixed Models</h1>
 <div id="executive-summary" class="section level2">
 <h2>Executive Summary</h2>
@@ -498,7 +151,8 @@ common starting point for factor models.</li>
 <p>The classical Markowitz approach minimizes portfolio variance for a
 target return:</p>
 <p><span class="math display">\[min_{w} \quad w^T \Sigma w \quad
-</span></p>
+\text{subject to} \quad w^T \mu \geq r_{target}, \quad w^T \mathbf{1} =
+1\]</span></p>
 <p>Where <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\Sigma\)</span> are typically estimated as sample
 means and covariances. The problem? These estimates are extremely noisy,
 leading to error maximization rather than risk minimization.</p>
@@ -508,7 +162,7 @@ leading to error maximization rather than risk minimization.</p>
 <p>Instead of using raw historical data, we model returns using a mixed
 linear model:</p>
 <p><span class="math display">\[r_{it} = \mu + \beta_i^T X_t + u_{it} +
-</span></p>
+\epsilon_{it}\]</span></p>
 <p>where:</p>
 <ul>
 <li><span class="math inline">\(r_{it}\)</span> = return of asset <span class="math inline">\(i\)</span> at time <span class="math inline">\(t\)</span></li>
@@ -538,7 +192,8 @@ models.</li>
 <h3>Variance Decomposition</h3>
 <p>The total variance of returns for an asset is decomposed into:</p>
 <p><span class="math display">\[\text{Var}(r_{it}) =
-</span></p>
+\text{Var}(\beta_i^T X_t) + \text{Var}(u_{it}) +
+\text{Var}(\epsilon_{it})\]</span></p>
 <ul>
 <li><strong>Systematic Covariance</strong>: The portion we use for
 strategic allocation. It’s derived from the fixed effects (<span class="math inline">\(eta_i^T X_t\)</span>) and the structured random
@@ -610,7 +265,6 @@ factors.</p>
 <span id="cb1-51"><a href="#cb1-51" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>)</span>
 <span id="cb1-52"><a href="#cb1-52" tabindex="-1"></a><span class="fu">ggplotly</span>(p_returns)</span></code></pre></div>
 <div class="plotly html-widget html-fill-item" id="htmlwidget-9eceb20dc2a931752ae4" style="width:672px;height:480px;"></div>
-
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Also get market factors (we&#39;ll use VIX as an example)</span></span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>vix <span class="ot">&lt;-</span> <span class="fu">tq_get</span>(<span class="st">&quot;^VIX&quot;</span>, <span class="at">from =</span> start_date, <span class="at">to =</span> end_date, <span class="at">get =</span> <span class="st">&quot;stock.prices&quot;</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(date, <span class="at">vix =</span> adjusted)</span>
@@ -815,7 +469,6 @@ few different ways to measure similarity.</p>
 <span id="cb4-142"><a href="#cb4-142" tabindex="-1"></a><span class="co"># Create plot for the combined matrix</span></span>
 <span id="cb4-143"><a href="#cb4-143" tabindex="-1"></a><span class="fu">plot_relationship_matrix</span>(K_combined, <span class="st">&quot;Combined Asset Similarity Matrix&quot;</span>)</span></code></pre></div>
 <div class="plotly html-widget html-fill-item" id="htmlwidget-f30d7598595affc4f25a" style="width:672px;height:480px;"></div>
-
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Print similarity between select asset pairs to build intuition</span></span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Example Similarities (Combined Matrix):</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
 <pre><code>## 
@@ -979,7 +632,6 @@ asset from the mean.</p>
 <span id="cb26-30"><a href="#cb26-30" tabindex="-1"></a></span>
 <span id="cb26-31"><a href="#cb26-31" tabindex="-1"></a><span class="fu">ggplotly</span>(p_decomp)</span></code></pre></div>
 <div class="plotly html-widget html-fill-item" id="htmlwidget-b85bf888dc62471906a9" style="width:672px;height:480px;"></div>
-
 </div>
 </div>
 <div id="covariance-structures" class="section level2">
@@ -1244,7 +896,6 @@ systematic and total covariance matrices and compare their weights.</p>
 <span id="cb30-16"><a href="#cb30-16" tabindex="-1"></a></span>
 <span id="cb30-17"><a href="#cb30-17" tabindex="-1"></a><span class="fu">ggplotly</span>(p_weights)</span></code></pre></div>
 <div class="plotly html-widget html-fill-item" id="htmlwidget-88fdd2a34d502a66744b" style="width:672px;height:480px;"></div>
-
 <div id="understanding-the-results" class="section level3">
 <h3>Understanding the Results</h3>
 <p>Notice how the portfolio based on <strong>systematic
@@ -1361,7 +1012,6 @@ unseen test data.</p>
 <span id="cb32-13"><a href="#cb32-13" tabindex="-1"></a></span>
 <span id="cb32-14"><a href="#cb32-14" tabindex="-1"></a><span class="fu">ggplotly</span>(p_cumulative)</span></code></pre></div>
 <div class="plotly html-widget html-fill-item" id="htmlwidget-8e1fe96c0688a849169a" style="width:672px;height:480px;"></div>
-
 <p>The out-of-sample results typically show that the portfolio built on
 <strong>systematic covariance</strong> is more robust, often exhibiting
 lower volatility and better risk-adjusted returns (Sharpe Ratio) because
@@ -1525,18 +1175,66 @@ distributions like the Student’s t-distribution.</li>
 </div>
 
 
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
 
 <!-- tabsets -->
 
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
 
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
 
 <!-- code folding -->
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
 
+$(document).ready(function ()  {
 
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
 
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
 
-
-
-</div>
