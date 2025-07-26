@@ -4,7 +4,7 @@ author: Deniz Akdemir
 date: 2025-07-05
 categories: [Finance, Machine Learning]
 tags: [portfolio-optimization, mixed-models, covariance-estimation, R, quantitative-finance]
-output: jekyllthat::jekylldown
+math: true
 ---
 
 # Portfolio Optimization Using Mixed Models
@@ -92,11 +92,9 @@ underlying assumptions:
 The classical Markowitz approach minimizes portfolio variance for a
 target return:
 
-``` math
-min_{w} \quad w^T \Sigma w \quad \text{subject to} \quad w^T \mu \geq r_{target}, \quad w^T \mathbf{1} = 1
-```
+$$min_{w} \quad w^T \Sigma w \quad \text{subject to} \quad w^T \mu \geq r_{target}, \quad w^T \mathbf{1} = 1$$
 
-Where $`\mu`$ and $`\Sigma`$ are typically estimated as sample means and
+Where $\mu$ and $\Sigma$ are typically estimated as sample means and
 covariances. The problem? These estimates are extremely noisy, leading
 to error maximization rather than risk minimization.
 
@@ -105,21 +103,19 @@ to error maximization rather than risk minimization.
 Instead of using raw historical data, we model returns using a mixed
 linear model:
 
-``` math
-r_{it} = \mu + \b\beta_i^T X_t + u_{it} + \epsilon_{it}
-```
+$$r_{it} = \mu + \beta_i^T X_t + u_{it} + \epsilon_{it}$$
 
 where:
 
-- $`r_{it}`$ = return of asset $`i`$ at time $`t`$
-- $`\mu`$ = overall intercept
-- $`\beta_i`$ = asset $`i`$’s factor loadings (fixed effects)
-- $`X_t`$ = observed market factors at time $`t`$ (fixed effects)
-- $`u_{it}`$ = random effect capturing persistent deviations structured
-  by asset similarity. This is our “breeding value”.
-- $`\epsilon_{it}`$ = residual (idiosyncratic) error
+- $r_{it}$ = return of asset $i$ at time $t$
+- $\mu$ = overall intercept
+- $\beta_i$ = asset $i$’s factor loadings (fixed effects)
+- $X_t$ = observed market factors at time $t$ (fixed effects)
+- $u_{it}$ = random effect capturing persistent deviations structured by
+  asset similarity. This is our “breeding value”.
+- $\epsilon_{it}$ = residual (idiosyncratic) error
 
-The key insight is that by modeling $`u_{it}`$ as a random effect with a
+The key insight is that by modeling $u_{it}$ as a random effect with a
 covariance structure derived from fundamental asset characteristics (our
 “genomic relationship matrix”), we can:
 
@@ -133,18 +129,16 @@ covariance structure derived from fundamental asset characteristics (our
 
 The total variance of returns for an asset is decomposed into:
 
-``` math
-\text{Var}(r_{it}) = \text{Var}(\b\beta_i^T X_t) + \text{Var}(u_{it}) + \text{Var}(\epsilon_{it})
-```
+$$\text{Var}(r_{it}) = \text{Var}(\beta_i^T X_t) + \text{Var}(u_{it}) + \text{Var}(\epsilon_{it})$$
 
 - **Systematic Covariance**: The portion we use for strategic
-  allocation. It’s derived from the fixed effects ($`\beta_i^T X_t`$) and
-  the structured random effects ($`u_{it}`$). This represents the
-  stable, predictable part of asset co-movement.
-- **Idiosyncratic Variance**: $`\text{Var}(\epsilon_{it})`$ - This is
-  the unpredictable, asset-specific noise that we want to filter out
-  when making allocation decisions, but must include when assessing
-  total portfolio risk.
+  allocation. It’s derived from the fixed effects ($\beta_i^T X_t$) and
+  the structured random effects ($u_{it}$). This represents the stable,
+  predictable part of asset co-movement.
+- **Idiosyncratic Variance**: $\text{Var}(\epsilon_{it})$ - This is the
+  unpredictable, asset-specific noise that we want to filter out when
+  making allocation decisions, but must include when assessing total
+  portfolio risk.
 
 ## 3. Data and Setup
 
@@ -528,11 +522,12 @@ kable(var_comp_best, caption = "Variance Component Analysis of the Best Model")
 
 |                           |   VarComp | VarCompSE |     Zratio | Constraint |
 |:--------------------------|----------:|----------:|-----------:|:-----------|
-| u:symbol.return-return    | 0.0000282 |  3.09e-05 |  0.9114477 | Positive   |
-| time_factor.return-return | 0.0001611 |  5.57e-05 |  2.8947728 | Positive   |
+| u:symbol.return-return    | 0.0000282 |  3.09e-05 |  0.9114475 | Positive   |
+| time_factor.return-return | 0.0001611 |  5.57e-05 |  2.8947731 | Positive   |
 | units.return-return       | 0.0011476 |  7.45e-05 | 15.3995339 | Positive   |
 
-Variance Component Analysis of the Best Model
+<span id="tab:fit-sommer-model"></span>Table 1: Variance Component
+Analysis of the Best Model
 
 ### Interpreting the Variance Components
 
@@ -634,7 +629,8 @@ kable(expected_returns_summary %>% arrange(desc(expected_return)),
 | VNQ | 0.052 | 0.091 | 0.128 | 0.194 |
 | HYG | 0.052 | 0.091 | 0.051 | 0.078 |
 
-Model-Based Expected Returns and Risk Decomposition
+<span id="tab:covariance-extraction"></span>Table 2: Model-Based
+Expected Returns and Risk Decomposition
 
 ``` r
 # For calculations, ensure it's in the master order
@@ -749,7 +745,8 @@ kable(portfolio_comparison, caption = "In-Sample Portfolio Comparison", digits =
 | Max_Weight  |                0.111 |               0.808 |
 | Effective_N |                9.000 |               1.472 |
 
-In-Sample Portfolio Comparison
+<span id="tab:portfolio-optimization"></span>Table 3: In-Sample
+Portfolio Comparison
 
 ``` r
 # Visualize portfolio weights
@@ -857,7 +854,8 @@ kable(performance, caption = "Out-of-Sample Performance (Test Period)", digits =
 | Systematic_Mix |         0.121 |             0.068 |        1.793 |
 | Total_Cov_Mix  |         0.053 |             0.041 |        1.294 |
 
-Out-of-Sample Performance (Test Period)
+<span id="tab:validation"></span>Table 4: Out-of-Sample Performance
+(Test Period)
 
 ``` r
 # Visualize cumulative returns

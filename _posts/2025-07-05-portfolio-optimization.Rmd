@@ -4,7 +4,13 @@ author: Deniz Akdemir
 date: 2025-07-05
 categories: [Finance, Machine Learning]
 tags: [portfolio-optimization, mixed-models, covariance-estimation, R, quantitative-finance]
-output: jekyllthat::jekylldown
+output:
+  bookdown::markdown_document2:
+    base_format: md_document
+    variant: gfm
+    preserve_yaml: true
+    fig_caption: true
+    number_sections: false
 ---
 
 ```{r setup, include=FALSE}
@@ -79,7 +85,7 @@ Where $\mu$ and $\Sigma$ are typically estimated as sample means and covariances
 
 Instead of using raw historical data, we model returns using a mixed linear model:
 
-$$r_{it} = \mu + \beta_i^T X_t + u_{it} + \epsilon_{it}$$
+$$r_{it} = \mu + \b\beta_i^T X_t + u_{it} + \epsilon_{it}$$
 
 where:
 
@@ -100,9 +106,9 @@ The key insight is that by modeling $u_{it}$ as a random effect with a covarianc
 
 The total variance of returns for an asset is decomposed into:
 
-$$\text{Var}(r_{it}) = \text{Var}(\beta_i^T X_t) + \text{Var}(u_{it}) + \text{Var}(\epsilon_{it})$$
+$$\text{Var}(r_{it}) = \text{Var}(\b\beta_i^T X_t) + \text{Var}(u_{it}) + \text{Var}(\epsilon_{it})$$
 
-- **Systematic Covariance**: The portion we use for strategic allocation. It's derived from the fixed effects ($eta_i^T X_t$) and the structured random effects ($u_{it}$). This represents the stable, predictable part of asset co-movement.
+- **Systematic Covariance**: The portion we use for strategic allocation. It's derived from the fixed effects ($\beta_i^T X_t$) and the structured random effects ($u_{it}$). This represents the stable, predictable part of asset co-movement.
 - **Idiosyncratic Variance**: $\text{Var}(\epsilon_{it})$ - This is the unpredictable, asset-specific noise that we want to filter out when making allocation decisions, but must include when assessing total portfolio risk.
 
 ## 3. Data and Setup {#data-and-setup}
