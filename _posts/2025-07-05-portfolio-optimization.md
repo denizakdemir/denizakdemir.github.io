@@ -30,7 +30,7 @@ robust portfolio allocations that perform better out-of-sample.
 8.  [Practical Implementation Guide](#implementation-guide)
 9.  [Conclusions](#conclusions)
 
-## 1. Motivation: Why Genomic Methods for Portfolios?
+## 1. Motivation: Why Genomic Methods for Portfolios? {#motivation}
 
 Traditional portfolio optimization faces a fundamental challenge: sample
 covariance matrices are notoriously noisy, especially when the number of
@@ -85,7 +85,7 @@ underlying assumptions:
   predictors (market factors) and the asset returns. This is a common
   starting point for factor models.
 
-## 2. Theoretical Framework
+## 2. Theoretical Framework {#theoretical-framework}
 
 ### Traditional Mean-Variance Optimization
 
@@ -140,7 +140,7 @@ $$\text{Var}(r_{it}) = \text{Var}(\beta_i^T X_t) + \text{Var}(u_{it}) + \text{Va
   making allocation decisions, but must include when assessing total
   portfolio risk.
 
-## 3. Data and Setup
+## 3. Data and Setup {#data-and-setup}
 
 Let’s implement this approach step by step. We’ll use a diversified set
 of ETFs to demonstrate the concepts. First, we load libraries and
@@ -201,7 +201,7 @@ p_returns <- ggplot(returns, aes(x = date, y = return, color = symbol)) +
 ggplotly(p_returns)
 ```
 
-![](2025-07-05-portfolio-optimization_files/figure-gfm/setup-libs-1.png)<!-- -->
+![](/assets/img/posts/portfolio-optimization/setup-libs-1.png)<!-- -->
 
 ``` r
 # Also get market factors (we'll use VIX as an example)
@@ -243,7 +243,7 @@ print(paste("Dataset contains", nrow(data), "observations across",
 
     ## [1] "Dataset contains 540 observations across 9 assets"
 
-## 4. Building the Mixed Model with Flexible Covariance Components
+## 4. Building the Mixed Model with Flexible Covariance Components {#building-the-mixed-model}
 
 Now we’ll build our mixed model using the `sommer` package, which allows
 us to specify custom variance-covariance structures. This is the core of
@@ -412,7 +412,7 @@ plot_relationship_matrix <- function(K, title) {
 plot_relationship_matrix(K_combined, "Combined Asset Similarity Matrix")
 ```
 
-![](2025-07-05-portfolio-optimization_files/figure-gfm/asset-similarity-matrices-1.png)<!-- -->
+![](/assets/img/posts/portfolio-optimization/asset-similarity-matrices-1.png)<!-- -->
 
 ``` r
 # Store similarity values for inline use
@@ -554,9 +554,9 @@ p_decomp <- data_sommer %>%
 ggplotly(p_decomp)
 ```
 
-![](2025-07-05-portfolio-optimization_files/figure-gfm/extract-blups-1.png)<!-- -->
+![](/assets/img/posts/portfolio-optimization/extract-blups-1.png)<!-- -->
 
-## 5. Extracting Covariance Structures
+## 5. Extracting Covariance Structures {#covariance-structures}
 
 Now comes the critical step: using the model’s output to construct a
 **systematic covariance matrix**. This matrix is built from the model’s
@@ -633,7 +633,7 @@ corrplot(cov2cor(cov_total), method = "color", type = "upper",
          title = "Total (Sample) Correlations", mar = c(0,0,2,0))
 ```
 
-![](2025-07-05-portfolio-optimization_files/figure-gfm/covariance-extraction-1.png)<!-- -->
+![](/assets/img/posts/portfolio-optimization/covariance-extraction-1.png)<!-- -->
 
 ### Key Insight: Why Systematic Covariance Matters
 
@@ -646,7 +646,7 @@ because it:
 3.  **Is more stable** across different time periods, leading to less
     portfolio turnover.
 
-## 6. Portfolio Construction
+## 6. Portfolio Construction {#portfolio-construction}
 
 Now let’s construct minimum variance portfolios using both the
 systematic and total covariance matrices and compare their weights.
@@ -735,7 +735,7 @@ p_weights <- ggplot(weights_df, aes(x = Asset, y = Weight, fill = Method)) +
 ggplotly(p_weights)
 ```
 
-![](2025-07-05-portfolio-optimization_files/figure-gfm/portfolio-optimization-1.png)<!-- -->
+![](/assets/img/posts/portfolio-optimization/portfolio-optimization-1.png)<!-- -->
 
 ### Understanding the Results
 
@@ -744,7 +744,7 @@ produces more intuitive and diversified weights. It is less likely to
 place extreme bets based on noisy, short-term correlations that appear
 in the sample covariance matrix.
 
-## 7. Validation and Comparison
+## 7. Validation and Comparison {#validation}
 
 The true test of any model is its out-of-sample performance. We will now
 perform a simple backtest by splitting our data into a training period
@@ -841,14 +841,14 @@ p_cumulative <- portfolio_returns %>%
 ggplotly(p_cumulative)
 ```
 
-![](2025-07-05-portfolio-optimization_files/figure-gfm/validation-1.png)<!-- -->
+![](/assets/img/posts/portfolio-optimization/validation-1.png)<!-- -->
 
 The out-of-sample results typically show that the portfolio built on
 **systematic covariance** is more robust, often exhibiting lower
 volatility and better risk-adjusted returns (Sharpe Ratio) because it
 was built on more stable, persistent relationships.
 
-## 8. Practical Implementation Guide
+## 8. Practical Implementation Guide {#implementation-guide}
 
 ### When to Use This Approach
 
@@ -937,7 +937,7 @@ optimize_portfolio_mixed_model <- function(returns_data,
 }
 ```
 
-## 9. Conclusions
+## 9. Conclusions {#conclusions}
 
 ### Key Takeaways
 
