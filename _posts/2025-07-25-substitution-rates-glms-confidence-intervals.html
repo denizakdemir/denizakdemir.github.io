@@ -89,7 +89,7 @@ render_with_liquid: false
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Substitution-Rates-in-GLMs:-A-Mathematical-Guide-to-Ratio-Confidence-Intervals">Substitution Rates in GLMs: A Mathematical Guide to Ratio Confidence Intervals<a class="anchor-link" href="#Substitution-Rates-in-GLMs:-A-Mathematical-Guide-to-Ratio-Confidence-Intervals">¶</a></h1><h2 id="Introduction:-The-Power-of-Substitution-Rates">Introduction: The Power of Substitution Rates<a class="anchor-link" href="#Introduction:-The-Power-of-Substitution-Rates">¶</a></h2><p>When analyzing complex systems—whether in medicine, finance, or economics—we often need to answer questions like:</p>
+<h1 id="Substitution-Rates-in-GLMs:-A-Mathematical-Guide-to-Ratio-Confidence-Intervals">Substitution Rates in GLMs: A Mathematical Guide to Ratio Confidence Intervals</h1><h2 id="Introduction:-The-Power-of-Substitution-Rates">Introduction: The Power of Substitution Rates</h2><p>When analyzing complex systems—whether in medicine, finance, or economics—we often need to answer questions like:</p>
 <ul>
 <li>"How many additional years of education compensate for one year less of work experience in salary determination?"</li>
 <li>"How much must we reduce cholesterol to offset a 10-point increase in blood pressure for cardiovascular risk?"</li>
@@ -106,7 +106,7 @@ render_with_liquid: false
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Prerequisites-and-Setup">Prerequisites and Setup<a class="anchor-link" href="#Prerequisites-and-Setup">¶</a></h2><h3 id="Required-Packages">Required Packages<a class="anchor-link" href="#Required-Packages">¶</a></h3><p>This notebook requires the following Python packages:</p>
+<h2 id="Prerequisites-and-Setup">Prerequisites and Setup</h2><h3 id="Required-Packages">Required Packages</h3><p>This notebook requires the following Python packages:</p>
 <ul>
 <li><code>numpy</code> (&gt;=1.19.0)</li>
 <li><code>pandas</code> (&gt;=1.2.0)</li>
@@ -118,13 +118,13 @@ render_with_liquid: false
 <p>Install them using:</p>
 <div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>pandas<span class="w"> </span>statsmodels<span class="w"> </span>matplotlib<span class="w"> </span>seaborn<span class="w"> </span>scipy
 </pre></div>
-<h3 id="Execution-Order">Execution Order<a class="anchor-link" href="#Execution-Order">¶</a></h3><p><strong>Important</strong>: This notebook should be executed sequentially from top to bottom. Each cell builds upon previous results, particularly:</p>
+<h3 id="Execution-Order">Execution Order</h3><p><strong>Important</strong>: This notebook should be executed sequentially from top to bottom. Each cell builds upon previous results, particularly:</p>
 <ol>
 <li>Import statements must be run first</li>
 <li>Data loading must complete before model fitting</li>
 <li>Model fitting must complete before calculating confidence intervals</li>
 </ol>
-<h3 id="Data-Availability">Data Availability<a class="anchor-link" href="#Data-Availability">¶</a></h3><p>This notebook uses the Framingham Heart Study dataset. If the automatic download fails, you can:</p>
+<h3 id="Data-Availability">Data Availability</h3><p>This notebook uses the Framingham Heart Study dataset. If the automatic download fails, you can:</p>
 <ol>
 <li>Download the dataset manually from <a href="https://github.com/GauravPadawe/Framingham-Heart-Study">GitHub</a></li>
 <li>The notebook will automatically fall back to simulated data for demonstration purposes</li>
@@ -139,7 +139,7 @@ render_with_liquid: false
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="The-Mathematical-Foundation">The Mathematical Foundation<a class="anchor-link" href="#The-Mathematical-Foundation">¶</a></h2><h3 id="1.-Substitution-Rates-in-GLMs">1. Substitution Rates in GLMs<a class="anchor-link" href="#1.-Substitution-Rates-in-GLMs">¶</a></h3><p>Consider a GLM with link function $g$ and linear predictor:</p>
+<h2 id="The-Mathematical-Foundation">The Mathematical Foundation</h2><h3 id="1.-Substitution-Rates-in-GLMs">1. Substitution Rates in GLMs</h3><p>Consider a GLM with link function $g$ and linear predictor:</p>
 <p>$$g(\mathbb{E}[Y|X]) = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots + \beta_p X_p$$</p>
 <p>If we want to maintain the same expected outcome when changing $X_1$ and $X_2$, we need:</p>
 <p>$$\beta_1 \Delta X_1 + \beta_2 \Delta X_2 = 0$$</p>
@@ -156,7 +156,7 @@ render_with_liquid: false
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="2.-The-Challenge:-Uncertainty-in-Ratios">2. The Challenge: Uncertainty in Ratios<a class="anchor-link" href="#2.-The-Challenge:-Uncertainty-in-Ratios">¶</a></h3><p>While point estimates of ratios are straightforward, constructing confidence intervals is challenging because:</p>
+<h3 id="2.-The-Challenge:-Uncertainty-in-Ratios">2. The Challenge: Uncertainty in Ratios</h3><p>While point estimates of ratios are straightforward, constructing confidence intervals is challenging because:</p>
 <ol>
 <li>The ratio $r = \frac{\beta_1}{\beta_2}$ is a nonlinear function of random variables</li>
 <li>When $\beta_2 \approx 0$, the ratio becomes unstable</li>
@@ -172,7 +172,7 @@ render_with_liquid: false
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="%E2%9A%A0%EF%B8%8F-Important-Considerations-for-Using-Ratios">⚠️ Important Considerations for Using Ratios<a class="anchor-link" href="#%E2%9A%A0%EF%B8%8F-Important-Considerations-for-Using-Ratios">¶</a></h3><p>Before calculating substitution rates, ensure that:</p>
+<h3 id="%E2%9A%A0%EF%B8%8F-Important-Considerations-for-Using-Ratios">⚠️ Important Considerations for Using Ratios</h3><p>Before calculating substitution rates, ensure that:</p>
 <ol>
 <li><p><strong>Both variables have meaningful units</strong>: Ratios are most interpretable when both variables share the same scale or have comparable units. For example:</p>
 <ul>
@@ -204,7 +204,7 @@ render_with_liquid: false
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Mathematical-Methods-for-Ratio-Confidence-Intervals">Mathematical Methods for Ratio Confidence Intervals<a class="anchor-link" href="#Mathematical-Methods-for-Ratio-Confidence-Intervals">¶</a></h2><h3 id="Method-1:-Delta-Method-(Wald-type-CI)">Method 1: Delta Method (Wald-type CI)<a class="anchor-link" href="#Method-1:-Delta-Method-(Wald-type-CI)">¶</a></h3><p>The delta method uses a first-order Taylor expansion to approximate the variance of a nonlinear function.</p>
+<h2 id="Mathematical-Methods-for-Ratio-Confidence-Intervals">Mathematical Methods for Ratio Confidence Intervals</h2><h3 id="Method-1:-Delta-Method-(Wald-type-CI)">Method 1: Delta Method (Wald-type CI)</h3><p>The delta method uses a first-order Taylor expansion to approximate the variance of a nonlinear function.</p>
 <p>For $r = \frac{\beta_1}{\beta_2}$, the gradient is:</p>
 <p>$$\nabla r = \left[\frac{\partial r}{\partial \beta_1}, \frac{\partial r}{\partial \beta_2}\right] = \left[\frac{1}{\beta_2}, -\frac{\beta_1}{\beta_2^2}\right]$$</p>
 <p>The approximate variance is:</p>
@@ -224,7 +224,7 @@ render_with_liquid: false
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Method-2:-Fieller's-Method">Method 2: Fieller's Method<a class="anchor-link" href="#Method-2:-Fieller's-Method">¶</a></h3><p>Fieller's method doesn't approximate the ratio directly but instead considers the set of all $r$ values for which we cannot reject:</p>
+<h3 id="Method-2:-Fieller's-Method">Method 2: Fieller's Method</h3><p>Fieller's method doesn't approximate the ratio directly but instead considers the set of all $r$ values for which we cannot reject:</p>
 <p>$$H_0: \beta_1 - r\beta_2 = 0$$</p>
 <p>This leads to solving:</p>
 <p>$$\frac{(\hat{\beta}_1 - r\hat{\beta}_2)^2}{\text{Var}(\hat{\beta}_1 - r\hat{\beta}_2)} \leq \chi^2_{1,1-\alpha}$$</p>
@@ -276,7 +276,7 @@ render_with_liquid: false
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Real-World-Example:-Medical-Substitution-Rates">Real-World Example: Medical Substitution Rates<a class="anchor-link" href="#Real-World-Example:-Medical-Substitution-Rates">¶</a></h2><p>Let's analyze how blood pressure and cholesterol interact in determining heart disease risk.</p>
+<h2 id="Real-World-Example:-Medical-Substitution-Rates">Real-World Example: Medical Substitution Rates</h2><p>Let's analyze how blood pressure and cholesterol interact in determining heart disease risk.</p>
 </div>
 </div>
 </div>
@@ -481,7 +481,7 @@ Interpretation: A 1-unit increase in cholesterol can be offset by a
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Implementing-Different-CI-Methods">Implementing Different CI Methods<a class="anchor-link" href="#Implementing-Different-CI-Methods">¶</a></h3><p>Now let's implement the key methods for computing confidence intervals on ratios.</p>
+<h3 id="Implementing-Different-CI-Methods">Implementing Different CI Methods</h3><p>Now let's implement the key methods for computing confidence intervals on ratios.</p>
 </div>
 </div>
 </div>
@@ -594,7 +594,7 @@ Fieller's CI: [4.9174, 34.8348]
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Visualization-of-Substitution-Rates">Visualization of Substitution Rates<a class="anchor-link" href="#Visualization-of-Substitution-Rates">¶</a></h3><p>Let's create visualizations to understand the substitution concept better.</p>
+<h3 id="Visualization-of-Substitution-Rates">Visualization of Substitution Rates</h3><p>Let's create visualizations to understand the substitution concept better.</p>
 </div>
 </div>
 </div>
@@ -783,7 +783,7 @@ Sample size: 2000
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Summary-and-Recommendations">Summary and Recommendations<a class="anchor-link" href="#Summary-and-Recommendations">¶</a></h2><h3 id="When-to-Use-Each-Method:">When to Use Each Method:<a class="anchor-link" href="#When-to-Use-Each-Method:">¶</a></h3><ol>
+<h2 id="Summary-and-Recommendations">Summary and Recommendations</h2><h3 id="When-to-Use-Each-Method:">When to Use Each Method:</h3><ol>
 <li><p><strong>Delta Method</strong>:</p>
 <ul>
 <li>✅ Fast and simple</li>
@@ -806,7 +806,7 @@ Sample size: 2000
 </ul>
 </li>
 </ol>
-<h3 id="Key-Takeaways:">Key Takeaways:<a class="anchor-link" href="#Key-Takeaways:">¶</a></h3><ol>
+<h3 id="Key-Takeaways:">Key Takeaways:</h3><ol>
 <li><p><strong>Substitution rates provide meaningful interpretations</strong> in many domains—from clinical decision-making to financial risk assessment.</p>
 </li>
 <li><p><strong>No single method dominates</strong> all scenarios. Choose based on:</p>
