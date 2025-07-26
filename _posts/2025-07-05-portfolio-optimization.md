@@ -30,7 +30,7 @@ robust portfolio allocations that perform better out-of-sample.
 8.  [Practical Implementation Guide](#implementation-guide)
 9.  [Conclusions](#conclusions)
 
-## 1. Motivation: Why Genomic Methods for Portfolios? {#motivation}
+## 1. Motivation: Why Genomic Methods for Portfolios?
 
 Traditional portfolio optimization faces a fundamental challenge: sample
 covariance matrices are notoriously noisy, especially when the number of
@@ -85,7 +85,7 @@ underlying assumptions:
   predictors (market factors) and the asset returns. This is a common
   starting point for factor models.
 
-## 2. Theoretical Framework {#theoretical-framework}
+## 2. Theoretical Framework
 
 ### Traditional Mean-Variance Optimization
 
@@ -140,7 +140,7 @@ $$\text{Var}(r_{it}) = \text{Var}(\beta_i^T X_t) + \text{Var}(u_{it}) + \text{Va
   making allocation decisions, but must include when assessing total
   portfolio risk.
 
-## 3. Data and Setup {#data-and-setup}
+## 3. Data and Setup
 
 Let’s implement this approach step by step. We’ll use a diversified set
 of ETFs to demonstrate the concepts. First, we load libraries and
@@ -201,7 +201,7 @@ p_returns <- ggplot(returns, aes(x = date, y = return, color = symbol)) +
 ggplotly(p_returns)
 ```
 
-![](/assets/img/posts/portfolio-optimization/setup-libs-1.png)<!-- -->
+![](2025-07-05-portfolio-optimization_files/figure-gfm/setup-libs-1.png)<!-- -->
 
 ``` r
 # Also get market factors (we'll use VIX as an example)
@@ -243,7 +243,7 @@ print(paste("Dataset contains", nrow(data), "observations across",
 
     ## [1] "Dataset contains 540 observations across 9 assets"
 
-## 4. Building the Mixed Model with Flexible Covariance Components {#building-the-mixed-model}
+## 4. Building the Mixed Model with Flexible Covariance Components
 
 Now we’ll build our mixed model using the `sommer` package, which allows
 us to specify custom variance-covariance structures. This is the core of
@@ -412,39 +412,26 @@ plot_relationship_matrix <- function(K, title) {
 plot_relationship_matrix(K_combined, "Combined Asset Similarity Matrix")
 ```
 
-![](/assets/img/posts/portfolio-optimization/asset-similarity-matrices-1.png)<!-- -->
+![](2025-07-05-portfolio-optimization_files/figure-gfm/asset-similarity-matrices-1.png)<!-- -->
 
 ``` r
-# Print similarity between select asset pairs to build intuition
-cat("\nExample Similarities (Combined Matrix):\n")
+# Store similarity values for inline use
+iwm_efa_sim <- round(K_combined["IWM", "EFA"], 3)
+agg_tlt_sim <- round(K_combined["AGG", "TLT"], 3)  
+iwm_gld_sim <- round(K_combined["IWM", "GLD"], 3)
+gld_dbc_sim <- round(K_combined["GLD", "DBC"], 3)
 ```
 
-    ## 
-    ## Example Similarities (Combined Matrix):
+**Example Similarities (Combined Matrix):**
 
-``` r
-cat("IWM-EFA (both equities):", round(K_combined["IWM", "EFA"], 3), "\n")
-```
+- **IWM-EFA (both equities):** 0.732
+- **AGG-TLT (both bonds):** 0.821  
+- **IWM-GLD (equity vs gold):** -0.021
+- **GLD-DBC (both commodities):** 0.858
 
-    ## IWM-EFA (both equities): 0.732
-
-``` r
-cat("AGG-TLT (both bonds):", round(K_combined["AGG", "TLT"], 3), "\n")
-```
-
-    ## AGG-TLT (both bonds): 0.821
-
-``` r
-cat("IWM-GLD (equity vs gold):", round(K_combined["IWM", "GLD"], 3), "\n")
-```
-
-    ## IWM-GLD (equity vs gold): -0.021
-
-``` r
-cat("GLD-DBC (both commodities):", round(K_combined["GLD", "DBC"], 3), "\n")
-```
-
-    ## GLD-DBC (both commodities): 0.858
+These similarities make intuitive sense: bonds are highly similar to
+each other, commodities cluster together, while equity and gold show
+little similarity.
 
 ### Preparing Data for Sommer
 
@@ -467,29 +454,14 @@ data_sommer <- data %>%
     regime_factor = as.factor(regime)
   )
 
-cat("\nData prepared for sommer:\n")
+# Store data summary for inline use
+n_observations <- nrow(data_sommer)
+n_assets <- length(assets_ordered)
+n_periods <- n_distinct(data_sommer$time_factor)
 ```
 
-    ## 
-    ## Data prepared for sommer:
-
-``` r
-cat("Observations:", nrow(data_sommer), "\n")
-```
-
-    ## Observations: 540
-
-``` r
-cat("Assets:", length(assets_ordered), "\n")
-```
-
-    ## Assets: 9
-
-``` r
-cat("Time periods:", n_distinct(data_sommer$time_factor), "\n")
-```
-
-    ## Time periods: 60
+The prepared dataset contains 540 observations across 9 assets spanning
+60 time periods (months).
 
 ### Fitting the Mixed Model
 
@@ -500,12 +472,7 @@ and time-period shocks.
 
 ``` r
 # Fit the full model using our combined similarity matrix
-cat("Fitting final mixed model...\n")
-```
 
-    ## Fitting final mixed model...
-
-``` r
 # Fit the model on the entire dataset to ensure all factor levels are included.
 # This resolves prediction errors caused by sampling.
 model_best <- mmer(
@@ -522,8 +489,8 @@ kable(var_comp_best, caption = "Variance Component Analysis of the Best Model")
 
 |                           |   VarComp | VarCompSE |     Zratio | Constraint |
 |:--------------------------|----------:|----------:|-----------:|:-----------|
-| u:symbol.return-return    | 0.0000282 |  3.09e-05 |  0.9114475 | Positive   |
-| time_factor.return-return | 0.0001611 |  5.57e-05 |  2.8947731 | Positive   |
+| u:symbol.return-return    | 0.0000282 |  3.09e-05 |  0.9114473 | Positive   |
+| time_factor.return-return | 0.0001611 |  5.57e-05 |  2.8947802 | Positive   |
 | units.return-return       | 0.0011476 |  7.45e-05 | 15.3995339 | Positive   |
 
 <span id="tab:fit-sommer-model"></span>Table 1: Variance Component
@@ -587,9 +554,9 @@ p_decomp <- data_sommer %>%
 ggplotly(p_decomp)
 ```
 
-![](/assets/img/posts/portfolio-optimization/extract-blups-1.png)<!-- -->
+![](2025-07-05-portfolio-optimization_files/figure-gfm/extract-blups-1.png)<!-- -->
 
-## 5. Extracting Covariance Structures {#covariance-structures}
+## 5. Extracting Covariance Structures
 
 Now comes the critical step: using the model’s output to construct a
 **systematic covariance matrix**. This matrix is built from the model’s
@@ -666,7 +633,7 @@ corrplot(cov2cor(cov_total), method = "color", type = "upper",
          title = "Total (Sample) Correlations", mar = c(0,0,2,0))
 ```
 
-![](/assets/img/posts/portfolio-optimization/covariance-extraction-1.png)<!-- -->
+![](2025-07-05-portfolio-optimization_files/figure-gfm/covariance-extraction-1.png)<!-- -->
 
 ### Key Insight: Why Systematic Covariance Matters
 
@@ -679,7 +646,7 @@ because it:
 3.  **Is more stable** across different time periods, leading to less
     portfolio turnover.
 
-## 6. Portfolio Construction {#portfolio-construction}
+## 6. Portfolio Construction
 
 Now let’s construct minimum variance portfolios using both the
 systematic and total covariance matrices and compare their weights.
@@ -768,7 +735,7 @@ p_weights <- ggplot(weights_df, aes(x = Asset, y = Weight, fill = Method)) +
 ggplotly(p_weights)
 ```
 
-![](/assets/img/posts/portfolio-optimization/portfolio-optimization-1.png)<!-- -->
+![](2025-07-05-portfolio-optimization_files/figure-gfm/portfolio-optimization-1.png)<!-- -->
 
 ### Understanding the Results
 
@@ -777,7 +744,7 @@ produces more intuitive and diversified weights. It is less likely to
 place extreme bets based on noisy, short-term correlations that appear
 in the sample covariance matrix.
 
-## 7. Validation and Comparison {#validation}
+## 7. Validation and Comparison
 
 The true test of any model is its out-of-sample performance. We will now
 perform a simple backtest by splitting our data into a training period
@@ -874,14 +841,14 @@ p_cumulative <- portfolio_returns %>%
 ggplotly(p_cumulative)
 ```
 
-![](/assets/img/posts/portfolio-optimization/validation-1.png)<!-- -->
+![](2025-07-05-portfolio-optimization_files/figure-gfm/validation-1.png)<!-- -->
 
 The out-of-sample results typically show that the portfolio built on
 **systematic covariance** is more robust, often exhibiting lower
 volatility and better risk-adjusted returns (Sharpe Ratio) because it
 was built on more stable, persistent relationships.
 
-## 8. Practical Implementation Guide {#implementation-guide}
+## 8. Practical Implementation Guide
 
 ### When to Use This Approach
 
@@ -970,7 +937,7 @@ optimize_portfolio_mixed_model <- function(returns_data,
 }
 ```
 
-## 9. Conclusions {#conclusions}
+## 9. Conclusions
 
 ### Key Takeaways
 

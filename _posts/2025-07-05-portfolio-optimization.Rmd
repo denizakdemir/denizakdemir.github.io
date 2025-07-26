@@ -5,12 +5,11 @@ date: 2025-07-05
 categories: [Finance, Machine Learning]
 tags: [portfolio-optimization, mixed-models, covariance-estimation, R, quantitative-finance]
 output:
-  bookdown::markdown_document2:
-    base_format: md_document
-    variant: gfm
-    preserve_yaml: true
+  bookdown::github_document2:
     fig_caption: true
     number_sections: false
+    toc: false
+    html_preview: false
 ---
 
 ```{r setup, include=FALSE}
@@ -363,13 +362,21 @@ plot_relationship_matrix <- function(K, title) {
 # Create plot for the combined matrix
 plot_relationship_matrix(K_combined, "Combined Asset Similarity Matrix")
 
-# Print similarity between select asset pairs to build intuition
-cat("\nExample Similarities (Combined Matrix):\n")
-cat("IWM-EFA (both equities):", round(K_combined["IWM", "EFA"], 3), "\n")
-cat("AGG-TLT (both bonds):", round(K_combined["AGG", "TLT"], 3), "\n")
-cat("IWM-GLD (equity vs gold):", round(K_combined["IWM", "GLD"], 3), "\n")
-cat("GLD-DBC (both commodities):", round(K_combined["GLD", "DBC"], 3), "\n")
+# Store similarity values for inline use
+iwm_efa_sim <- round(K_combined["IWM", "EFA"], 3)
+agg_tlt_sim <- round(K_combined["AGG", "TLT"], 3)  
+iwm_gld_sim <- round(K_combined["IWM", "GLD"], 3)
+gld_dbc_sim <- round(K_combined["GLD", "DBC"], 3)
 ```
+
+**Example Similarities (Combined Matrix):**
+
+- **IWM-EFA (both equities):** `r iwm_efa_sim`
+- **AGG-TLT (both bonds):** `r agg_tlt_sim`  
+- **IWM-GLD (equity vs gold):** `r iwm_gld_sim`
+- **GLD-DBC (both commodities):** `r gld_dbc_sim`
+
+These similarities make intuitive sense: bonds are highly similar to each other, commodities cluster together, while equity and gold show little similarity.
 
 ### Preparing Data for Sommer
 
@@ -390,11 +397,13 @@ data_sommer <- data %>%
     regime_factor = as.factor(regime)
   )
 
-cat("\nData prepared for sommer:\n")
-cat("Observations:", nrow(data_sommer), "\n")
-cat("Assets:", length(assets_ordered), "\n")
-cat("Time periods:", n_distinct(data_sommer$time_factor), "\n")
+# Store data summary for inline use
+n_observations <- nrow(data_sommer)
+n_assets <- length(assets_ordered)
+n_periods <- n_distinct(data_sommer$time_factor)
 ```
+
+The prepared dataset contains `r n_observations` observations across `r n_assets` assets spanning `r n_periods` time periods (months).
 
 ### Fitting the Mixed Model
 
@@ -402,7 +411,6 @@ Now we fit our final, most sophisticated model. It includes fixed effects for ma
 
 ```{r fit-sommer-model}
 # Fit the full model using our combined similarity matrix
-cat("Fitting final mixed model...\n")
 
 # Fit the model on the entire dataset to ensure all factor levels are included.
 # This resolves prediction errors caused by sampling.
