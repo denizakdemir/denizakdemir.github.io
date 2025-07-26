@@ -1,5 +1,19 @@
 @import 'jekyll-theme-chirpy';
 
+/* Make sidebar visible by default on all screen sizes */
+/* Override the theme's default behavior which hides sidebar on mobile screens */
+@media all and (max-width: 849px) {
+  /* Default state: sidebar visible */
+  #sidebar {
+    transform: translateX(0) !important;
+    -webkit-transform: translateX(0) !important;
+  }
+  
+  #main-wrapper {
+    transform: translateX(260px) !important;
+  }
+}
+
 /* Google Scholar Stats Styling */
 .scholar-stats {
   margin: 1.5rem 0;
