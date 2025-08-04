@@ -9,10 +9,6 @@ render_with_liquid: false
 
 # High-Fidelity Synthetic Data Generation: A Comprehensive Framework for Privacy-Preserving Data Synthesis
 
-**Author: Deniz Akdemir, PhD**  
-**NMDP/CIBMTR**  
-**Contact: deniz.akdemir.work@gmail.com**  
-**Date: July 31, 2025**
 
 ## Introduction
 
