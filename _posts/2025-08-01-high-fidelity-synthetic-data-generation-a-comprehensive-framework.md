@@ -625,7 +625,7 @@ if 'correlation_preservation' in evaluation:
 
 
     
-![png](2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_files/2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_14_1.png)
+![png](/assets/img/posts/high-fidelity-synthetic-data-generation-a-comprehensive-framework/2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_14_1.png)
     
 
 
@@ -733,13 +733,13 @@ plt.show()
 
 
     
-![png](2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_files/2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_16_1.png)
+![png](/assets/img/posts/high-fidelity-synthetic-data-generation-a-comprehensive-framework/2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_16_1.png)
     
 
 
 
     
-![png](2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_files/2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_16_2.png)
+![png](/assets/img/posts/high-fidelity-synthetic-data-generation-a-comprehensive-framework/2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_16_2.png)
     
 
 
@@ -1288,7 +1288,7 @@ clinical_generator.generate_report(save_path="clinical_quality_report.png")
 
 
     
-![png](2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_files/2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_22_1.png)
+![png](/assets/img/posts/high-fidelity-synthetic-data-generation-a-comprehensive-framework/2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_22_1.png)
     
 
 
@@ -1298,7 +1298,7 @@ clinical_generator.generate_report(save_path="clinical_quality_report.png")
 
 
     
-![png](2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_files/2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_22_3.png)
+![png](/assets/img/posts/high-fidelity-synthetic-data-generation-a-comprehensive-framework/2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_22_3.png)
     
 
 
@@ -1602,7 +1602,7 @@ clinical_generator.generate_report(save_path="clinical_quality_report.png")
 
 
     
-![png](2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_files/2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_22_6.png)
+![png](/assets/img/posts/high-fidelity-synthetic-data-generation-a-comprehensive-framework/2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_22_6.png)
     
 
 
@@ -1716,7 +1716,7 @@ plt.show()
 
 
     
-![png](2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_files/2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_24_1.png)
+![png](/assets/img/posts/high-fidelity-synthetic-data-generation-a-comprehensive-framework/2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_24_1.png)
     
 
 
@@ -1915,7 +1915,7 @@ plt.show()
 
 
     
-![png](2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_files/2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_29_1.png)
+![png](/assets/img/posts/high-fidelity-synthetic-data-generation-a-comprehensive-framework/2025-08-01-high-fidelity-synthetic-data-generation-a-comprehensive-framework_29_1.png)
     
 
 
