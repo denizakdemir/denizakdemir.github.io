@@ -1,13 +1,11 @@
 ---
-title: High-Fidelity Synthetic Data Generation: A Comprehensive Framework
+title: High-Fidelity Synthetic Data Generation: A Comprehensive Framework for Privacy-Preserving Data Synthesis
 author: Deniz Akdemir
 date: 2025-08-01 12:00:00 +0000
 categories: ['Machine Learning', 'Tutorial']
 tags: ['Python', 'Data Science']
 render_with_liquid: false
 ---
-
-# High-Fidelity Synthetic Data Generation: A Comprehensive Framework for Privacy-Preserving Data Synthesis
 
 **Author: Deniz Akdemir, PhD**  
 **NMDP/CIBMTR**  
