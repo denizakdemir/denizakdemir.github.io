@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Comprehensive SAS Programming Tutorial - Learn SAS from beginner to advanced with hands-on examples, exercises, and real-world applications">
+    <meta name="keywords" content="SAS programming, SAS tutorial, learn SAS, SAS certification, data analytics, statistical analysis">
+    <meta name="author" content="Deniz Akdemir">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Complete SAS Programming Tutorial Series">
+    <meta property="og:description" content="Master SAS programming from basics to advanced topics with our comprehensive 13-part tutorial series">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://denizakdemir.github.io/sas-programming-tutorial/">
+    
+    <title>Complete SAS Programming Tutorial - Learn SAS Step by Step</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/syntax-highlighting.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>SAS Programming Tutorial</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#tutorials">Tutorials</a></li>
+                <li><a href="#resources">Resources</a></li>
+                <li><a href="resources/about.html">About</a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Master SAS Programming</h1>
+                <h2 class="hero-subtitle">From Beginner to Pro in 13 Comprehensive Lessons</h2>
+                <p class="hero-description">
+                    Join thousands of data professionals who have mastered SAS programming through our step-by-step tutorial series. 
+                    Whether you're starting from scratch or looking to enhance your skills, this comprehensive guide will take you 
+                    from basic concepts to advanced techniques used in real-world data analytics.
+                </p>
+                <div class="hero-actions">
+                    <a href="tutorials/01-getting-started.html" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Start Learning
+                    </a>
+                    <a href="#tutorials" class="btn btn-secondary">
+                        <i class="fas fa-book"></i> View All Tutorials
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">13</span>
+                        <span class="stat-label">In-Depth Tutorials</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">50+</span>
+                        <span class="stat-label">Code Examples</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">30+</span>
+                        <span class="stat-label">Practice Exercises</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="images/sas-hero-illustration.svg" alt="SAS Programming Illustration">
+            </div>
+        </div>
+    </section>
+
+    <!-- Course Overview -->
+    <section class="course-overview">
+        <div class="container">
+            <h2 class="section-title">What You'll Learn</h2>
+            <div class="features-grid">
+                <div class="feature">
+                    <i class="fas fa-code feature-icon"></i>
+                    <h3>SAS Fundamentals</h3>
+                    <p>Master DATA steps, PROC steps, and the essential building blocks of SAS programming</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-database feature-icon"></i>
+                    <h3>Data Manipulation</h3>
+                    <p>Learn to import, clean, transform, and merge datasets like a professional</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-chart-bar feature-icon"></i>
+                    <h3>Statistical Analysis</h3>
+                    <p>Perform descriptive statistics, hypothesis testing, and advanced analytics</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-graduation-cap feature-icon"></i>
+                    <h3>Certification Ready</h3>
+                    <p>Prepare for SAS Base Programmer certification with targeted practice</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Learning Path -->
+    <section class="learning-path">
+        <div class="container">
+            <h2 class="section-title">Your Learning Journey</h2>
+            <div class="path-timeline">
+                <div class="path-stage">
+                    <div class="stage-marker">1</div>
+                    <h3>Foundation</h3>
+                    <p>Parts 1-3: Setup, basics, and DATA steps</p>
+                </div>
+                <div class="path-connector"></div>
+                <div class="path-stage">
+                    <div class="stage-marker">2</div>
+                    <h3>Core Skills</h3>
+                    <p>Parts 4-7: Variables, I/O, manipulation</p>
+                </div>
+                <div class="path-connector"></div>
+                <div class="path-stage">
+                    <div class="stage-marker">3</div>
+                    <h3>Advanced</h3>
+                    <p>Parts 8-11: Functions, PROC, SQL, debugging</p>
+                </div>
+                <div class="path-connector"></div>
+                <div class="path-stage">
+                    <div class="stage-marker">4</div>
+                    <h3>Professional</h3>
+                    <p>Parts 12-13: Best practices & certification</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutorial Cards -->
+    <section id="tutorials" class="tutorials">
+        <div class="container">
+            <h2 class="section-title">Complete Tutorial Series</h2>
+            <div class="tutorials-grid">
+                
+                <!-- Tutorial 1 -->
+                <div class="tutorial-card">
+                    <div class="card-header">
+                        <span class="card-number">01</span>
+                        <span class="card-level beginner">Beginner</span>
+                    </div>
+                    <h3 class="card-title">Getting Started with SAS</h3>
+                    <p class="card-description">Your gateway to data analytics. Learn what SAS is, why it matters, and write your first programs.</p>
+                    <ul class="card-topics">
+                        <li><i class="fas fa-check"></i> SAS installation and setup</li>
+                        <li><i class="fas fa-check"></i> First SAS program</li>
+                        <li><i class="fas fa-check"></i> Understanding the interface</li>
+                    </ul>
+                    <div class="card-footer">
+                        <span class="card-duration"><i class="far fa-clock"></i> 45-60 min</span>
+                        <a href="tutorials/01-getting-started.html" class="card-link">Start Tutorial <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Tutorial 2 -->
+                <div class="tutorial-card">
+                    <div class="card-header">
+                        <span class="card-number">02</span>
+                        <span class="card-level beginner">Beginner</span>
+                    </div>
+                    <h3 class="card-title">SAS Fundamentals</h3>
+                    <p class="card-description">Build your foundation with essential concepts, syntax rules, and program structure.</p>
+                    <ul class="card-topics">
+                        <li><i class="fas fa-check"></i> DATA vs PROC steps</li>
+                        <li><i class="fas fa-check"></i> Libraries and datasets</li>
+                        <li><i class="fas fa-check"></i> Reading the SAS log</li>
+                    </ul>
+                    <div class="card-footer">
+                        <span class="card-duration"><i class="far fa-clock"></i> 60-75 min</span>
+                        <a href="tutorials/02-fundamentals.html" class="card-link">Start Tutorial <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Tutorial 3 -->
+                <div class="tutorial-card">
+                    <div class="card-header">
+                        <span class="card-number">03</span>
+                        <span class="card-level intermediate">Intermediate</span>
+                    </div>
+                    <h3 class="card-title">Mastering the DATA Step</h3>
+                    <p class="card-description">Deep dive into the heart of SAS programming - creating and manipulating datasets.</p>
+                    <ul class="card-topics">
+                        <li><i class="fas fa-check"></i> DATA step architecture</li>
+                        <li><i class="fas fa-check"></i> Creating datasets</li>
+                        <li><i class="fas fa-check"></i> Control flow logic</li>
+                    </ul>
+                    <div class="card-footer">
+                        <span class="card-duration"><i class="far fa-clock"></i> 90-120 min</span>
+                        <a href="tutorials/03-data-step.html" class="card-link">Start Tutorial <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Tutorial 4 -->
+                <div class="tutorial-card">
+                    <div class="card-header">
+                        <span class="card-number">04</span>
+                        <span class="card-level intermediate">Intermediate</span>
+                    </div>
+                    <h3 class="card-title">Variables, Formats, and Data Types</h3>
+                    <p class="card-description">Master data types, formats, and variable attributes for professional data handling.</p>
+                    <ul class="card-topics">
+                        <li><i class="fas fa-check"></i> Numeric vs character data</li>
+                        <li><i class="fas fa-check"></i> Date/time handling</li>
+                        <li><i class="fas fa-check"></i> Custom formats</li>
+                    </ul>
+                    <div class="card-footer">
+                        <span class="card-duration"><i class="far fa-clock"></i> 60-75 min</span>
+                        <a href="tutorials/04-variables-formats.html" class="card-link">Start Tutorial <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Tutorial 5 -->
+                <div class="tutorial-card">
+                    <div class="card-header">
+                        <span class="card-number">05</span>
+                        <span class="card-level intermediate">Intermediate</span>
+                    </div>
+                    <h3 class="card-title">Data Input and Output</h3>
+                    <p class="card-description">Learn to read data from various sources and export results professionally.</p>
+                    <ul class="card-topics">
+                        <li><i class="fas fa-check"></i> Reading external files</li>
+                        <li><i class="fas fa-check"></i> INFILE options</li>
+                        <li><i class="fas fa-check"></i> PROC IMPORT/EXPORT</li>
+                    </ul>
+                    <div class="card-footer">
+                        <span class="card-duration"><i class="far fa-clock"></i> 75-90 min</span>
+                        <a href="tutorials/05-data-input-output.html" class="card-link">Start Tutorial <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Tutorial 6 -->
+                <div class="tutorial-card">
+                    <div class="card-header">
+                        <span class="card-number">06</span>
+                        <span class="card-level intermediate">Intermediate</span>
+                    </div>
+                    <h3 class="card-title">Data Manipulation and Processing</h3>
+                    <p class="card-description">Transform your data with merging, concatenating, and advanced processing techniques.</p>
+                    <ul class="card-topics">
+                        <li><i class="fas fa-check"></i> Merging datasets</li>
+                        <li><i class="fas fa-check"></i> BY-group processing</li>
+                        <li><i class="fas fa-check"></i> RETAIN and sum statements</li>
+                    </ul>
+                    <div class="card-footer">
+                        <span class="card-duration"><i class="far fa-clock"></i> 90-120 min</span>
+                        <a href="tutorials/06-data-manipulation.html" class="card-link">Start Tutorial <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Tutorial 7 -->
+                <div class="tutorial-card">
+                    <div class="card-header">
+                        <span class="card-number">07</span>
+                        <span class="card-level intermediate">Intermediate</span>
+                    </div>
+                    <h3 class="card-title">Control Structures and Loops</h3>
+                    <p class="card-description">Add programming logic with loops, arrays, and conditional processing.</p>
+                    <ul class="card-topics">
+                        <li><i class="fas fa-check"></i> DO loops</li>
+                        <li><i class="fas fa-check"></i> Array processing</li>
+                        <li><i class="fas fa-check"></i> Conditional logic</li>
+                    </ul>
+                    <div class="card-footer">
+                        <span class="card-duration"><i class="far fa-clock"></i> 75-90 min</span>
+                        <a href="tutorials/07-control-structures.html" class="card-link">Start Tutorial <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Tutorial 8 -->
+                <div class="tutorial-card">
+                    <div class="card-header">
+                        <span class="card-number">08</span>
+                        <span class="card-level intermediate">Intermediate</span>
+                    </div>
+                    <h3 class="card-title">SAS Functions</h3>
+                    <p class="card-description">Explore the comprehensive toolkit of SAS functions for data transformation.</p>
+                    <ul class="card-topics">
+                        <li><i class="fas fa-check"></i> Numeric functions</li>
+                        <li><i class="fas fa-check"></i> Character functions</li>
+                        <li><i class="fas fa-check"></i> Date/time functions</li>
+                    </ul>
+                    <div class="card-footer">
+                        <span class="card-duration"><i class="far fa-clock"></i> 120-150 min</span>
+                        <a href="tutorials/08-functions.html" class="card-link">Start Tutorial <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Tutorial 9 -->
+                <div class="tutorial-card">
+                    <div class="card-header">
+                        <span class="card-number">09</span>
+                        <span class="card-level intermediate">Intermediate</span>
+                    </div>
+                    <h3 class="card-title">Essential PROC Steps</h3>
+                    <p class="card-description">Master essential procedures for analysis, reporting, and data management.</p>
+                    <ul class="card-topics">
+                        <li><i class="fas fa-check"></i> PROC MEANS/UNIVARIATE</li>
+                        <li><i class="fas fa-check"></i> PROC FREQ</li>
+                        <li><i class="fas fa-check"></i> PROC REPORT</li>
+                    </ul>
+                    <div class="card-footer">
+                        <span class="card-duration"><i class="far fa-clock"></i> 120-150 min</span>
+                        <a href="tutorials/09-proc-steps.html" class="card-link">Start Tutorial <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Tutorial 10 -->
+                <div class="tutorial-card">
+                    <div class="card-header">
+                        <span class="card-number">10</span>
+                        <span class="card-level intermediate">Intermediate</span>
+                    </div>
+                    <h3 class="card-title">SQL in SAS</h3>
+                    <p class="card-description">Use SQL for powerful database-style data manipulation within SAS.</p>
+                    <ul class="card-topics">
+                        <li><i class="fas fa-check"></i> PROC SQL basics</li>
+                        <li><i class="fas fa-check"></i> Joins and subqueries</li>
+                        <li><i class="fas fa-check"></i> SQL vs DATA step</li>
+                    </ul>
+                    <div class="card-footer">
+                        <span class="card-duration"><i class="far fa-clock"></i> 90-120 min</span>
+                        <a href="tutorials/10-sql-in-sas.html" class="card-link">Start Tutorial <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Tutorial 11 -->
+                <div class="tutorial-card">
+                    <div class="card-header">
+                        <span class="card-number">11</span>
+                        <span class="card-level advanced">Advanced</span>
+                    </div>
+                    <h3 class="card-title">Debugging and Error Handling</h3>
+                    <p class="card-description">Become a SAS detective - learn to debug efficiently and handle errors gracefully.</p>
+                    <ul class="card-topics">
+                        <li><i class="fas fa-check"></i> Understanding errors</li>
+                        <li><i class="fas fa-check"></i> Debugging strategies</li>
+                        <li><i class="fas fa-check"></i> Performance optimization</li>
+                    </ul>
+                    <div class="card-footer">
+                        <span class="card-duration"><i class="far fa-clock"></i> 60-75 min</span>
+                        <a href="tutorials/11-debugging.html" class="card-link">Start Tutorial <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Tutorial 12 -->
+                <div class="tutorial-card">
+                    <div class="card-header">
+                        <span class="card-number">12</span>
+                        <span class="card-level advanced">Advanced</span>
+                    </div>
+                    <h3 class="card-title">Advanced Topics and Best Practices</h3>
+                    <p class="card-description">Professional SAS programming with macros, advanced techniques, and industry standards.</p>
+                    <ul class="card-topics">
+                        <li><i class="fas fa-check"></i> Macro programming intro</li>
+                        <li><i class="fas fa-check"></i> Production practices</li>
+                        <li><i class="fas fa-check"></i> Code optimization</li>
+                    </ul>
+                    <div class="card-footer">
+                        <span class="card-duration"><i class="far fa-clock"></i> 75-90 min</span>
+                        <a href="tutorials/12-advanced-topics.html" class="card-link">Start Tutorial <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Tutorial 13 -->
+                <div class="tutorial-card">
+                    <div class="card-header">
+                        <span class="card-number">13</span>
+                        <span class="card-level all">All Levels</span>
+                    </div>
+                    <h3 class="card-title">SAS Certification Preparation</h3>
+                    <p class="card-description">Ace your SAS Base Programmer certification exam with targeted preparation and practice.</p>
+                    <ul class="card-topics">
+                        <li><i class="fas fa-check"></i> Exam overview</li>
+                        <li><i class="fas fa-check"></i> Key topics review</li>
+                        <li><i class="fas fa-check"></i> Practice strategies</li>
+                    </ul>
+                    <div class="card-footer">
+                        <span class="card-duration"><i class="far fa-clock"></i> 45-60 min</span>
+                        <a href="tutorials/13-certification.html" class="card-link">Start Tutorial <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources Section -->
+    <section id="resources" class="resources">
+        <div class="container">
+            <h2 class="section-title">Additional Resources</h2>
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <i class="fas fa-download resource-icon"></i>
+                    <h3>Practice Datasets</h3>
+                    <p>Download sample datasets to practice your SAS programming skills</p>
+                    <a href="downloads/datasets/" class="resource-link">Browse Datasets</a>
+                </div>
+                <div class="resource-card">
+                    <i class="fas fa-file-code resource-icon"></i>
+                    <h3>Code Examples</h3>
+                    <p>Complete code examples from all tutorials for easy reference</p>
+                    <a href="downloads/code-examples/" class="resource-link">Get Code</a>
+                </div>
+                <div class="resource-card">
+                    <i class="fas fa-file-pdf resource-icon"></i>
+                    <h3>Cheat Sheets</h3>
+                    <p>Quick reference guides for SAS syntax, functions, and procedures</p>
+                    <a href="downloads/cheat-sheets/" class="resource-link">Download PDFs</a>
+                </div>
+                <div class="resource-card">
+                    <i class="fas fa-book-open resource-icon"></i>
+                    <h3>Glossary</h3>
+                    <p>Comprehensive glossary of SAS terms and concepts</p>
+                    <a href="resources/glossary.html" class="resource-link">View Glossary</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2>Stay Updated</h2>
+                <p>Get notified about new tutorials, tips, and SAS programming resources</p>
+                <form class="newsletter-form" id="newsletter-form">
+                    <input type="email" placeholder="Enter your email" required>
+                    <button type="submit" class="btn btn-primary">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>About This Tutorial</h4>
+                    <p>A comprehensive SAS programming tutorial series designed to take you from beginner to professional level.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#tutorials">All Tutorials</a></li>
+                        <li><a href="resources/references.html">References</a></li>
+                        <li><a href="resources/about.html">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="https://github.com/denizakdemir" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="https://linkedin.com/in/denizakdemir" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://twitter.com/denizakdemir" target="_blank"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Deniz Akdemir. All rights reserved. | <a href="https://denizakdemir.github.io">Visit Blog</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Progress Indicator -->
+    <div class="progress-indicator" id="progress-indicator"></div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
+    <script src="js/syntax-highlighting.js"></script>
+</body>
+</html>

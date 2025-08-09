@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Getting Started with SAS Programming - Learn what SAS is, why it matters, and write your first programs">
+    <meta name="keywords" content="SAS tutorial, getting started with SAS, SAS programming basics, learn SAS">
+    <meta name="author" content="Deniz Akdemir">
+    
+    <title>Getting Started with SAS - SAS Programming Tutorial</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/syntax-highlighting.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="tutorial-page" data-tutorial-id="1">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1><a href="../index.html">SAS Programming Tutorial</a></h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../index.html#tutorials">All Tutorials</a></li>
+                <li><a href="../resources/glossary.html">Glossary</a></li>
+                <li><a href="../resources/references.html">References</a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-meta">
+                <span class="tutorial-number">Tutorial 01</span>
+                <span class="tutorial-level beginner">Beginner</span>
+                <span class="tutorial-duration"><i class="far fa-clock"></i> 45-60 minutes</span>
+            </div>
+            <h1>Getting Started with SAS</h1>
+            <p class="tutorial-subtitle">Your Gateway to Data Analytics</p>
+        </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="tutorial-progress">
+        <div class="progress-bar" id="tutorial-progress"></div>
+    </div>
+
+    <!-- Tutorial Navigation -->
+    <aside class="tutorial-nav">
+        <h3>In This Tutorial</h3>
+        <ul>
+            <li><a href="#objectives">Learning Objectives</a></li>
+            <li><a href="#why-sas">Why Learn SAS?</a></li>
+            <li><a href="#access">How to Access SAS</a></li>
+            <li><a href="#interface">SAS Interface</a></li>
+            <li><a href="#first-program">Your First Program</a></li>
+            <li><a href="#log">Understanding the Log</a></li>
+            <li><a href="#mistakes">Common Mistakes</a></li>
+            <li><a href="#exercises">Practice Exercises</a></li>
+            <li><a href="#summary">Summary</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <div class="container">
+            <!-- Learning Objectives -->
+            <section id="objectives">
+                <h2>What You'll Learn</h2>
+                <div class="objectives-grid">
+                    <div class="objective">
+                        <i class="fas fa-check-circle"></i>
+                        <p>Understand what SAS is and why it's valuable in today's data-driven world</p>
+                    </div>
+                    <div class="objective">
+                        <i class="fas fa-check-circle"></i>
+                        <p>Learn about career opportunities and industry demand for SAS skills</p>
+                    </div>
+                    <div class="objective">
+                        <i class="fas fa-check-circle"></i>
+                        <p>Get hands-on experience setting up SAS for free</p>
+                    </div>
+                    <div class="objective">
+                        <i class="fas fa-check-circle"></i>
+                        <p>Write and run your first SAS program</p>
+                    </div>
+                    <div class="objective">
+                        <i class="fas fa-check-circle"></i>
+                        <p>Understand the basic structure of SAS programs</p>
+                    </div>
+                    <div class="objective">
+                        <i class="fas fa-check-circle"></i>
+                        <p>Learn how to read and interpret SAS logs</p>
+                    </div>
+                </div>
+                
+                <div class="prerequisites">
+                    <h3><i class="fas fa-info-circle"></i> Prerequisites</h3>
+                    <p>None! This tutorial is designed for complete beginners. All you need is:</p>
+                    <ul>
+                        <li>A computer with internet access</li>
+                        <li>Basic computer skills (using a web browser, creating accounts)</li>
+                        <li>Enthusiasm to learn a powerful data analytics tool</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Why Learn SAS -->
+            <section id="why-sas">
+                <h2>Why Learn SAS?</h2>
+                
+                <h3>Industry Demand and Career Opportunities</h3>
+                <p>SAS (Statistical Analysis System) remains one of the most sought-after skills in data analytics, particularly in:</p>
+                
+                <div class="industry-cards">
+                    <div class="industry-card">
+                        <i class="fas fa-heartbeat"></i>
+                        <h4>Healthcare & Pharmaceuticals</h4>
+                        <p>Clinical trials, drug safety analysis, epidemiological studies</p>
+                    </div>
+                    <div class="industry-card">
+                        <i class="fas fa-university"></i>
+                        <h4>Banking & Finance</h4>
+                        <p>Risk management, fraud detection, regulatory compliance</p>
+                    </div>
+                    <div class="industry-card">
+                        <i class="fas fa-landmark"></i>
+                        <h4>Government</h4>
+                        <p>Census data analysis, economic forecasting, policy evaluation</p>
+                    </div>
+                    <div class="industry-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h4>Insurance</h4>
+                        <p>Actuarial analysis, claims processing, customer segmentation</p>
+                    </div>
+                </div>
+
+                <h3>The Numbers Speak for Themselves</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-value">$75K - $120K</span>
+                        <span class="stat-label">Average SAS Programmer Salary (US)</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value">70,000+</span>
+                        <span class="stat-label">Annual Job Postings</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value">90%</span>
+                        <span class="stat-label">Fortune 500 Companies Use SAS</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value">15-25%</span>
+                        <span class="stat-label">Salary Premium for Certified</span>
+                    </div>
+                </div>
+
+                <h3>SAS vs. Other Statistical Software</h3>
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>SAS</th>
+                                <th>R</th>
+                                <th>Python</th>
+                                <th>SPSS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Industry Adoption</td>
+                                <td><span class="badge high">Very High (Enterprise)</span></td>
+                                <td><span class="badge medium">High (Academia/Tech)</span></td>
+                                <td><span class="badge high">Very High (Tech)</span></td>
+                                <td><span class="badge low">Moderate</span></td>
+                            </tr>
+                            <tr>
+                                <td>Learning Curve</td>
+                                <td><span class="badge medium">Moderate</span></td>
+                                <td><span class="badge low">Steep</span></td>
+                                <td><span class="badge medium">Moderate</span></td>
+                                <td><span class="badge high">Easy</span></td>
+                            </tr>
+                            <tr>
+                                <td>Cost</td>
+                                <td><span class="badge low">Expensive (Free options)</span></td>
+                                <td><span class="badge high">Free</span></td>
+                                <td><span class="badge high">Free</span></td>
+                                <td><span class="badge low">Expensive</span></td>
+                            </tr>
+                            <tr>
+                                <td>Support</td>
+                                <td><span class="badge high">Professional</span></td>
+                                <td><span class="badge medium">Community</span></td>
+                                <td><span class="badge medium">Community</span></td>
+                                <td><span class="badge high">Professional</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- How to Access SAS -->
+            <section id="access">
+                <h2>How to Access SAS</h2>
+                <p>The great news is that you can start learning SAS for free! Here are your options:</p>
+
+                <h3>1. SAS OnDemand for Academics (Recommended)</h3>
+                <div class="access-option featured">
+                    <h4><i class="fas fa-cloud"></i> Browser-Based & Free</h4>
+                    <p>This is the easiest way to get started with SAS - completely free and runs in your web browser.</p>
+                    
+                    <div class="steps">
+                        <div class="step">
+                            <span class="step-number">1</span>
+                            <div>
+                                <h5>Visit SAS OnDemand Website</h5>
+                                <p>Go to <a href="https://welcome.oda.sas.com" target="_blank">https://welcome.oda.sas.com</a></p>
+                                <p>Click on "Register for an account"</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <div>
+                                <h5>Create Your Profile</h5>
+                                <p>Fill in your personal information</p>
+                                <p>Use a valid email address (you'll need to verify it)</p>
+                                <p>Choose "Independent Learner" if not affiliated with an institution</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">3</span>
+                            <div>
+                                <h5>Verify Your Email</h5>
+                                <p>Check your inbox for a verification email from SAS</p>
+                                <p>Click the verification link</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">4</span>
+                            <div>
+                                <h5>Complete Registration</h5>
+                                <p>Set up your password (make it strong!)</p>
+                                <p>Accept the terms and conditions</p>
+                                <p>Complete the registration process</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">5</span>
+                            <div>
+                                <h5>Access SAS Studio</h5>
+                                <p>Log in with your credentials</p>
+                                <p>You'll see the SAS Studio interface load in your browser</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Other Options</h3>
+                <div class="access-options-grid">
+                    <div class="access-option">
+                        <h4><i class="fas fa-building"></i> Enterprise/Workplace</h4>
+                        <p>If your organization has SAS, contact IT for access</p>
+                    </div>
+                    <div class="access-option">
+                        <h4><i class="fas fa-cloud-upload-alt"></i> SAS Viya</h4>
+                        <p>Cloud-native platform for advanced users</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SAS Interface -->
+            <section id="interface">
+                <h2>First Look at SAS Interface</h2>
+                <p>Once you've logged into SAS OnDemand, you'll see SAS Studio - a modern, web-based interface for SAS programming.</p>
+
+                <h3>Understanding the SAS Studio Workspace</h3>
+                <div class="interface-diagram">
+                    <img src="../images/screenshots/sas-studio-interface.png" alt="SAS Studio Interface" data-src="../images/screenshots/sas-studio-interface.png">
+                </div>
+
+                <div class="interface-sections">
+                    <div class="interface-section">
+                        <h4><i class="fas fa-folder-tree"></i> Navigation Pane (Left)</h4>
+                        <ul>
+                            <li><strong>Server Files and Folders:</strong> Your file system</li>
+                            <li><strong>Tasks and Utilities:</strong> Point-and-click tools</li>
+                            <li><strong>Snippets:</strong> Code templates</li>
+                            <li><strong>Libraries:</strong> Data storage locations</li>
+                        </ul>
+                    </div>
+                    <div class="interface-section">
+                        <h4><i class="fas fa-code"></i> Work Area (Center)</h4>
+                        <ul>
+                            <li><strong>Code Editor:</strong> Where you write SAS programs</li>
+                            <li><strong>Multiple tabs:</strong> Work on several programs</li>
+                            <li><strong>Syntax highlighting:</strong> Different colors for code</li>
+                        </ul>
+                    </div>
+                    <div class="interface-section">
+                        <h4><i class="fas fa-terminal"></i> Results/Output Area</h4>
+                        <ul>
+                            <li><strong>Results:</strong> Shows output from procedures</li>
+                            <li><strong>Log:</strong> Displays execution messages</li>
+                            <li><strong>Output Data:</strong> View created datasets</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Your First Program -->
+            <section id="first-program">
+                <h2>Your First SAS Program</h2>
+                <p>Let's write the traditional "Hello World" program in SAS!</p>
+
+                <h3>Example 1: Basic Output</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* My First SAS Program
+   Author: Your Name
+   Date: Today's Date
+   Purpose: Display a message to the log
+*/
+
+data _null_;
+    put "Hello, World! Welcome to SAS Programming!";
+run;</code></pre>
+                </div>
+
+                <div class="code-explanation">
+                    <h4>Detailed Explanation:</h4>
+                    <dl>
+                        <dt><code>data _null_;</code></dt>
+                        <dd>
+                            <ul>
+                                <li><code>data</code> - This keyword starts a DATA step</li>
+                                <li><code>_null_</code> - Special dataset name meaning "don't create a dataset"</li>
+                                <li><code>;</code> - Every SAS statement ends with a semicolon (VERY IMPORTANT!)</li>
+                            </ul>
+                        </dd>
+                        
+                        <dt><code>put "Hello, World! Welcome to SAS Programming!";</code></dt>
+                        <dd>
+                            <ul>
+                                <li><code>put</code> - Command to write text to the log</li>
+                                <li>The text in quotes is what will be displayed</li>
+                                <li>Note the semicolon at the end</li>
+                            </ul>
+                        </dd>
+                        
+                        <dt><code>run;</code></dt>
+                        <dd>
+                            <ul>
+                                <li><code>run</code> - Tells SAS to execute the preceding DATA step</li>
+                                <li>Without RUN, SAS waits for more statements</li>
+                            </ul>
+                        </dd>
+                    </dl>
+                </div>
+
+                <h3>Example 2: Creating Your First Dataset</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Creating a simple dataset with employee information */
+
+data employees;
+    input name $ age salary;
+    datalines;
+John 35 55000
+Sarah 28 48000
+Mike 42 72000
+Lisa 31 58000
+;
+run;
+
+/* Display the data we just created */
+proc print data=employees;
+    title "My First Employee Dataset";
+run;</code></pre>
+                </div>
+
+                <div class="code-explanation">
+                    <h4>Detailed Explanation:</h4>
+                    <dl>
+                        <dt><code>data employees;</code></dt>
+                        <dd>Creates a dataset named "employees" in the WORK library (temporary storage)</dd>
+                        
+                        <dt><code>input name $ age salary;</code></dt>
+                        <dd>
+                            <ul>
+                                <li><code>input</code> - Tells SAS what variables to expect</li>
+                                <li><code>name $</code> - Character variable ($ indicates text)</li>
+                                <li><code>age</code> - Numeric variable</li>
+                                <li><code>salary</code> - Another numeric variable</li>
+                            </ul>
+                        </dd>
+                        
+                        <dt><code>datalines;</code></dt>
+                        <dd>Indicates that data values follow (alternative: <code>cards;</code>)</dd>
+                        
+                        <dt><code>proc print data=employees;</code></dt>
+                        <dd>
+                            <ul>
+                                <li><code>proc</code> - Starts a PROCEDURE step</li>
+                                <li><code>print</code> - The procedure name (displays data)</li>
+                                <li><code>data=employees</code> - Specifies which dataset to print</li>
+                            </ul>
+                        </dd>
+                    </dl>
+                </div>
+
+                <h3>Example 3: Simple Calculations</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Calculate annual bonus as 10% of salary */
+
+data employees_with_bonus;
+    set employees;  /* Read from existing dataset */
+    bonus = salary * 0.10;
+    total_compensation = salary + bonus;
+    
+    /* Add a label to make output clearer */
+    label salary = "Annual Salary"
+          bonus = "Annual Bonus (10%)"
+          total_compensation = "Total Annual Compensation";
+run;
+
+/* Display the results with formatting */
+proc print data=employees_with_bonus label;
+    title "Employee Compensation Report";
+    format salary bonus total_compensation dollar12.2;
+run;</code></pre>
+                </div>
+            </section>
+
+            <!-- Understanding the Log -->
+            <section id="log">
+                <h2>Understanding the SAS Log</h2>
+                <p>The log is your best friend when programming in SAS. It tells you:</p>
+                <ul>
+                    <li>What SAS did with your code</li>
+                    <li>Any errors or warnings</li>
+                    <li>Performance information</li>
+                </ul>
+
+                <h3>Types of Log Messages</h3>
+                <div class="log-messages">
+                    <div class="log-message note">
+                        <h4><i class="fas fa-info-circle"></i> NOTES (Blue text)</h4>
+                        <p>Informational messages</p>
+                        <code>NOTE: The data set WORK.TEST has 2 observations and 2 variables.</code>
+                    </div>
+                    <div class="log-message warning">
+                        <h4><i class="fas fa-exclamation-triangle"></i> WARNINGS (Green text)</h4>
+                        <p>Something unusual but not fatal</p>
+                        <code>WARNING: Variable X already exists on file WORK.TEST.</code>
+                    </div>
+                    <div class="log-message error">
+                        <h4><i class="fas fa-times-circle"></i> ERRORS (Red text)</h4>
+                        <p>Something is wrong and needs fixing</p>
+                        <code>ERROR: Variable X not found.</code>
+                    </div>
+                </div>
+
+                <h3>Reading Log Messages</h3>
+                <p>Let's intentionally create some errors to understand log messages:</p>
+                
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Example with an error - missing semicolon */
+data test
+    input x y;
+    datalines;
+1 2
+3 4
+;
+run;</code></pre>
+                </div>
+
+                <div class="log-output">
+                    <div class="log-label">Log Output:</div>
+                    <pre class="code-error">ERROR: No DATALINES, INFILE, MERGE, SET, UPDATE or MODIFY statement.
+ERROR 180-322: Statement is not valid or it is used out of proper order.</pre>
+                </div>
+                <p><strong>What went wrong?</strong> Missing semicolon after <code>data test</code></p>
+            </section>
+
+            <!-- Common Mistakes -->
+            <section id="mistakes">
+                <h2>Common Beginner Mistakes and How to Avoid Them</h2>
+
+                <div class="mistake-cards">
+                    <div class="mistake-card">
+                        <h3>1. Forgetting Semicolons</h3>
+                        <div class="mistake-example">
+                            <div class="wrong">
+                                <span class="label">❌ Wrong</span>
+                                <pre><code class="language-sas">data mydata
+    input x y
+run</code></pre>
+                            </div>
+                            <div class="right">
+                                <span class="label">✅ Right</span>
+                                <pre><code class="language-sas">data mydata;
+    input x y;
+run;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mistake-card">
+                        <h3>2. Incorrect Variable Types</h3>
+                        <div class="mistake-example">
+                            <div class="wrong">
+                                <span class="label">❌ Wrong</span>
+                                <pre><code class="language-sas">data test;
+    input name age;  /* name should be character */
+    datalines;
+John 25
+;
+run;</code></pre>
+                            </div>
+                            <div class="right">
+                                <span class="label">✅ Right</span>
+                                <pre><code class="language-sas">data test;
+    input name $ age;  /* $ indicates character */
+    datalines;
+John 25
+;
+run;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mistake-card">
+                        <h3>3. Case Sensitivity Confusion</h3>
+                        <div class="info-box">
+                            <p>Remember:</p>
+                            <ul>
+                                <li><strong>SAS keywords are NOT case-sensitive:</strong> DATA, data, Data all work</li>
+                                <li><strong>Variable values ARE case-sensitive:</strong> "John" ≠ "JOHN"</li>
+                                <li><strong>Variable names are NOT case-sensitive:</strong> Name, name, NAME refer to same variable</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Practice Exercises -->
+            <section id="exercises">
+                <h2>Practice Exercises</h2>
+
+                <div class="exercise">
+                    <h3>Exercise 1: Create a Student Dataset</h3>
+                    <p>Create a dataset with student information including name, age, and test score:</p>
+                    
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="language">SAS</span>
+                            <button class="copy-btn">Copy</button>
+                        </div>
+                        <pre><code class="language-sas">/* Your task: Create a dataset called 'students' with at least 5 students */
+/* Include: name (character), age (numeric), test_score (numeric) */
+/* Then display the data */
+
+/* Write your code here */</code></pre>
+                    </div>
+
+                    <details class="solution">
+                        <summary>Show Solution</summary>
+                        <div class="code-example">
+                            <div class="code-header">
+                                <span class="language">SAS</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <pre><code class="language-sas">data students;
+    input name $ age test_score;
+    datalines;
+Emma 20 95
+Liam 19 87
+Olivia 21 92
+Noah 20 88
+Ava 19 96
+;
+run;
+
+proc print data=students;
+    title "Student Test Scores";
+run;</code></pre>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="exercise">
+                    <h3>Exercise 2: Calculate Grade Categories</h3>
+                    <p>Extend the student dataset to include grade categories:</p>
+                    <ul>
+                        <li>90-100: A</li>
+                        <li>80-89: B</li>
+                        <li>70-79: C</li>
+                        <li>Below 70: D</li>
+                    </ul>
+
+                    <details class="solution">
+                        <summary>Show Solution</summary>
+                        <div class="code-example">
+                            <div class="code-header">
+                                <span class="language">SAS</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <pre><code class="language-sas">data students_graded;
+    set students;
+    
+    if test_score >= 90 then grade = 'A';
+    else if test_score >= 80 then grade = 'B';
+    else if test_score >= 70 then grade = 'C';
+    else grade = 'D';
+run;
+
+proc print data=students_graded;
+    title "Student Grades Report";
+run;</code></pre>
+                        </div>
+                    </details>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section id="summary">
+                <h2>Summary and Key Takeaways</h2>
+                
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <h3><i class="fas fa-star"></i> Why SAS Matters</h3>
+                        <ul>
+                            <li>Industry standard in healthcare, finance, and government</li>
+                            <li>Excellent career opportunities</li>
+                            <li>Robust and reliable for enterprise use</li>
+                        </ul>
+                    </div>
+                    <div class="summary-card">
+                        <h3><i class="fas fa-rocket"></i> Getting Started</h3>
+                        <ul>
+                            <li>SAS OnDemand for Academics - free and browser-based</li>
+                            <li>SAS Studio interface - modern and user-friendly</li>
+                        </ul>
+                    </div>
+                    <div class="summary-card">
+                        <h3><i class="fas fa-code"></i> Basic Concepts</h3>
+                        <ul>
+                            <li>DATA steps create and manipulate data</li>
+                            <li>PROC steps analyze and report on data</li>
+                            <li>Every statement ends with a semicolon</li>
+                            <li>The log is essential for debugging</li>
+                        </ul>
+                    </div>
+                    <div class="summary-card">
+                        <h3><i class="fas fa-check"></i> Your First Programs</h3>
+                        <ul>
+                            <li>Created datasets using INPUT and DATALINES</li>
+                            <li>Performed calculations and transformations</li>
+                            <li>Displayed results with PROC PRINT</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="next-steps">
+                    <h3>What's Next?</h3>
+                    <p>In Part 2 of our series, "SAS Fundamentals - Building Your Foundation," we'll dive deeper into:</p>
+                    <ul>
+                        <li>Understanding DATA steps vs. PROC steps</li>
+                        <li>Working with libraries and permanent datasets</li>
+                        <li>SAS naming conventions and rules</li>
+                        <li>More complex data operations</li>
+                        <li>Introduction to SAS functions</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Tutorial Controls -->
+            <div class="tutorial-controls">
+                <button class="btn btn-secondary" id="complete-tutorial">
+                    <i class="fas fa-check"></i> Mark as Complete
+                </button>
+                <a href="02-fundamentals.html" class="btn btn-primary">
+                    Next Tutorial <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Additional Resources -->
+            <section class="additional-resources">
+                <h3>Additional Resources</h3>
+                <div class="resource-links">
+                    <a href="../downloads/datasets/first_practice.csv" class="resource-link">
+                        <i class="fas fa-download"></i> Download Practice Dataset
+                    </a>
+                    <a href="https://support.sas.com" target="_blank" class="resource-link">
+                        <i class="fas fa-external-link-alt"></i> SAS Documentation
+                    </a>
+                    <a href="https://communities.sas.com" target="_blank" class="resource-link">
+                        <i class="fas fa-users"></i> SAS Communities
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 Deniz Akdemir. All rights reserved.</p>
+                <p>Part of the <a href="../index.html">Complete SAS Programming Tutorial Series</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Progress Indicator -->
+    <div class="progress-indicator" id="progress-indicator"></div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script src="../js/main.js"></script>
+    <script src="../js/syntax-highlighting.js"></script>
+    
+    <!-- Tutorial-specific JavaScript -->
+    <script>
+        // Track reading progress
+        document.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('tutorial-progress').style.width = scrolled + '%';
+        });
+    </script>
+</body>
+</html>
