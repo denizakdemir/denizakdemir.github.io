@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 2: SAS Fundamentals - Building Your Foundation</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/syntax-highlighting.css">
+    <meta name="description" content="Master the fundamentals of SAS programming: DATA vs PROC steps, libraries, syntax rules, and the SAS log.">
+    <meta name="keywords" content="SAS programming, DATA step, PROC step, SAS libraries, SAS syntax, SAS log, beginner tutorial">
+    
+    <!-- Open Graph tags -->
+    <meta property="og:title" content="SAS Fundamentals - Building Your Foundation">
+    <meta property="og:description" content="Learn the core concepts of SAS programming including DATA vs PROC steps, libraries, syntax rules, and debugging with the SAS log.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://yoursite.com/tutorials/02-fundamentals.html">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header>
+        <nav class="main-nav">
+            <div class="nav-container">
+                <a href="../index.html" class="logo">SAS Tutorial</a>
+                <ul class="nav-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="01-getting-started.html">Part 1</a></li>
+                    <li class="active"><a href="02-fundamentals.html">Part 2</a></li>
+                    <li><a href="03-data-step.html">Part 3</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Progress Indicator -->
+    <div class="progress-container">
+        <div class="progress-bar" style="width: 15%;"></div>
+        <span class="progress-text">Part 2 of 13</span>
+    </div>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <div class="container">
+            <!-- Tutorial Header -->
+            <div class="tutorial-header">
+                <h1>Part 2: SAS Fundamentals</h1>
+                <h2 class="subtitle">Building Your Foundation</h2>
+                <div class="meta-info">
+                    <span class="difficulty">Beginner</span>
+                    <span class="duration">30-40 minutes</span>
+                    <span class="updated">Updated: August 2025</span>
+                </div>
+            </div>
+
+            <!-- Learning Objectives -->
+            <section class="objectives">
+                <h3>What You'll Learn</h3>
+                <ul>
+                    <li>Master the fundamental difference between DATA steps and PROC steps</li>
+                    <li>Understand SAS libraries and how to manage datasets effectively</li>
+                    <li>Learn SAS syntax rules and naming conventions</li>
+                    <li>Explore the SAS log in detail for better debugging</li>
+                    <li>Write more complex programs with confidence</li>
+                    <li>Organize your code professionally</li>
+                </ul>
+            </section>
+
+            <!-- Prerequisites -->
+            <section class="prerequisites">
+                <h3>Prerequisites</h3>
+                <ul>
+                    <li>Completion of Part 1: Getting Started with SAS</li>
+                    <li>Access to SAS (SAS OnDemand, SAS Studio, or any SAS installation)</li>
+                    <li>Basic understanding of running SAS programs</li>
+                </ul>
+            </section>
+
+            <!-- Main Content Sections -->
+            <section class="content-section">
+                <h2>SAS Program Structure: The Two Pillars</h2>
+                <p>Every SAS program consists of two fundamental building blocks: DATA steps and PROC (procedure) steps. Understanding the distinction between these two is crucial for effective SAS programming.</p>
+
+                <h3>DATA Steps vs. PROC Steps</h3>
+                <p>Think of SAS programming like cooking:</p>
+                <ul>
+                    <li><strong>DATA steps</strong> are like food preparation - cutting vegetables, marinating meat, mixing ingredients</li>
+                    <li><strong>PROC steps</strong> are like cooking and presentation - grilling, plating, serving</li>
+                </ul>
+
+                <h3>DATA Steps: Creating and Manipulating Data</h3>
+                <div class="concept-box">
+                    <p>DATA steps are where you:</p>
+                    <ul>
+                        <li>Create new datasets</li>
+                        <li>Read raw data from external files</li>
+                        <li>Modify existing datasets</li>
+                        <li>Perform calculations and transformations</li>
+                        <li>Control which observations (rows) to include</li>
+                        <li>Create new variables (columns)</li>
+                    </ul>
+                </div>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Basic DATA step structure */
+data output_dataset;
+    /* Instructions for creating/modifying data */
+    /* These execute for each observation */
+run;</code></pre>
+                </div>
+
+                <div class="explanation-box">
+                    <h4>Detailed Explanation:</h4>
+                    <ul>
+                        <li><code>data output_dataset;</code> - Begins the DATA step and names the dataset to create</li>
+                        <li>The statements between <code>data</code> and <code>run</code> execute once for each observation</li>
+                        <li><code>run;</code> - Marks the end of the DATA step and triggers execution</li>
+                    </ul>
+                </div>
+
+                <h3>PROC Steps: Analyzing and Reporting Data</h3>
+                <div class="concept-box">
+                    <p>PROC steps are where you:</p>
+                    <ul>
+                        <li>Analyze data (statistics, frequencies, correlations)</li>
+                        <li>Create reports and visualizations</li>
+                        <li>Sort and manage datasets</li>
+                        <li>Export data to different formats</li>
+                        <li>Perform specialized analyses</li>
+                    </ul>
+                </div>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Basic PROC step structure */
+proc procedure_name data=input_dataset options;
+    /* Additional statements specific to the procedure */
+run;</code></pre>
+                </div>
+
+                <div class="explanation-box">
+                    <h4>Detailed Explanation:</h4>
+                    <ul>
+                        <li><code>proc procedure_name</code> - Invokes a specific SAS procedure</li>
+                        <li><code>data=input_dataset</code> - Specifies which dataset to analyze</li>
+                        <li><code>options</code> - Optional settings that modify procedure behavior</li>
+                        <li><code>run;</code> - Executes the procedure</li>
+                    </ul>
+                </div>
+
+                <h3>Comparing DATA and PROC Steps</h3>
+                <p>Let's see both in action with a complete example:</p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Step 1: DATA step - Create and prepare data */
+data class_grades;
+    input student_name $ exam1 exam2 final_exam;
+    /* Calculate average grade for each student */
+    average = (exam1 + exam2 + final_exam) / 3;
+    
+    /* Determine letter grade */
+    if average >= 90 then grade = 'A';
+    else if average >= 80 then grade = 'B';
+    else if average >= 70 then grade = 'C';
+    else if average >= 60 then grade = 'D';
+    else grade = 'F';
+    
+    /* Determine pass/fail status */
+    if grade in ('A', 'B', 'C') then status = 'Pass';
+    else status = 'Fail';
+    
+    datalines;
+Alice 85 92 88
+Bob 78 75 82
+Carol 95 98 96
+David 65 70 68
+Emma 88 85 90
+;
+run;
+
+/* Step 2: PROC step - Analyze the data */
+proc means data=class_grades;
+    var exam1 exam2 final_exam average;
+    title "Class Statistics Summary";
+run;
+
+/* Step 3: Another PROC step - Frequency analysis */
+proc freq data=class_grades;
+    tables grade status;
+    title "Grade Distribution";
+run;
+
+/* Step 4: Another PROC step - Print the data */
+proc print data=class_grades;
+    title "Complete Class Grade Report";
+    var student_name exam1 exam2 final_exam average grade status;
+run;</code></pre>
+                </div>
+
+                <div class="key-points">
+                    <h4>Key Observations:</h4>
+                    <ol>
+                        <li>The DATA step creates the dataset and calculates new variables</li>
+                        <li>Multiple PROC steps can analyze the same dataset</li>
+                        <li>Each step ends with <code>run;</code></li>
+                        <li>DATA steps process data row by row</li>
+                        <li>PROC steps process entire datasets</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Libraries and Datasets: Organizing Your Data</h2>
+
+                <h3>Understanding SAS Libraries</h3>
+                <p>A SAS library is like a folder or directory where SAS datasets are stored. Think of it as a filing cabinet:</p>
+                <ul>
+                    <li>The library is the cabinet</li>
+                    <li>Datasets are the folders inside</li>
+                    <li>Variables are the papers in each folder</li>
+                </ul>
+
+                <h3>Types of Libraries</h3>
+
+                <h4>1. WORK Library (Temporary)</h4>
+                <div class="info-box">
+                    <ul>
+                        <li>Created automatically when SAS starts</li>
+                        <li>Deleted when SAS session ends</li>
+                        <li>Default location for datasets</li>
+                    </ul>
+                </div>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Creating a dataset in WORK library (default) */
+data employee_info;  /* Same as: data work.employee_info; */
+    input emp_id name $ department $ salary;
+    datalines;
+101 John Sales 55000
+102 Mary IT 65000
+103 Bob HR 52000
+;
+run;</code></pre>
+                </div>
+
+                <h4>2. Permanent Libraries</h4>
+                <div class="info-box">
+                    <ul>
+                        <li>Persist between SAS sessions</li>
+                        <li>Must be defined using LIBNAME statement</li>
+                        <li>Stored on your computer or server</li>
+                    </ul>
+                </div>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Define a permanent library */
+libname mydata '/home/username/sas_data';  /* Unix/Linux path */
+libname mydata 'C:\Users\username\SAS_Data';  /* Windows path */
+
+/* Create a dataset in permanent library */
+data mydata.employee_info;
+    input emp_id name $ department $ salary;
+    datalines;
+101 John Sales 55000
+102 Mary IT 65000
+103 Bob HR 52000
+;
+run;
+
+/* Access the dataset later */
+proc print data=mydata.employee_info;
+    title "Permanent Employee Data";
+run;</code></pre>
+                </div>
+
+                <div class="warning-box">
+                    <h4>Important Notes:</h4>
+                    <ul>
+                        <li>Library names (librefs) can be 1-8 characters</li>
+                        <li>Must start with a letter or underscore</li>
+                        <li>Can contain only letters, numbers, and underscores</li>
+                        <li>The physical path must exist before creating the library</li>
+                    </ul>
+                </div>
+
+                <h3>Working with Libraries</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* View all available libraries */
+proc datasets;
+    title "Available SAS Libraries";
+run;
+
+/* View contents of a specific library */
+proc datasets library=work;
+    title "Datasets in WORK Library";
+run;
+
+/* View detailed information about a dataset */
+proc contents data=work.employee_info;
+    title "Structure of Employee Info Dataset";
+run;
+
+/* Copy dataset between libraries */
+data mydata.employee_backup;
+    set work.employee_info;
+run;
+
+/* Delete a dataset */
+proc datasets library=work;
+    delete employee_info;
+run;</code></pre>
+                </div>
+
+                <h3>Two-Level Dataset Names</h3>
+                <p>SAS uses two-level names to identify datasets:</p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Two-level naming: library.dataset */
+data work.sales;      /* Temporary dataset in WORK */
+data mydata.sales;    /* Permanent dataset in MYDATA */
+
+/* One-level names default to WORK */
+data sales;           /* Same as work.sales */</code></pre>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Basic Syntax Rules: The Grammar of SAS</h2>
+
+                <h3>1. Statement Structure</h3>
+                <p>Every SAS statement follows these rules:</p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Rule 1: Statements end with semicolons */
+data newdata;
+    set olddata;
+    x = y + z;
+run;
+
+/* Rule 2: Statements can span multiple lines */
+data employee_analysis;
+    set employee_info;
+    annual_bonus = salary * 0.10;
+    total_compensation = salary + 
+                        annual_bonus + 
+                        benefits;
+run;
+
+/* Rule 3: Multiple statements can be on one line (not recommended) */
+data test; x=1; y=2; z=x+y; run;  /* Works but hard to read */</code></pre>
+                </div>
+
+                <h3>2. Case Sensitivity Rules</h3>
+                <p>Understanding what is and isn't case-sensitive in SAS:</p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* SAS Keywords - NOT case sensitive */
+DATA mydata;     /* Valid */
+Data mydata;     /* Valid */
+data MYDATA;     /* Valid */
+DaTa MyDaTa;     /* Valid but silly */
+
+/* Variable names - NOT case sensitive internally */
+data test;
+    Name = 'John';     /* Create variable */
+    name = 'Jane';     /* Overwrites same variable */
+    NAME = 'Bob';      /* Overwrites same variable */
+run;
+
+/* Variable values - CASE SENSITIVE */
+data names;
+    input name $ gender $;
+    datalines;
+John M
+john m
+JOHN M
+;
+run;
+
+/* These are three different values! */
+proc freq data=names;
+    tables name;  /* Will show John, john, and JOHN separately */
+run;</code></pre>
+                </div>
+
+                <h3>3. Naming Conventions</h3>
+                <p>Rules for naming datasets, variables, and libraries:</p>
+
+                <div class="rules-box">
+                    <h4>Valid names must:</h4>
+                    <ul>
+                        <li>Start with letter or underscore</li>
+                        <li>Contain only letters, numbers, underscores</li>
+                        <li>Be 1-32 characters long (datasets/variables)</li>
+                        <li>Be 1-8 characters long (libraries)</li>
+                    </ul>
+                </div>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Valid variable names */
+data valid_names;
+    employee_id = 101;        /* Good */
+    _tempvar = 'temp';        /* Valid, starts with underscore */
+    sales2024 = 50000;        /* Good */
+    firstName = 'John';       /* Good - camelCase */
+    first_name = 'John';      /* Good - snake_case */
+run;
+
+/* Invalid variable names - these will cause errors */
+data invalid_names;
+    2024sales = 50000;        /* ERROR: starts with number */
+    employee-id = 101;        /* ERROR: contains hyphen */
+    employee id = 101;        /* ERROR: contains space */
+    employee.id = 101;        /* ERROR: contains period */
+run;</code></pre>
+                </div>
+
+                <div class="warning-box">
+                    <h4>Reserved words to avoid:</h4>
+                    <p>Don't use: data, proc, run, if, then, else, do, end, etc.</p>
+                </div>
+
+                <h3>4. Comments: Documenting Your Code</h3>
+                <p>Two ways to add comments in SAS:</p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Method 1: Slash-asterisk comments
+   - Can span multiple lines
+   - Can be placed anywhere
+   - Most common method
+*/
+
+data employee_analysis;
+    set employees;
+    /* Calculate annual bonus based on performance */
+    if performance = 'Excellent' then
+        bonus = salary * 0.15;  /* 15% for excellent */
+    else if performance = 'Good' then
+        bonus = salary * 0.10;  /* 10% for good */
+    else
+        bonus = salary * 0.05;  /* 5% for others */
+run;
+
+* Method 2: Asterisk comments;
+* Must end with semicolon;
+* Can only be used at statement boundaries;
+* Good for temporarily disabling code;
+
+* proc print data=test; run;  * This won't execute;</code></pre>
+                </div>
+
+                <h3>5. SAS System Options</h3>
+                <p>Control how SAS behaves:</p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* View current option settings */
+proc options;
+run;
+
+/* Common options to set */
+options linesize=80;        /* Characters per line in output */
+options pagesize=60;        /* Lines per page in output */
+options nodate;            /* Suppress date in output */
+options nonumber;          /* Suppress page numbers */
+options nocenter;          /* Left-align output */
+
+/* Development options */
+options mprint;            /* Show macro expansions */
+options source;            /* Show source code in log */
+options notes;             /* Show notes in log */
+options errors=20;         /* Max errors before stopping */
+
+/* Reset to defaults */
+options date number center;</code></pre>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Understanding the SAS Log: Your Debugging Companion</h2>
+                <p>The SAS log is your primary tool for understanding what SAS is doing with your code. Let's explore it in detail.</p>
+
+                <h3>Components of the Log</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Example program to generate various log messages */
+data employee_analysis;
+    input name $ age salary;
+    
+    /* This will generate a NOTE about numeric to character conversion */
+    if age = '30' then age_group = 'Thirty';
+    
+    /* This will work correctly */
+    if age = 30 then exact_thirty = 'Yes';
+    
+    datalines;
+John 28 50000
+Jane 30 55000
+Bob 35 60000
+Mary twentyfive 45000
+;
+run;</code></pre>
+                </div>
+
+                <div class="log-output">
+                    <h4>Log Output Analysis:</h4>
+                    <pre>1    data employee_analysis;
+2        input name $ age salary;
+3        
+4        /* This will generate a NOTE about numeric to character conversion */
+5        if age = '30' then age_group = 'Thirty';
+NOTE: Character values have been converted to numeric values at the places given by: (Line):(Column).
+      5:14
+      
+6        
+7        /* This will work correctly */
+8        if age = 30 then exact_thirty = 'Yes';
+9        
+10       datalines;
+
+NOTE: Invalid data for age in line 14 1-10.
+RULE:     ----+----1----+----2----+----3----+----4
+14        Mary twentyfive 45000
+name=Mary age=. salary=45000 age_group=  exact_thirty=  _ERROR_=1 _N_=4
+NOTE: The data set WORK.EMPLOYEE_ANALYSIS has 4 observations and 5 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.01 seconds
+      cpu time            0.01 seconds</pre>
+                </div>
+
+                <h3>Reading Log Messages Effectively</h3>
+
+                <h4>1. Line Numbers</h4>
+                <ul>
+                    <li>Shows exactly where in your code something happened</li>
+                    <li>Essential for debugging</li>
+                </ul>
+
+                <h4>2. Types of Messages</h4>
+                <div class="message-types">
+                    <div class="message-type">
+                        <h5>NOTE - Informational</h5>
+                        <p>Tells you what SAS is doing. Usually good news!</p>
+                        <code>NOTE: The data set WORK.TEST1 has 1 observations and 1 variables.</code>
+                    </div>
+                    
+                    <div class="message-type warning">
+                        <h5>WARNING - Something unusual but not fatal</h5>
+                        <p>Pay attention, but your program will continue.</p>
+                        <code>WARNING: Data line had more values than INPUT statement specified.</code>
+                    </div>
+                    
+                    <div class="message-type error">
+                        <h5>ERROR - Must be fixed</h5>
+                        <p>Your program has a problem that needs attention.</p>
+                        <code>ERROR: File WORK.NONEXISTENT.DATA does not exist.</code>
+                    </div>
+                </div>
+
+                <h3>Performance Information</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Create a larger dataset to see performance stats */
+data large_data;
+    do i = 1 to 1000000;
+        x = ranuni(12345);
+        y = rannor(12345);
+        z = x * y;
+        output;
+    end;
+run;
+
+/* Log shows:
+NOTE: The data set WORK.LARGE_DATA has 1000000 observations and 4 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.28 seconds
+      cpu time            0.27 seconds
+*/</code></pre>
+                </div>
+            </section>
+
+            <!-- Practice Exercises -->
+            <section class="exercises">
+                <h2>Practical Exercises</h2>
+
+                <div class="exercise">
+                    <h3>Exercise 1: Library Management</h3>
+                    <p>Create a program that:</p>
+                    <ol>
+                        <li>Defines a permanent library</li>
+                        <li>Creates a dataset in that library</li>
+                        <li>Lists all datasets in the library</li>
+                        <li>Copies a dataset from WORK to your permanent library</li>
+                    </ol>
+
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="language">SAS</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code class="language-sas">/* Your task: Complete this program */
+
+/* 1. Define a library called 'mydata' */
+libname _______ '/your/path/here';
+
+/* 2. Create a dataset in the library */
+data _______.products;
+    input product_id product_name $ price quantity;
+    datalines;
+101 Laptop 999.99 50
+102 Mouse 29.99 200
+103 Keyboard 79.99 150
+;
+run;
+
+/* 3. List datasets in the library */
+proc _______ library=_______;
+run;
+
+/* 4. Create a temporary copy and then save it back */
+data work.temp_products;
+    set _______.products;
+    total_value = price * quantity;
+run;
+
+data _______.products_with_value;
+    set work.temp_products;
+run;</code></pre>
+                    </div>
+
+                    <details class="solution">
+                        <summary>Click to see solution</summary>
+                        <div class="code-example">
+                            <div class="code-header">
+                                <span class="language">SAS</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre><code class="language-sas">/* 1. Define a library called 'mydata' */
+libname mydata '/folders/myfolders/data';
+
+/* 2. Create a dataset in the library */
+data mydata.products;
+    input product_id product_name $ price quantity;
+    datalines;
+101 Laptop 999.99 50
+102 Mouse 29.99 200
+103 Keyboard 79.99 150
+;
+run;
+
+/* 3. List datasets in the library */
+proc datasets library=mydata;
+run;
+
+/* 4. Create a temporary copy and then save it back */
+data work.temp_products;
+    set mydata.products;
+    total_value = price * quantity;
+run;
+
+data mydata.products_with_value;
+    set work.temp_products;
+run;</code></pre>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="exercise">
+                    <h3>Exercise 2: Understanding DATA vs PROC</h3>
+                    <p>Identify whether each task should use a DATA step or PROC step:</p>
+                    
+                    <div class="quiz-list">
+                        <div class="quiz-item">
+                            <p>1. Calculate the average salary by department</p>
+                            <div class="quiz-options">
+                                <label><input type="radio" name="q1" value="data"> DATA step</label>
+                                <label><input type="radio" name="q1" value="proc"> PROC step</label>
+                            </div>
+                        </div>
+                        
+                        <div class="quiz-item">
+                            <p>2. Create a new variable for employee age</p>
+                            <div class="quiz-options">
+                                <label><input type="radio" name="q2" value="data"> DATA step</label>
+                                <label><input type="radio" name="q2" value="proc"> PROC step</label>
+                            </div>
+                        </div>
+                        
+                        <div class="quiz-item">
+                            <p>3. Sort data by hire date</p>
+                            <div class="quiz-options">
+                                <label><input type="radio" name="q3" value="data"> DATA step</label>
+                                <label><input type="radio" name="q3" value="proc"> PROC step</label>
+                            </div>
+                        </div>
+                        
+                        <div class="quiz-item">
+                            <p>4. Combine two datasets</p>
+                            <div class="quiz-options">
+                                <label><input type="radio" name="q4" value="data"> DATA step</label>
+                                <label><input type="radio" name="q4" value="proc"> PROC step</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <details class="solution">
+                        <summary>Click to see answers</summary>
+                        <div class="answer-list">
+                            <p>1. <strong>PROC step</strong> (PROC MEANS)</p>
+                            <p>2. <strong>DATA step</strong></p>
+                            <p>3. <strong>PROC step</strong> (PROC SORT)</p>
+                            <p>4. <strong>DATA step</strong></p>
+                            <p>5. <strong>PROC step</strong> (PROC FREQ)</p>
+                            <p>6. <strong>DATA step</strong> (though PROC SQL could also work)</p>
+                            <p>7. <strong>PROC step</strong></p>
+                            <p>8. <strong>DATA step</strong> (though PROC DATASETS could also work)</p>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="exercise">
+                    <h3>Exercise 3: Debugging Practice</h3>
+                    <p>Find and fix the errors in this program:</p>
+
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="language">SAS</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code class="language-sas">/* Program with intentional errors */
+Data employee-data
+    input name $ age salary;
+    if age >= 30 then Group = Senior;
+    else Group = 'Junior';
+    datalines;
+John 25 50000
+Jane 35 65000
+;
+run
+
+proc print data=employee-data;
+    title 'Employee Report'
+run;</code></pre>
+                    </div>
+
+                    <details class="solution">
+                        <summary>Click to see solution</summary>
+                        <div class="code-example">
+                            <div class="code-header">
+                                <span class="language">SAS</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre><code class="language-sas">/* Fixed program */
+data employee_data;  /* Fixed: no hyphens in dataset names */
+    input name $ age salary;
+    if age >= 30 then Group = 'Senior';  /* Fixed: quotes needed */
+    else Group = 'Junior';
+    datalines;
+John 25 50000
+Jane 35 65000
+;
+run;  /* Fixed: added semicolon */
+
+proc print data=employee_data;  /* Fixed: dataset name */
+    title 'Employee Report';  /* Fixed: added semicolon */
+run;</code></pre>
+                        </div>
+                    </details>
+                </div>
+            </section>
+
+            <!-- Best Practices -->
+            <section class="best-practices">
+                <h2>Best Practices for Code Organization</h2>
+
+                <div class="practice-item">
+                    <h3>1. Use Consistent Naming Conventions</h3>
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="language">SAS</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code class="language-sas">/* Good naming examples */
+data customer_analysis;
+    customer_id = 1001;
+    first_purchase_date = '01JAN2020'd;
+    total_purchases_2024 = 150;
+    is_premium_member = 1;
+run;
+
+/* Avoid confusing names */
+data data1;  /* Too generic */
+    x = 1001;  /* What is x? */
+    dt = '01JAN2020'd;  /* Unclear abbreviation */
+run;</code></pre>
+                    </div>
+                </div>
+
+                <div class="practice-item">
+                    <h3>2. Structure Your Programs Logically</h3>
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="language">SAS</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code class="language-sas">/*** 1. Setup ***/
+options nodate nonumber;
+libname project '/path/to/project';
+
+/*** 2. Data Import ***/
+/* Import raw data files */
+
+/*** 3. Data Cleaning ***/
+/* Fix data quality issues */
+
+/*** 4. Data Transformation ***/
+/* Create derived variables */
+
+/*** 5. Analysis ***/
+/* Statistical procedures */
+
+/*** 6. Reporting ***/
+/* Create final outputs */
+
+/*** 7. Cleanup ***/
+/* Remove temporary datasets */</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Common Pitfalls -->
+            <section class="pitfalls">
+                <h2>Common Pitfalls and How to Avoid Them</h2>
+
+                <div class="pitfall-item">
+                    <h3>1. Forgetting RUN Statements</h3>
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="language">SAS</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code class="language-sas">/* Problem: Missing RUN */
+data test;
+    x = 1;
+    
+proc print data=test;  /* ERROR: DATA step not terminated */
+run;
+
+/* Solution: Always include RUN */
+data test;
+    x = 1;
+run;  /* Don't forget this! */
+
+proc print data=test;
+run;</code></pre>
+                    </div>
+                </div>
+
+                <div class="pitfall-item">
+                    <h3>2. Library Path Issues</h3>
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="language">SAS</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code class="language-sas">/* Problem: Path doesn't exist */
+libname mylib 'C:\NonexistentFolder';  /* ERROR */
+
+/* Solution: Create folder first or use existing path */
+/* In SAS OnDemand, use: */
+libname mylib '/folders/myfolders/newfolder';</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="summary">
+                <h2>Summary and Key Takeaways</h2>
+                
+                <div class="key-points">
+                    <h3>You now understand the fundamental building blocks of SAS programming:</h3>
+                    
+                    <div class="takeaway">
+                        <h4>1. Program Structure</h4>
+                        <ul>
+                            <li>DATA steps create and modify data</li>
+                            <li>PROC steps analyze and report on data</li>
+                            <li>Every statement ends with a semicolon</li>
+                            <li>Programs flow from top to bottom</li>
+                        </ul>
+                    </div>
+
+                    <div class="takeaway">
+                        <h4>2. Libraries and Datasets</h4>
+                        <ul>
+                            <li>WORK library for temporary data</li>
+                            <li>LIBNAME creates permanent libraries</li>
+                            <li>Two-level naming: library.dataset</li>
+                            <li>PROC DATASETS manages your data</li>
+                        </ul>
+                    </div>
+
+                    <div class="takeaway">
+                        <h4>3. Syntax Rules</h4>
+                        <ul>
+                            <li>SAS keywords are not case-sensitive</li>
+                            <li>Variable values ARE case-sensitive</li>
+                            <li>Names must start with letter or underscore</li>
+                            <li>Comments help document your code</li>
+                        </ul>
+                    </div>
+
+                    <div class="takeaway">
+                        <h4>4. The SAS Log</h4>
+                        <ul>
+                            <li>Your primary debugging tool</li>
+                            <li>Shows NOTEs, WARNINGs, and ERRORs</li>
+                            <li>Includes performance statistics</li>
+                            <li>Always check after running code</li>
+                        </ul>
+                    </div>
+
+                    <div class="takeaway">
+                        <h4>5. Best Practices</h4>
+                        <ul>
+                            <li>Use meaningful variable names</li>
+                            <li>Comment your code strategically</li>
+                            <li>Organize programs logically</li>
+                            <li>Check the log after every submission</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Next Steps -->
+            <section class="next-steps">
+                <h2>What's Next?</h2>
+                <p>In Part 3 of our series, "Mastering the DATA Step," we'll dive deep into:</p>
+                <ul>
+                    <li>The Program Data Vector (PDV)</li>
+                    <li>How SAS processes data line by line</li>
+                    <li>Advanced INPUT techniques</li>
+                    <li>Conditional processing with IF-THEN-ELSE</li>
+                    <li>Creating multiple datasets in one DATA step</li>
+                    <li>Using RETAIN and sum statements</li>
+                </ul>
+            </section>
+
+            <!-- Navigation -->
+            <nav class="tutorial-nav">
+                <a href="01-getting-started.html" class="btn btn-secondary">← Previous: Getting Started</a>
+                <a href="03-data-step.html" class="btn btn-primary">Next: Mastering the DATA Step →</a>
+            </nav>
+
+            <!-- Additional Resources -->
+            <section class="resources">
+                <h3>Additional Resources</h3>
+                <ul>
+                    <li><a href="../downloads/datasets/employees.csv">Download Practice Dataset: employees.csv</a></li>
+                    <li><a href="../downloads/cheat-sheets/sas-syntax-guide.pdf">SAS Syntax Quick Reference</a></li>
+                    <li><a href="https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/lestmtsref/n1nh4bzuh8awn7n1h5abwgvh23xs.htm" target="_blank">SAS Documentation: DATA Step</a></li>
+                </ul>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 SAS Programming Tutorial. Created by Deniz Akdemir.</p>
+            <p>Remember: The key to mastering SAS is practice. Try modifying the examples, experiment with different options, and always check your log!</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/main.js"></script>
+    <script src="../js/syntax-highlighting.js"></script>
+</body>
+</html>
