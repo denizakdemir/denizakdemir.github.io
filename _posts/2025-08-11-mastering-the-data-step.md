@@ -1,7 +1,7 @@
 ---
 title: "Mastering the DATA Step - The Heart of SAS Programming"
 author: denizakdemir
-date: 2025-08-10 09:00:00 -0500
+date: 2025-08-11 09:00:00 -0500
 categories: [SAS Programming, Tutorial]
 tags: [SAS, DATA Step, PDV, INPUT, Variables, Programming, Intermediate]
 pin: false

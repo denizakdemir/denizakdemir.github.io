@@ -1,7 +1,7 @@
 ---
 title: "Variables, Formats, and Data Types - Getting Data Right"
 author: denizakdemir
-date: 2025-08-10 09:00:00 -0500
+date: 2025-08-12 09:00:00 -0500
 categories: [SAS Programming, Tutorial]
 tags: [SAS, Variables, Formats, Informats, Data Types, Dates, Missing Values, Intermediate]
 pin: false
