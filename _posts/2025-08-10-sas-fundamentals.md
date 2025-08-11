@@ -933,7 +933,6 @@ In Part 3 of our series, "Mastering the DATA Step," we'll dive deep into:
 
 1. **Practice Dataset**: Download [employees.csv](/assets/data/sas-tutorial/employees.csv) to practice importing data
 2. **SAS Documentation**: [DATA Step Documentation](https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/lestmtsref/n1nh4bzuh8awn7n1h5abwgvh23xs.htm)
-3. **Quick Reference**: [SAS Syntax Guide](/assets/data/sas-tutorial/sas-syntax-quick-reference.pdf)
 
 Remember: The key to mastering SAS is practice. Try modifying the examples, experiment with different options, and always check your log!
 
