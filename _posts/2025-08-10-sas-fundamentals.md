@@ -931,8 +931,14 @@ In Part 3 of our series, "Mastering the DATA Step," we'll dive deep into:
 
 ## Additional Resources
 
-1. **Practice Dataset**: Download [employees.csv](/assets/data/sas-tutorial/employees.csv) to practice importing data
-2. **SAS Documentation**: [DATA Step Documentation](https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/lestmtsref/n1nh4bzuh8awn7n1h5abwgvh23xs.htm)
+1. **SAS Documentation**: [DATA Step Documentation](https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/lestmtsref/n1nh4bzuh8awn7n1h5abwgvh23xs.htm)
+2. **Practice Dataset**: Create an `employees.csv` file with the following data to practice importing:
+   ```
+   emp_id,name,department,salary
+   101,John,Sales,55000
+   102,Mary,IT,65000
+   103,Bob,HR,52000
+   ```
 
 Remember: The key to mastering SAS is practice. Try modifying the examples, experiment with different options, and always check your log!
 
