@@ -1244,9 +1244,7 @@ In Part 4 of our series, "Variables, Formats, and Data Types," we'll explore:
 
 ## Additional Resources
 
-1. **Practice Dataset**: Download [data_step_exercises.zip](/assets/data/sas-tutorial/data_step_exercises.zip) for hands-on practice
-2. **Quick Reference Card**: [DATA Step Quick Reference](/assets/data/sas-tutorial/data-step-reference.pdf)
-3. **SAS Documentation**: [DATA Step Concepts](https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/basess/titlepage.htm)
+**SAS Documentation**: [DATA Step Concepts](https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/basess/titlepage.htm)
 
 Remember: The DATA step is where the real power of SAS lies. The more you practice with different scenarios, the more comfortable you'll become with its capabilities. Don't be afraid to experiment—that's how you'll discover new techniques and solutions!
 
