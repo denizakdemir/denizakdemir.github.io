@@ -1377,9 +1377,7 @@ In Part 5 of our series, "Data Input and Output," we'll explore:
 
 ## Additional Resources
 
-1. **Format Library**: Download [custom_formats.sas](/assets/data/sas-tutorial/custom_formats.sas) for reusable formats
-2. **Date Function Reference**: [SAS Date Functions Quick Guide](/assets/data/sas-tutorial/date-functions-reference.pdf)
-3. **SAS Documentation**: [Formats and Informats](https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/leforinforref/titlepage.htm)
+1. **SAS Documentation**: [Formats and Informats](https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/leforinforref/titlepage.htm)
 
 Remember: Attention to data types, formats, and proper handling of missing values and dates will save you hours of debugging and ensure your analyses are accurate and professional.
 
