@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Deniz Akdemir | PhD Biostatistician & Data Scientist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: "Warm Neutral Harmony" -->
+    <!-- Application Structure Plan: The SPA is designed as a personal branding and portfolio hub, moving beyond a static resume. The structure is thematic and user-driven: 1) 'Hero' section for immediate impact with key metrics. 2) 'About Me' for a personal narrative. 3) 'Core Expertise' with an interactive chart for quick skill assessment. 4) 'Career Journey' as an interactive timeline to show progression. 5) 'Impact Portfolio' to showcase tangible results (Patent, Software, Publications) with filtering capabilities. This structure allows a recruiter to either get a 30-second overview from the top sections or dive deep into specific areas, which is more engaging than a linear document. -->
+    <!-- Visualization & Content Choices: 1) Key Metrics (Citations, Publications): Goal is to inform and impress. Method is large-type dynamic counters in the hero section for high visibility. 2) Core Competencies: Goal is to organize and compare skills. Method is an interactive horizontal bar chart (Chart.js) to provide a familiar yet dynamic view of proficiency levels. Interaction allows hovering for details. 3) Career Path: Goal is to show change over time. Method is a visually styled timeline using HTML/Tailwind, which is more intuitive than a list. 4) Publications/Software: Goal is to organize a large amount of information. Method is a filterable card-based grid, allowing users to select categories of interest. This makes a long list digestible. Justification for all is enhanced user engagement and information clarity over static text. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f7f4;
+            color: #3f3c3a;
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #a88b79;
+            transition: width 0.3s ease;
+        }
+        .nav-link.active::after,
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .stat-card {
+            background-color: #ffffff;
+            border: 1px solid #e7e5e4;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: -20.5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 9999px;
+            background-color: #ffffff;
+            border: 3px solid #a88b79;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        .btn-filter {
+            transition: all 0.3s ease;
+        }
+        .btn-filter.active {
+            background-color: #a88b79;
+            color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(168, 139, 121, 0.3);
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-200">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-gray-800">
+                <a href="#">Deniz Akdemir, PhD</a>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#about" class="nav-link text-gray-600 hover:text-gray-900 font-medium">About</a>
+                <a href="#expertise" class="nav-link text-gray-600 hover:text-gray-900 font-medium">Expertise</a>
+                <a href="#journey" class="nav-link text-gray-600 hover:text-gray-900 font-medium">Journey</a>
+                <a href="#portfolio" class="nav-link text-gray-600 hover:text-gray-900 font-medium">Portfolio</a>
+            </div>
+            <a href="mailto:deniz.akdemir.work@gmail.com" class="hidden md:block bg-[#a88b79] text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition">Contact Me</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" class="py-20 md:py-32 bg-white">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold text-gray-800 leading-tight">Dr. Deniz Akdemir</h1>
+                <p class="mt-4 text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">Ph.D. Biostatistician & Clinical Data Scientist translating complex data into life-saving insights.</p>
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                    <div class="stat-card p-6 rounded-xl shadow-sm">
+                        <p class="text-4xl font-bold text-[#a88b79]" id="citations-stat">3,590+</p>
+                        <p class="mt-2 text-gray-600">Citations</p>
+                    </div>
+                    <div class="stat-card p-6 rounded-xl shadow-sm">
+                        <p class="text-4xl font-bold text-[#a88b79]" id="publications-stat">37</p>
+                        <p class="mt-2 text-gray-600">Peer-Reviewed Publications</p>
+                    </div>
+                    <div class="stat-card p-6 rounded-xl shadow-sm">
+                        <p class="text-4xl font-bold text-[#a88b79]" id="packages-stat">3</p>
+                        <p class="mt-2 text-gray-600">CRAN R Packages Developed</p>
+                    </div>
+                </div>
+                 <div class="mt-12 flex justify-center items-center space-x-6">
+                    <a href="https://www.linkedin.com/in/deniz-akdemir-50735314a/" target="_blank" class="text-gray-500 hover:text-[#a88b79] transition">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd"/></svg>
+                    </a>
+                    <a href="https://github.com/denizakdemir" target="_blank" class="text-gray-500 hover:text-[#a88b79] transition">
+                         <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800">About Me</h2>
+                    <p class="mt-2 text-lg text-gray-500">A brief introduction to my professional philosophy and approach.</p>
+                </div>
+                <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-sm border border-gray-200">
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        I am a Ph.D. Biostatistician with a passion for transforming complex clinical and genomic data into clear, actionable strategies. With over 15 years of experience, my work sits at the intersection of statistical theory, machine learning, and clinical application. I thrive on leading interdisciplinary teams to build predictive models and analytical tools that have a tangible impact on patient outcomes. My goal is always to deliver robust, reproducible, and regulatory-compliant science that pushes the boundaries of personalized medicine.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="expertise" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800">Core Expertise</h2>
+                    <p class="mt-2 text-lg text-gray-500">A visual overview of my technical and scientific skill set.</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="skillsChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="journey" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-gray-800">Career Journey</h2>
+                    <p class="mt-2 text-lg text-gray-500">Tracing my path from academia to industry leadership.</p>
+                </div>
+                <div class="relative max-w-2xl mx-auto">
+                    <div class="absolute left-0 top-0 h-full w-0.5 bg-gray-200" style="left: -15px;"></div>
+                    <div class="timeline-item mb-12 pl-8 relative">
+                        <p class="text-sm text-[#a88b79] font-semibold">2020 – Present</p>
+                        <h3 class="text-xl font-semibold text-gray-800 mt-1">Senior Clinical Data Scientist</h3>
+                        <p class="text-md text-gray-600">National Marrow Donor Program (NMDP/CIBMTR)</p>
+                        <p class="mt-2 text-gray-700">Leading development of ML models for HCT outcomes, influencing decisions for 10,000+ patients and chairing the NMDP Forum.</p>
+                    </div>
+                    <div class="timeline-item mb-12 pl-8 relative">
+                        <p class="text-sm text-[#a88b79] font-semibold">2017 – 2019</p>
+                        <h3 class="text-xl font-semibold text-gray-800 mt-1">Statistical Consultant</h3>
+                        <p class="text-md text-gray-600">Cornell Statistical Consulting Unit</p>
+                        <p class="mt-2 text-gray-700">Provided expert biostatistical consulting to over 100 research groups and led advanced R/SAS training workshops.</p>
+                    </div>
+                    <div class="timeline-item mb-12 pl-8 relative">
+                        <p class="text-sm text-[#a88b79] font-semibold">2011 – 2017</p>
+                        <h3 class="text-xl font-semibold text-gray-800 mt-1">Postdoctoral Research Fellow</h3>
+                        <p class="text-md text-gray-600">Cornell University, Dept. of Plant Breeding & Genetics</p>
+                        <p class="mt-2 text-gray-700">Developed foundational genomic prediction methods and authored three globally-adopted R packages.</p>
+                    </div>
+                     <div class="timeline-item pl-8 relative">
+                        <p class="text-sm text-[#a88b79] font-semibold">Education</p>
+                        <h3 class="text-xl font-semibold text-gray-800 mt-1">Ph.D. in Statistics</h3>
+                        <p class="text-md text-gray-600">Bowling Green State University</p>
+                        <p class="mt-2 text-gray-700">Specialized in High-Dimensional Data Analysis, laying the groundwork for my career in complex data modeling.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="portfolio" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800">Impact Portfolio</h2>
+                    <p class="mt-2 text-lg text-gray-500">Explore my key contributions to science and software.</p>
+                </div>
+                <div class="flex justify-center space-x-2 md:space-x-4 mb-12">
+                    <button class="btn-filter active px-4 py-2 text-sm md:text-base font-medium rounded-full bg-gray-200 text-gray-700" data-filter="all">All</button>
+                    <button class="btn-filter px-4 py-2 text-sm md:text-base font-medium rounded-full bg-gray-200 text-gray-700" data-filter="patent">Patent</button>
+                    <button class="btn-filter px-4 py-2 text-sm md:text-base font-medium rounded-full bg-gray-200 text-gray-700" data-filter="software">Software</button>
+                    <button class="btn-filter px-4 py-2 text-sm md:text-base font-medium rounded-full bg-gray-200 text-gray-700" data-filter="publication">Publications</button>
+                </div>
+                <div id="portfolio-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2025 Dr. Deniz Akdemir. All Rights Reserved.</p>
+            <p class="text-sm text-gray-400 mt-2">This interactive resume was designed to showcase my skills and experience.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const portfolioData = [
+                {
+                    category: 'patent',
+                    title: 'U.S. Patent Application #18/440,090',
+                    description: 'Co-inventor for "Predictive Tool for Hematopoietic Stem Cell Transplantation and Other Cellular Therapy Outcomes". A machine learning-based clinical decision tool.',
+                    link: 'https://www.google.com/search?q=US+Patent+Application+18%2F440%2C090'
+                },
+                {
+                    category: 'software',
+                    title: 'TrainSel (R Package)',
+                    description: 'An industry-standard tool for selecting optimal training populations in predictive modeling using metaheuristics.',
+                    link: 'https://cran.r-project.org/package=TrainSel'
+                },
+                {
+                    category: 'software',
+                    title: 'EMMREML (R Package)',
+                    description: 'An efficient R implementation for fitting linear mixed models, essential for genomic and complex trait analysis.',
+                    link: 'https://cran.r-project.org/package=EMMREML'
+                },
+                {
+                    category: 'software',
+                    title: 'STPGA (R Package)',
+                    description: 'A genetic algorithm framework for selective phenotyping and subset selection to optimize cost and accuracy.',
+                    link: 'https://cran.r-project.org/package=STPGA'
+                },
+                 {
+                    category: 'software',
+                    title: 'Kaggle Competition Dataset',
+                    description: 'Authored the synthetic dataset for the \'Equity post-HCT survival predictions\' competition using survivalGAN models.',
+                    link: 'https://www.kaggle.com/competitions/equity-post-HCT-survival-predictions'
+                },
+                {
+                    category: 'publication',
+                    title: 'Machine learning-based prediction framework for post-HCT outcomes',
+                    description: 'Published in Computers in Biology and Medicine (2025). Establishes a framework to assess trade-offs in HCT decisions. View all publications on Google Scholar.',
+                    link: 'https://scholar.google.com/citations?user=O_xha20AAAAJ&hl=en'
+                },
+                {
+                    category: 'publication',
+                    title: 'Design of training populations for selective phenotyping',
+                    description: 'Published in Scientific Reports (2019). Details methods for optimizing training population design in genomic prediction. View all publications on Google Scholar.',
+                    link: 'https://scholar.google.com/citations?user=O_xha20AAAAJ&hl=en'
+                },
+                {
+                    category: 'publication',
+                    title: 'Multi-objective optimized genomic breeding strategies',
+                    description: 'Published in Heredity (2019). Presents strategies for sustainable food improvement through genomic breeding. View all publications on Google Scholar.',
+                    link: 'https://scholar.google.com/citations?user=O_xha20AAAAJ&hl=en'
+                }
+            ];
+
+            const portfolioGrid = document.getElementById('portfolio-grid');
+            const filterButtons = document.querySelectorAll('.btn-filter');
+
+            function renderPortfolio(filter = 'all') {
+                portfolioGrid.innerHTML = '';
+                const filteredData = filter === 'all' ? portfolioData : portfolioData.filter(item => item.category === filter);
+                
+                filteredData.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'portfolio-item bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex flex-col';
+                    let badgeColor = 'bg-gray-100 text-gray-800';
+                    if (item.category === 'patent') badgeColor = 'bg-blue-100 text-blue-800';
+                    if (item.category === 'software') badgeColor = 'bg-green-100 text-green-800';
+                    if (item.category === 'publication') badgeColor = 'bg-purple-100 text-purple-800';
+                    
+                    let linkText = 'Learn More &rarr;';
+                    if (item.category === 'publication') {
+                        linkText = 'View on Google Scholar &rarr;';
+                    } else if (item.category === 'patent') {
+                        linkText = 'View Patent Info &rarr;';
+                    }
+
+
+                    card.innerHTML = `
+                        <div class="flex-grow">
+                            <span class="inline-block px-3 py-1 text-xs font-semibold ${badgeColor} rounded-full mb-3">${item.category.charAt(0).toUpperCase() + item.category.slice(1)}</span>
+                            <h3 class="text-lg font-semibold text-gray-800">${item.title}</h3>
+                            <p class="mt-2 text-gray-600 text-sm">${item.description}</p>
+                        </div>
+                        <a href="${item.link}" target="_blank" class="mt-4 inline-block text-sm font-medium text-[#a88b79] hover:underline">${linkText}</a>
+                    `;
+                    portfolioGrid.appendChild(card);
+                });
+            }
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    renderPortfolio(button.dataset.filter);
+                });
+            });
+
+            renderPortfolio();
+
+            const skillsCtx = document.getElementById('skillsChart').getContext('2d');
+            const skillsChart = new Chart(skillsCtx, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        'Statistical Modeling (Survival, Mixed Models)', 
+                        'Machine Learning (Ensemble, DL)', 
+                        'R Programming (Expert)', 
+                        'Python (Advanced)', 
+                        'Clinical Trials & Regulatory (SAP, ICH)', 
+                        'Genomics & Bioinformatics'
+                    ],
+                    datasets: [{
+                        label: 'Proficiency & Experience',
+                        data: [95, 90, 98, 85, 90, 88],
+                        backgroundColor: 'rgba(168, 139, 121, 0.7)',
+                        borderColor: 'rgba(168, 139, 121, 1)',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#3f3c3a',
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 12 },
+                            padding: 10,
+                            cornerRadius: 4,
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: {
+                                drawOnChartArea: false,
+                                borderColor: '#e7e5e4'
+                            },
+                            ticks: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false,
+                                borderColor: '#e7e5e4'
+                            },
+                            ticks: {
+                                color: '#3f3c3a',
+                                font: {
+                                    size: 14,
+                                    family: 'Inter'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 60) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>

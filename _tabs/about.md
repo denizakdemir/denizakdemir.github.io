@@ -46,6 +46,6 @@ I'm currently exploring the application of transformer architectures to tabular 
 
 ## Connect With Me
 
-Feel free to [contact me](/contact/) with questions about my research, collaboration opportunities, or to discuss potential projects. You can also check out my [resume](/assets/resume.pdf) for more details about my professional background.
+Feel free to [contact me](/contact/) with questions about my research, collaboration opportunities, or to discuss potential projects. You can also check out my [resume](/assets/resume.pdf) or [research highlights](/assets/Highlights_Deniz_Akdemir.html) for more details about my professional background.
 
 
