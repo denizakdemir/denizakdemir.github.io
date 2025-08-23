@@ -5,9 +5,6 @@ date: 2025-08-22 09:00:00 -0800
 categories: [SAS Programming, Tutorial]
 tags: [DATA Step, INFILE, INPUT, FILE, PUT, PROC IMPORT, PROC EXPORT, CSV, External Files]
 render_with_liquid: false
-image:
-  path: /assets/img/posts/sas-data-io.png
-  alt: SAS Data Input and Output Tutorial
 mermaid: true
 ---
 
