@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 5: Data Input and Output - SAS Programming Tutorial</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/syntax-highlighting.css">
+    <meta name="description" content="Master reading and writing external data in SAS. Learn INFILE/INPUT, FILE/PUT, PROC IMPORT/EXPORT, and handle various file formats.">
+    <meta name="keywords" content="SAS programming, INFILE, INPUT, FILE, PUT, PROC IMPORT, PROC EXPORT, CSV, data import, SAS tutorial">
+    
+    <!-- Open Graph tags -->
+    <meta property="og:title" content="Data Input and Output - SAS Programming Tutorial">
+    <meta property="og:description" content="Master data movement in SAS. Learn to read and write external files, handle various formats, and optimize data operations.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://yoursite.com/tutorials/05-data-input-output.html">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header>
+        <nav class="main-nav">
+            <div class="nav-container">
+                <a href="../index.html" class="logo">SAS Tutorial</a>
+                <ul class="nav-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="01-getting-started.html">Part 1</a></li>
+                    <li><a href="02-fundamentals.html">Part 2</a></li>
+                    <li><a href="03-data-step.html">Part 3</a></li>
+                    <li><a href="04-variables-formats.html">Part 4</a></li>
+                    <li class="active"><a href="05-data-input-output.html">Part 5</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Progress Indicator -->
+    <div class="progress-container">
+        <div class="progress-bar" style="width: 38%;"></div>
+        <span class="progress-text">Part 5 of 13</span>
+    </div>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <div class="container">
+            <!-- Tutorial Header -->
+            <div class="tutorial-header">
+                <h1>Part 5: Data Input and Output</h1>
+                <h2 class="subtitle">Mastering Data Movement</h2>
+                <div class="meta-info">
+                    <span class="difficulty">Intermediate</span>
+                    <span class="duration">40-50 minutes</span>
+                    <span class="updated">Updated: August 2025</span>
+                </div>
+            </div>
+
+            <!-- Learning Objectives -->
+            <section class="objectives">
+                <h3>What You'll Learn</h3>
+                <ul>
+                    <li>Read external data files using INFILE and INPUT statements</li>
+                    <li>Master various input techniques for different file formats</li>
+                    <li>Handle delimited, fixed-width, and complex file structures</li>
+                    <li>Write data to external files with FILE and PUT statements</li>
+                    <li>Use PROC IMPORT and EXPORT for quick data transfers</li>
+                    <li>Implement error handling and data validation strategies</li>
+                    <li>Optimize performance for large file operations</li>
+                </ul>
+            </section>
+
+            <!-- Prerequisites -->
+            <section class="prerequisites">
+                <h3>Prerequisites</h3>
+                <ul>
+                    <li>Completion of Parts 1-4 of this tutorial series</li>
+                    <li>Understanding of SAS DATA steps and variable types</li>
+                    <li>Access to SAS (SAS OnDemand, SAS Studio, or any SAS installation)</li>
+                    <li>Basic knowledge of file paths and file systems</li>
+                    <li>Familiarity with common data formats (CSV, text files)</li>
+                </ul>
+            </section>
+
+            <!-- Main Content Sections -->
+            <section class="content-section">
+                <h2>Introduction to Data Input and Output</h2>
+                <p>In the real world, data rarely exists solely within SAS. You'll frequently need to:</p>
+                <ul>
+                    <li>Import data from CSV files, Excel spreadsheets, or text files</li>
+                    <li>Read fixed-width reports from legacy systems</li>
+                    <li>Export analysis results for use in other applications</li>
+                    <li>Create formatted reports for stakeholders</li>
+                </ul>
+                <p>SAS provides multiple methods for handling these scenarios, from the flexible DATA step approaches to convenient PROC procedures.</p>
+            </section>
+
+            <section class="content-section">
+                <h2>Reading External Data with the DATA Step</h2>
+                <p>The DATA step provides the most control and flexibility when reading external data. The key statements are:</p>
+                <div class="concept-box">
+                    <ul>
+                        <li><strong>INFILE</strong>: Specifies the external file to read</li>
+                        <li><strong>INPUT</strong>: Defines how to read the data</li>
+                    </ul>
+                </div>
+
+                <h3>Basic CSV File Reading</h3>
+                <p>Let's start with a simple CSV file:</p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Sample CSV file: customers.csv
+CustomerID,Name,Age,City,PurchaseAmount
+1001,John Smith,35,New York,1250.50
+1002,Jane Doe,28,Los Angeles,875.25
+1003,Bob Johnson,42,Chicago,2100.00
+*/
+
+data customers;
+    infile '/path/to/customers.csv' dsd firstobs=2;
+    input CustomerID Name $ Age City $ PurchaseAmount;
+run;
+
+proc print data=customers noobs;
+run;</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>Key points:</strong></p>
+                    <ul>
+                        <li><code>dsd</code> option handles comma-separated values and consecutive delimiters</li>
+                        <li><code>firstobs=2</code> skips the header row</li>
+                        <li>Character variables are indicated with <code>$</code></li>
+                    </ul>
+                </div>
+
+                <h3>Handling Different Delimiters</h3>
+                <p>Not all files use commas as delimiters:</p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Tab-delimited file */
+data sales_data;
+    infile '/path/to/sales.txt' dlm='09'x firstobs=2;
+    input Date :yymmdd10. Product $ Quantity Revenue;
+    format Date date9.;
+run;
+
+/* Pipe-delimited file */
+data inventory;
+    infile '/path/to/inventory.dat' dlm='|' dsd;
+    input ItemCode $ Description :$50. Stock Price;
+run;</code></pre>
+                </div>
+
+                <h3>Reading Fixed-Width Files</h3>
+                <p>Legacy systems often produce fixed-width files where each field occupies specific columns:</p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Fixed-width file example:
+Positions: 1-5: ID, 6-25: Name, 26-28: Age, 29-35: Salary
+00123John Doe             025 50000
+00124Jane Smith           032 65000
+*/
+
+data employees;
+    infile '/path/to/employees.txt';
+    input @1 ID $5.
+          @6 Name $20.
+          @26 Age 3.
+          @29 Salary 7.;
+run;</code></pre>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Advanced INFILE Statement Options</h2>
+                <p>The INFILE statement offers numerous options for handling various file scenarios:</p>
+
+                <h3>MISSOVER vs. TRUNCOVER</h3>
+                <p>These options control how SAS handles short records:</p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* MISSOVER: Sets remaining variables to missing */
+data test_missover;
+    infile datalines missover;
+    input Name $ Score1 Score2 Score3;
+    datalines;
+John 85 90 95
+Jane 88 92
+Bob 90
+;
+run;
+
+/* TRUNCOVER: Reads available data without going to next line */
+data test_truncover;
+    infile datalines truncover;
+    input Name $10. Description $20.;
+    datalines;
+John       Senior Analyst
+Jane       Manager
+Bob        Jr Dev
+;
+run;</code></pre>
+                </div>
+
+                <h3>Error Handling Options</h3>
+                <p>Control how SAS responds to data errors:</p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">data robust_import;
+    infile '/path/to/messy_data.csv' dsd firstobs=2
+           missover           /* Handle short records */
+           lrecl=32767       /* Maximum record length */
+           pad               /* Pad short records */
+           termstr=crlf;     /* Handle different line endings */
+    
+    /* Use _ERROR_ and _N_ for debugging */
+    input CustomerID Name :$50. Age Revenue;
+    
+    if _ERROR_ then do;
+        put "Error on line " _N_ ": " _INFILE_;
+        _ERROR_ = 0;  /* Reset error flag */
+    end;
+run;</code></pre>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Advanced INPUT Techniques</h2>
+                <p>The INPUT statement provides multiple ways to read data:</p>
+
+                <h3>Column Input with Pointers</h3>
+                <p>Use pointer controls for precise positioning:</p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">data complex_read;
+    infile '/path/to/report.txt' firstobs=5;
+    input @1 Date mmddyy10.
+          @12 Region $3.
+          @16 Sales comma12.2
+          @30 Manager $20.
+          @51 Status $1.;
+    format Date date9. Sales dollar12.2;
+run;</code></pre>
+                </div>
+
+                <h3>Formatted Input</h3>
+                <p>Read data with specific formats:</p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">data formatted_data;
+    infile datalines dsd;
+    input TransDate :mmddyy10. 
+          Time :time8.
+          Amount :comma12.2
+          Category :$15.
+          Description :$50.;
+    format TransDate date9. Time time8. Amount dollar12.2;
+    datalines;
+01/15/2024,14:30:00,"1,250.50",Electronics,Laptop purchase
+02/20/2024,09:15:30,"350.25",Office,Printer supplies
+;
+run;</code></pre>
+                </div>
+
+                <h3>Multiple Records Per Observation</h3>
+                <p>Sometimes one observation spans multiple input lines:</p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">data customer_addresses;
+    infile datalines;
+    input #1 CustomerID 4. Name $25.
+          #2 Street $30.
+          #3 City $20. State $2. Zip $5.;
+    datalines;
+1001 John Smith
+123 Main Street
+New York            NY10001
+1002 Jane Doe
+456 Oak Avenue
+Los Angeles         CA90001
+;
+run;</code></pre>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Writing Data to External Files</h2>
+                <p>The FILE and PUT statements allow you to write data:</p>
+
+                <h3>Basic File Output</h3>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">data _null_;
+    set customers;
+    file '/path/to/output.csv' dsd;
+    
+    /* Write header on first observation */
+    if _N_ = 1 then
+        put 'CustomerID,Name,Age,City,PurchaseAmount';
+    
+    /* Write data */
+    put CustomerID Name Age City PurchaseAmount;
+run;</code></pre>
+                </div>
+
+                <h3>Creating Formatted Reports</h3>
+                <p>Generate professional-looking reports:</p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">data _null_;
+    set sales_summary end=last;
+    file '/path/to/sales_report.txt' print header=header_section;
+    
+    /* Calculate running total */
+    retain total 0;
+    total + Revenue;
+    
+    /* Write detail lines */
+    put @5 Region $10. @20 Product $15. @40 Revenue dollar12.2;
+    
+    /* Write total at end */
+    if last then do;
+        put @5 60*'-';
+        put @5 'Grand Total:' @40 total dollar12.2;
+    end;
+    
+    return;
+    
+    header_section:
+        put @20 'Monthly Sales Report';
+        put @20 19*'=';
+        put;
+        put @5 'Region' @20 'Product' @40 'Revenue';
+        put @5 60*'-';
+    return;
+run;</code></pre>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>PROC IMPORT: Quick and Easy Importing</h2>
+                <p>PROC IMPORT provides a convenient way to import data without writing INPUT statements:</p>
+
+                <h3>Basic PROC IMPORT</h3>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Import CSV file */
+proc import datafile='/path/to/sales_data.csv'
+    out=sales_imported
+    dbms=csv
+    replace;
+    getnames=yes;
+    datarow=2;
+run;
+
+/* Import Excel file */
+proc import datafile='/path/to/quarterly_report.xlsx'
+    out=quarterly_data
+    dbms=xlsx
+    replace;
+    sheet='Q1_2024';
+    getnames=yes;
+run;
+
+/* Import tab-delimited file */
+proc import datafile='/path/to/inventory.txt'
+    out=inventory
+    dbms=tab
+    replace;
+    getnames=yes;
+run;</code></pre>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>PROC EXPORT: Efficient Data Export</h2>
+                <p>PROC EXPORT simplifies writing data to external files:</p>
+
+                <h3>Basic PROC EXPORT</h3>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Export to CSV */
+proc export data=analysis_results
+    outfile='/path/to/results.csv'
+    dbms=csv
+    replace;
+    putnames=yes;
+run;
+
+/* Export to Excel */
+proc export data=monthly_summary
+    outfile='/path/to/summary.xlsx'
+    dbms=xlsx
+    replace;
+    sheet='Summary';
+run;
+
+/* Export to tab-delimited */
+proc export data=product_list
+    outfile='/path/to/products.txt'
+    dbms=tab
+    replace;
+run;</code></pre>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>When to Use DATA Step vs. PROC IMPORT/EXPORT</h2>
+                
+                <div class="comparison-table">
+                    <div class="comparison-column">
+                        <h3>Use DATA Step When:</h3>
+                        <ul>
+                            <li>You need precise control over data types</li>
+                            <li>The file has a complex structure</li>
+                            <li>You need to perform transformations during import</li>
+                            <li>You're dealing with fixed-width files</li>
+                            <li>Error handling is critical</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-column">
+                        <h3>Use PROC IMPORT/EXPORT When:</h3>
+                        <ul>
+                            <li>The file structure is straightforward</li>
+                            <li>You want SAS to determine variable types</li>
+                            <li>You're working with standard formats (CSV, Excel)</li>
+                            <li>You need a quick solution</li>
+                            <li>The file has consistent formatting</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Best Practices for Data Input/Output</h2>
+
+                <h3>1. Data Validation During Input</h3>
+                <p>Always validate data as you read it:</p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">data validated_import;
+    infile '/path/to/customer_data.csv' dsd firstobs=2;
+    input CustomerID Name :$50. Age Revenue;
+    
+    /* Validate age */
+    if Age < 0 or Age > 120 then do;
+        put "WARNING: Invalid age " Age " for customer " CustomerID;
+        Age = .;
+    end;
+    
+    /* Validate revenue */
+    if Revenue < 0 then do;
+        put "WARNING: Negative revenue " Revenue " for customer " CustomerID;
+        delete;  /* Skip this record */
+    end;
+run;</code></pre>
+                </div>
+
+                <h3>2. Error Checking and Logging</h3>
+                <p>Implement comprehensive error checking:</p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">%let infile = /path/to/daily_transactions.csv;
+
+data transactions 
+     errors(keep=LineNumber ErrorDescription);
+    
+    infile "&infile" dsd firstobs=2 missover;
+    length ErrorDescription $200;
+    
+    input TransID Date :mmddyy10. Amount Category $;
+    
+    /* Track line numbers */
+    LineNumber = _N_;
+    
+    /* Check for missing required fields */
+    if missing(TransID) then do;
+        ErrorDescription = "Missing Transaction ID";
+        output errors;
+        delete;
+    end;
+    
+    /* Validate date */
+    if missing(Date) or Date > today() then do;
+        ErrorDescription = cats("Invalid date: ", Date);
+        output errors;
+    end;
+    else output transactions;
+run;
+
+/* Report errors */
+proc print data=errors;
+    title "Import Errors for &infile";
+run;</code></pre>
+                </div>
+
+                <h3>3. Performance Considerations</h3>
+                <p>Optimize large file operations:</p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="language">SAS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code class="language-sas">/* Use PROC APPEND for large datasets */
+proc append base=master_dataset
+            data=daily_update;
+run;
+
+/* Use views for repetitive operations */
+data monthly_import / view=monthly_import;
+    infile '/path/to/monthly_*.csv' dsd firstobs=2;
+    input Date :yymmdd10. Store $ Sales;
+    format Date date9.;
+run;
+
+/* Buffer size optimization */
+data large_file_import;
+    infile '/path/to/huge_file.csv' dsd firstobs=2
+           bufsize=32768  /* Increase buffer size */
+           lrecl=4096;    /* Set appropriate record length */
+    input /* variables */;
+run;</code></pre>
+                </div>
+            </section>
+
+            <!-- Practice Exercises -->
+            <section class="exercises">
+                <h2>Practice Exercises</h2>
+                
+                <div class="exercise">
+                    <h3>Exercise 1: Multi-Format Import</h3>
+                    <p>Create a program that reads customer data from three different sources:</p>
+                    <ul>
+                        <li>A CSV file with basic customer information</li>
+                        <li>A fixed-width file with transaction history</li>
+                        <li>A pipe-delimited file with contact preferences</li>
+                    </ul>
+                    <p>Merge these into a single comprehensive customer dataset.</p>
+                </div>
+
+                <div class="exercise">
+                    <h3>Exercise 2: Dynamic Report Generation</h3>
+                    <p>Write a program that:</p>
+                    <ol>
+                        <li>Reads sales data from a CSV file</li>
+                        <li>Creates separate output files for each region</li>
+                        <li>Generates a summary report with totals</li>
+                        <li>Exports the summary to Excel format</li>
+                    </ol>
+                </div>
+
+                <div class="exercise">
+                    <h3>Exercise 3: Error-Resistant Import</h3>
+                    <p>Develop a robust import process that:</p>
+                    <ul>
+                        <li>Handles missing values appropriately</li>
+                        <li>Validates data ranges</li>
+                        <li>Logs all errors to a separate dataset</li>
+                        <li>Creates a summary report of import statistics</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Common Pitfalls -->
+            <section class="pitfalls">
+                <h2>Common Pitfalls and Solutions</h2>
+
+                <div class="pitfall">
+                    <h3>Problem 1: Truncated Character Variables</h3>
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="language">SAS</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code class="language-sas">/* Problem: Names getting cut off */
+data truncated;
+    infile 'data.csv' dsd;
+    input Name $ Age;  /* Default length is 8 */
+run;
+
+/* Solution: Specify length */
+data fixed;
+    infile 'data.csv' dsd;
+    length Name $50;
+    input Name $ Age;
+run;</code></pre>
+                    </div>
+                </div>
+
+                <div class="pitfall">
+                    <h3>Problem 2: Date Format Mismatches</h3>
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="language">SAS</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code class="language-sas">/* Handle multiple date formats */
+data flexible_dates;
+    infile 'dates.csv' dsd;
+    input DateText :$10. @@;
+    
+    /* Try multiple formats */
+    if not missing(DateText) then do;
+        Date = input(DateText, mmddyy10.);
+        if missing(Date) then Date = input(DateText, date9.);
+        if missing(Date) then Date = input(DateText, yymmdd10.);
+    end;
+    
+    format Date date9.;
+run;</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="summary">
+                <h2>Summary</h2>
+                <p>In this tutorial, we've covered:</p>
+                <ul>
+                    <li>Reading data using INFILE and INPUT statements</li>
+                    <li>Handling various file formats and delimiters</li>
+                    <li>Advanced INPUT techniques for complex data</li>
+                    <li>Writing data with FILE and PUT statements</li>
+                    <li>Using PROC IMPORT and EXPORT for convenience</li>
+                    <li>Best practices for robust data operations</li>
+                    <li>Performance optimization strategies</li>
+                </ul>
+                <p>Mastering data input and output operations is fundamental to becoming an effective SAS programmer. These skills enable you to work with data from any source and share your results in any format required by your organization.</p>
+            </section>
+
+            <!-- Navigation -->
+            <nav class="tutorial-nav">
+                <a href="04-variables-formats.html" class="nav-btn prev">← Part 4: Variables & Formats</a>
+                <a href="../index.html" class="nav-btn home">Home</a>
+                <a href="06-data-manipulation.html" class="nav-btn next">Part 6: Data Manipulation →</a>
+            </nav>
+
+            <!-- Additional Resources -->
+            <section class="resources">
+                <h3>Additional Resources</h3>
+                <ul>
+                    <li><a href="https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/lestmtsglobal/p0deh6vbwdsxlgn13q5qzpgau5a5.htm" target="_blank">SAS Documentation: INFILE Statement</a></li>
+                    <li><a href="https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/lestmtsglobal/n0o71kgTvhmzvjn1teio37j0zovg.htm" target="_blank">SAS Documentation: INPUT Statement</a></li>
+                    <li><a href="https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/proc/n0bcvul5lfz6zon1mengm0r9fvjj.htm" target="_blank">PROC IMPORT Guide</a></li>
+                    <li>Sample datasets for practice (available in course repository)</li>
+                </ul>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 SAS Programming Tutorial. All rights reserved.</p>
+            <p>Created by Deniz Akdemir</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/main.js"></script>
+    <script src="../js/syntax-highlighting.js"></script>
+</body>
+</html>
