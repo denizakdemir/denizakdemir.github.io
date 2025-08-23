@@ -1,5 +1,5 @@
 ---
-title: "SAS Fundamentals - Building Your Foundation"
+title: "SAS Tutorial Part 2: SAS Fundamentals - Building Your Foundation"
 author: denizakdemir
 date: 2025-08-10 09:00:00 -0500
 categories: [SAS Programming, Tutorial]

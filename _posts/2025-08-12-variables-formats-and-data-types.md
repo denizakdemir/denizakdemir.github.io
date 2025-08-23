@@ -1,5 +1,5 @@
 ---
-title: "Variables, Formats, and Data Types - Getting Data Right"
+title: "SAS Tutorial Part 4: Variables, Formats, and Data Types - Getting Data Right"
 author: denizakdemir
 date: 2025-08-12 09:00:00 -0500
 categories: [SAS Programming, Tutorial]

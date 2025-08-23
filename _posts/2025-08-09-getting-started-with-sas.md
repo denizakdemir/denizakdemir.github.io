@@ -1,5 +1,5 @@
 ---
-title: "Getting Started with SAS - Your Gateway to Data Analytics"
+title: "SAS Tutorial Part 1: Getting Started with SAS - Your Gateway to Data Analytics"
 author: denizakdemir
 date: 2025-08-09 09:00:00 -0500
 categories: [SAS Programming, Tutorial]
